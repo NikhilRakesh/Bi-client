@@ -10,10 +10,10 @@ import { Metadata } from "next";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "Brands-Info",
-  description: "Hybrid Local Business & Service Marketplace",
+  title: "Hybrid Local Business & Service Marketplace - BrandsInfo",
+  description:
+    "At Brands Info, we are redefining the way businesses and professionals connect with customers. Our platform serves as a one-stop solution for businesses to list, promote, and grow, while also enabling skilled professionals to find work opportunities effortlessly",
 };
-
 
 export default async function Home({ city }: { city: string }) {
   const HomeData = await api.get(`users/home/`).then((res) => res.data);

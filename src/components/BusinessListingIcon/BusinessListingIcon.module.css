@@ -1,0 +1,17 @@
+@keyframes shine2 {
+  0% {
+    background-size: 2000%;
+    background-position: 100%;
+
+  }
+  100% {
+    background-size: 2000%;
+    background-position: -10%;
+
+  }
+ 
+}
+.myshine_bg{
+  background: linear-gradient(107deg, #349e5b 0%, #4adf81 5%, #349e5b 11%);
+  animation: shine2 5s ease-in-out infinite; 
+}

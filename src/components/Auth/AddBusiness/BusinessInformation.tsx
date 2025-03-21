@@ -102,6 +102,7 @@ const BusinessInformation = ({
 
   const cookies = parseCookies();
   const access_token = cookies?.access_token;
+  const apiKey = process.env.NEXT_PUBLIC_Geocoding_api;
 
   const validateForm = () => {
     let valid = true;
@@ -168,10 +169,10 @@ const BusinessInformation = ({
         switch (buisness_type) {
           case "Products & Services":
           case "Product":
-             router.push(urlWithId);
+            router.push(urlWithId);
             break;
           case "Service":
-             router.push(urlWithId);
+            router.push(urlWithId);
             break;
           default:
             console.log("Unknown business type", buisness_type);
@@ -202,13 +203,14 @@ const BusinessInformation = ({
 
       if (value.length === 6) {
         // const searchUrl = `https://us1.locationiq.com/v1/search?key=pk.1b719781ccfda4d770c5a67dd6f1316b&q=${value}&format=json`;
-        const searchUrl = `https://api.postalpincode.in/pincode/${value}`;
+        // const searchUrl = `https://api.postalpincode.in/pincode/${value}`;
+        const searchUrl = `https://nominatim.openstreetmap.org/search?postalcode=${value}&country=India&format=json`;
 
         try {
           const response = await fetch(searchUrl);
           const data = await response.json();
 
-          if (data.error) {
+          if (data.error || data.length === 0) {
             setErrors((prevErrors) => ({
               ...prevErrors,
               pincodeError: "Invalid pincode.",
@@ -216,35 +218,43 @@ const BusinessInformation = ({
             return;
           }
 
-          const country = data[0]?.PostOffice[0]?.Country;
-
-          if (country !== "India") {
-            setErrors((prevErrors) => ({
-              ...prevErrors,
-              pincodeError: "Pincode is not from India.",
-            }));
-            return;
-          }
-
-          const state = data[0]?.PostOffice[0]?.State;
-          const district = data[0]?.PostOffice[0]?.District;
-
-          updateBusinessData({ state, district });
-
           try {
-            const response = await api.get(
-              `users/getlocality/?city=${district}`
-            );
+            const searchUrl2 = `https://api.opencagedata.com/geocode/v1/json?q=${data[0].lat},${data[0].lon}&key=${apiKey}`;
+            const response = await fetch(searchUrl2);
+            const data2 = await response.json();
 
-            if (response.status === 200) {
-              setLocalities(response.data.data);
-              const city = response.data.city;
-              updateBusinessData({ city });
+            const state = data2.results[0]?.components.state;
+            const district =
+              data2.results[0]?.components.city ||
+              data2.results[0]?.components.state_district;
+
+            updateBusinessData({ state, district });
+
+            try {
+              const response = await api.get(
+                `users/getlocality/?city=${district}`
+              );
+
+              if (response.status === 200) {
+                setLocalities(response.data.data);
+                const city = response.data.city;
+                updateBusinessData({ city });
+              }
+            } catch (error) {
+              console.error("Unknown error:", error);
+
+              setErrors((prevErrors) => ({
+                ...prevErrors,
+                pincodeError:
+                  "Failed to fetch locality . Please try again.",
+              }));
             }
           } catch (error) {
-            console.error("Unknown error:", error);
-
-            throw error;
+            console.error("Error fetching Geocoding data:", error);
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              pincodeError: "Failed to fetch pincode data. Please try again.",
+            }));
           }
 
           setErrors((prevErrors) => ({
@@ -252,7 +262,7 @@ const BusinessInformation = ({
             pincodeError: "",
           }));
         } catch (error) {
-          console.error("Error fetching pincode data:", error);
+          console.error("Error fetching nominatim pincode data:", error);
           setErrors((prevErrors) => ({
             ...prevErrors,
             pincodeError: "Failed to fetch pincode data. Please try again.",
@@ -318,11 +328,6 @@ const BusinessInformation = ({
             placeholder="Address Line"
             className="w-full px-4 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#f28b21]"
           />
-          {errors.pincodeError && (
-            <p className="text-red-600 font-ubuntu text-xs py-1 px-1">
-              {errors.pincodeError}
-            </p>
-          )}
         </div>
         <div className="mb-4">
           <input

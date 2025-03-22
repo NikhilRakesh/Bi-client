@@ -1,0 +1,108 @@
+"use client";
+import BusinessListing from "@/components/BusinessListingIcon/BusinessListingIcon";
+import Footer from "@/components/Footer/Footer";
+import Header from "@/components/Header/Header";
+import HilightedBusiness from "@/components/HilightedBusiness/HilightedBusiness";
+import BestDealers from "@/components/Products/BestDealers";
+import RandomCategories from "@/components/RandomCategories/RandomCategories";
+import TopCities from "@/components/TopCities/TopCities";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+
+interface Position {
+  coords: {
+    latitude: number;
+    longitude: number;
+  };
+}
+
+export default function HomePage({
+  HomeData,
+  city,
+}: {
+  HomeData: any;
+  city: string;
+}) {
+  const apiKey = process.env.NEXT_PUBLIC_Geocoding_api;
+
+  const [cityName, setCityName] = useState<string>("chennai");
+
+  async function getDeviceLocation() {
+    try {
+      const position = await new Promise<Position>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+      });
+      const { latitude, longitude } = position.coords;
+      const searchUrl2 = `https://api.opencagedata.com/geocode/v1/json?q=${latitude},${longitude}&key=${apiKey}`;
+      const response = await fetch(searchUrl2);
+      const data2 = await response.json();
+
+      const district =
+        data2.results[0]?.components.city ||
+        data2.results[0]?.components.state_district;
+      if (district) {
+        setCityName(district);
+      } else {
+        setCityName("chennai");
+      }
+    } catch (error) {
+      console.error("Error retrieving device location:", error);
+      return null;
+    }
+  }
+
+  useEffect(() => {
+    getDeviceLocation();
+  }, []);
+
+  const City: string = city ? city : cityName;
+
+  return (
+    <div className="px-2 h-screen ">
+      <Header city={City} />
+      <div className="relative mt-[120px]">
+        <div className="text-gray-600 font-ubuntuMedium md:text-3xl absolute w-full text-center md:top-[25px] top-[15px] ">
+          <h1>
+            <span className="md:text-4xl text-2xl font-extrabold ">
+              Explore the Best Businesses Close to You
+            </span>
+            -{" "}
+            <span className="text-[#f28b21] text-2xl md:text-3xl">
+              Search Now!
+            </span>
+          </h1>
+        </div>
+        <div>
+          <Image
+            src="/IndiaSkyline.jpg"
+            alt="A beautiful landscape showing a sunset"
+            className="object-contain w-full hidden md:block opacity-15 h-full"
+            width={1200}
+            height={800}
+            loading="eager"
+            priority
+          />
+          <Image
+            src="/IndiaSkyline mobile.jpg"
+            alt="A beautiful landscape showing a sunset"
+            className="object-contain w-full md:hidden opacity-15 h-full"
+            width={1200}
+            height={800}
+            loading="eager"
+            priority
+          />
+        </div>
+      </div>
+      <HilightedBusiness
+        images={HomeData.sections[4]?.data}
+        Gencat={HomeData.sections[0]?.data}
+        city={City}
+      />
+      <RandomCategories SubCat={HomeData.sections[1]?.data} city={City} />
+      <TopCities Cities={HomeData.sections[3]?.data} />
+      <BestDealers Products={HomeData.sections[2]?.data} city={City} />
+      <Footer />
+      <BusinessListing />
+    </div>
+  );
+}

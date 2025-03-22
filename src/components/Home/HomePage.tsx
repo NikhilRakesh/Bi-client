@@ -16,11 +16,42 @@ interface Position {
   };
 }
 
+interface HomeData {
+  meta_data: {
+    meta_author: string;
+    meta_description: string;
+    meta_keywords: string;
+    meta_title: string;
+    meta_og_description: string | null;
+    meta_og_image: string | null;
+    meta_og_image_alt: string | null;
+    meta_og_image_height: number | null;
+    meta_og_image_width: number | null;
+    meta_og_site_name: string | null;
+    meta_og_title: string | null;
+    meta_og_type: string | null;
+    meta_og_url: string | null;
+  };
+  sections: Section[];
+}
+
+interface Section {
+  title: string;
+  data: SectionData[];
+}
+
+interface SectionData {
+  image: string;
+  banner: string;
+  name: string;
+  title: string;
+}
+
 export default function HomePage({
   HomeData,
   city,
 }: {
-  HomeData: any;
+  HomeData: HomeData;
   city: string;
 }) {
   const apiKey = process.env.NEXT_PUBLIC_Geocoding_api;
@@ -55,7 +86,36 @@ export default function HomePage({
     getDeviceLocation();
   }, []);
 
+
   const City: string = city ? city : cityName;
+
+  const adsData = HomeData.sections[4]?.data.map((item) => ({
+    banner: item.banner,
+    name: item.name,
+  }));
+
+  const gencatData = HomeData.sections[0]?.data.map((item) => ({
+    image: item.image,
+    name: item.name,
+    tittle: item.title,
+  }));
+
+  const subcatData = HomeData.sections[1]?.data.map((item) => ({
+    name: item.name,
+    tittle: item.title,
+  }));
+
+  const cityData = HomeData.sections[3]?.data.map((item) => ({
+    image: item.image,
+    name: item.name,
+    tittle: item.title,
+  }));
+
+  const productData = HomeData.sections[2]?.data.map((item) => ({
+    name: item.name,
+    image: item.image,
+    tittle: item.title,
+  }));
 
   return (
     <div className="px-2 h-screen ">
@@ -94,13 +154,13 @@ export default function HomePage({
         </div>
       </div>
       <HilightedBusiness
-        images={HomeData.sections[4]?.data}
-        Gencat={HomeData.sections[0]?.data}
+        images={adsData} 
+        Gencat={gencatData} 
         city={City}
       />
-      <RandomCategories SubCat={HomeData.sections[1]?.data} city={City} />
-      <TopCities Cities={HomeData.sections[3]?.data} />
-      <BestDealers Products={HomeData.sections[2]?.data} city={City} />
+      <RandomCategories SubCat={subcatData} city={City} />
+      <TopCities Cities={cityData} />
+      <BestDealers Products={productData} city={City} />
       <Footer />
       <BusinessListing />
     </div>

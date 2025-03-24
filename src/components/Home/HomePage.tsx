@@ -56,14 +56,18 @@ export default function HomePage({
 }) {
   const apiKey = process.env.NEXT_PUBLIC_Geocoding_api;
 
-  const [cityName, setCityName] = useState<string>("chennai");
+  const [cityName, setCityName] = useState<string>("kollam");
 
   async function getDeviceLocation() {
     try {
+      console.log("here");
+
       const position = await new Promise<Position>((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject);
       });
       const { latitude, longitude } = position.coords;
+      console.log(latitude, longitude);
+
       const searchUrl2 = `https://api.opencagedata.com/geocode/v1/json?q=${latitude},${longitude}&key=${apiKey}`;
       const response = await fetch(searchUrl2);
       const data2 = await response.json();
@@ -85,7 +89,6 @@ export default function HomePage({
   useEffect(() => {
     getDeviceLocation();
   }, []);
-
 
   const City: string = city ? city : cityName;
 
@@ -153,11 +156,7 @@ export default function HomePage({
           />
         </div>
       </div>
-      <HilightedBusiness
-        images={adsData} 
-        Gencat={gencatData} 
-        city={City}
-      />
+      <HilightedBusiness images={adsData} Gencat={gencatData} city={City} />
       <RandomCategories SubCat={subcatData} city={City} />
       <TopCities Cities={cityData} />
       <BestDealers Products={productData} city={City} />

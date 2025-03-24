@@ -110,7 +110,7 @@ export default function Footer() {
             <ul className="space-y-2 text-gray-600 text-sm">
               <li>
                 <Link
-                  href="/terms"
+                  href="/terms-and-condition"
                   className="hover:text-blue-600 cursor-pointer hover:underline"
                 >
                   Terms & Conditions
@@ -118,7 +118,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/privacy"
+                  href="/privacy-policy"
                   className="hover:text-blue-600 cursor-pointer hover:underline"
                 >
                   Privacy Policy
@@ -126,7 +126,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/refund"
+                  href="/refund-policy"
                   className="hover:text-blue-600 cursor-pointer hover:underline"
                 >
                   Refund Policy
@@ -218,7 +218,7 @@ export default function Footer() {
             <FaSquareXTwitter />
           </a>
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/brandsinfo_in/"
             target="_blank"
             className="text-2xl hover:text-gray-400"
             rel="noopener noreferrer"
@@ -234,7 +234,7 @@ export default function Footer() {
             <FaFacebook />
           </a>
           <a
-            href="https://linkedin.com"
+            href="https://linkedin.com/company/brandsinfo/"
             target="_blank"
             className="text-2xl hover:text-gray-400"
             rel="noopener noreferrer"

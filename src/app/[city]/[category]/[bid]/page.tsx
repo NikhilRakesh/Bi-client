@@ -20,6 +20,48 @@ import {
 import { FaSquareXTwitter } from "react-icons/fa6";
 import ReviewList from "@/components/BusinessProfilePage/ReviewList";
 import OfferBiProfile from "@/components/BusinessProfilePage/OfferBiProfile";
+import { Metadata } from "next";
+import LocationButton from "@/components/BusinessProfilePage/LocationButton";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ category: string; city: string; bid: string }>;
+}): Promise<Metadata> {
+  const { category, city, bid } = await params;
+
+  const BusinessProfileData = await api
+    .get(`users/buisnesses_na/?maping_id=${bid}`)
+    .then((res) => res.data);
+
+  const metadata = BusinessProfileData?.buisness?.site_data || {};
+
+  return {
+    title: metadata.meta_title || `Popular ${category} in ${city}`,
+    description:
+      metadata.meta_description ||
+      `Find popular ${category} in ${city}. Explore top businesses and offers.`,
+    keywords: metadata.meta_keywords,
+    openGraph: {
+      title:
+        metadata.meta_og_title ||
+        metadata.meta_title ||
+        `Popular ${category} in ${city}`,
+      description:
+        metadata.meta_og_description ||
+        metadata.meta_description ||
+        `Find popular ${category} in ${city}. Explore top businesses and offers.`,
+      url: metadata.meta_og_url || "",
+      images: metadata.meta_og_image
+        ? [{ url: metadata.meta_og_image }]
+        : undefined,
+      siteName: metadata.meta_og_site_name || "",
+    },
+    alternates: {
+      canonical: metadata.link,
+    },
+  };
+}
 
 export default async function BusinessProfilePage({
   params,
@@ -39,6 +81,13 @@ export default async function BusinessProfilePage({
       <CategoryHeader city={city} category={category} />
 
       <div className="md:px-20 px-3 py-5 w-full">
+        {BusinessProfileData?.buisness.image_gallery.length !== 0 && (
+          <div className="bg-white hidden md:block p-3 mb-3 shadow-xl rounded-md">
+            <BusinessProfileImageGallery
+              imageGallery={BusinessProfileData?.buisness.image_gallery || []}
+            />
+          </div>
+        )}
         <div className="md:flex gap-10 mb-28">
           <div className="w-full md:w-6/12 flex flex-col gap-y-7">
             <div className="w-full bg-white rounded-xl px-5 space-y-3 py-5 shadow-lg  overflow-hidden">
@@ -109,17 +158,33 @@ export default async function BusinessProfilePage({
                 />
               )}
 
-              <div className="mt-6 flex justify-between items-center gap-2 ">
-                <button className="flex items-center bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition duration-300">
-                  <FaPhoneAlt className="mr-2" size={20} />
-                  <span className="text-sm">Call Enquiry</span>
+              <div className="mt-6 flex justify-between  items-center gap-2 ">
+                <button className="flex w-4/12 items-center bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition duration-300">
+                  <FaPhoneAlt className="mr-2" size={15} />
+                  <span className="text-xs">Call Enquiry</span>
                 </button>
 
-                <button className="flex items-center bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-300">
-                  <FaWhatsapp className="mr-2" size={20} />
-                  <span className="text-sm">WhatsApp</span>
+                <button className="flex w-4/12 items-center bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-300">
+                  <FaWhatsapp className="mr-2" size={15} />
+                  <span className="text-xs">WhatsApp</span>
                 </button>
+                {BusinessProfileData?.buisness?.latittude &&
+                  BusinessProfileData?.buisness?.longitude && (
+                    <LocationButton
+                      latitude={BusinessProfileData?.buisness?.latittude}
+                      longitude={BusinessProfileData?.buisness?.longitude}
+                    />
+                  )}
               </div>
+            </div>
+            <div className="bg-white md:hidden block p-3 mb-3 shadow-xl rounded-md">
+              {BusinessProfileData?.buisness.image_gallery.length !== 0 && (
+                <BusinessProfileImageGallery
+                  imageGallery={
+                    BusinessProfileData?.buisness.image_gallery || []
+                  }
+                />
+              )}
             </div>
 
             <div className=" w-full md:block hidden ">
@@ -129,14 +194,6 @@ export default async function BusinessProfilePage({
 
           <div className="w-full md:6/12 overflow-hidden mt-5 md:mt-0">
             <div className="w-full space-y-6 border px-5 py-2 bg-white rounded-xl shadow-lg ">
-              {BusinessProfileData?.buisness.image_gallery.length !== 0 && (
-                <BusinessProfileImageGallery
-                  imageGallery={
-                    BusinessProfileData?.buisness.image_gallery || []
-                  }
-                />
-              )}
-
               {BusinessProfileData?.offers.length !== 0 && (
                 <OfferBiProfile Offers={BusinessProfileData?.offers} />
               )}
@@ -246,7 +303,7 @@ export default async function BusinessProfilePage({
                 )}
               </div>
             )}
-             <div className=" w-full md:hidden block mt-5 ">
+            <div className=" w-full md:hidden block mt-5 ">
               <ReviewList bid={BusinessProfileData?.buisness?.id} />
             </div>
           </div>

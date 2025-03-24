@@ -15,7 +15,7 @@ interface Offer {
   valid_upto: string;
 }
 
-interface BusinessCard {
+interface results {
   id: number;
   image: string;
   name: string;
@@ -32,11 +32,42 @@ interface BusinessCard {
   assured: boolean;
   verified: boolean;
 }
+interface Metadata {
+  buisness: string | null;
+  cc_combination: boolean;
+  change_freq: string | null;
+  city: number;
+  dcat: number;
+  id: number;
+  last_mod: string;
+  link: string;
+  meta_author: string | null;
+  meta_description: string;
+  meta_keywords: string;
+  meta_og_description: string | null;
+  meta_og_image: string | null;
+  meta_og_site_name: string | null;
+  meta_og_title: string | null;
+  meta_og_url: string | null;
+  meta_title: string;
+  page_title: string | null;
+  priority: number;
+  share_link: string;
+  single_buisness: boolean;
+}
+
+interface BusinessCard {
+  metadata: Metadata;
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: results[];
+}
 
 interface FilterOptionsProps {
   category: string;
   city: string;
-  filteredData: (data: BusinessCard[]) => void;
+  filteredData: (data: BusinessCard) => void;
 }
 
 export default function FilterOptions({
@@ -65,7 +96,7 @@ export default function FilterOptions({
         params: filters,
       });
 
-      filteredData(response.data.results);
+      filteredData(response.data);
     } catch (error) {
       console.error("Error fetching filtered data:", error);
     }

@@ -1,3 +1,4 @@
+'use client'
 import HeaderSearchBar from "./HeaderSearchBar";
 import styles from "./Header.module.css";
 import { MdLocationOn } from "react-icons/md";
@@ -11,6 +12,9 @@ interface data {
 }
 
 export default function CategoryHeader({ city, category }: data) {
+  function changeCity(data: string) {
+    console.log(data);
+  }
   return (
     <div className="fixed top-0 left-0 right-0 px-2  bg-white z-10 md:pb-0 pb-8 md:border-b-2">
       <div className="flex  items-center sm:relative md:static justify-between py-4 font-ubuntu  w-full  ">
@@ -41,7 +45,7 @@ export default function CategoryHeader({ city, category }: data) {
               </div>
             </Link>
           </div>
-          <HeaderSearchBar category={category} city={city} />
+          <HeaderSearchBar category={category} city={city} changeCity={changeCity} />
         </div>
         <div className="sm:absolute  md:static sm:right-0.5 flex md:right-0 w-full  top-[55px] py-1 px-1 h-9 md:top-0  border border-[#f28b21] rounded-md md:hidden  shadow-md text-sm md:w-6/12">
           <SmSearchBar category={category} city={city} />

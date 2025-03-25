@@ -1,9 +1,21 @@
 import { parse, serialize } from "cookie";
 
+export const setcityCookie = (city) => {
+  const cookieOptions = {
+    httpOnly: false,
+    secure: process.env.NEXT_PUBLIC_NODE_ENV === "production",
+    sameSite: "Lax",
+    expires: new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000), 
+    path: "/",
+  };
+
+  document.cookie = serialize("city_cookie", city, cookieOptions);
+};
+
 export const setAccessTokenCookie = (token) => {
   const cookieOptions = {
     httpOnly: false,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NEXT_PUBLIC_NODE_ENV === "production",
     sameSite: "Lax",
     maxAge: 60 * 60,
     path: "/",

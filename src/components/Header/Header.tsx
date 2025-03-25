@@ -3,7 +3,13 @@ import styles from "./Header.module.css";
 import LoginProfileButon from "../Common/LoginProfileButon";
 import Link from "next/link";
 
-export default function Header({ city }: { city: string }) {
+export default function Header({
+  city,
+  changeCity,
+}: {
+  city: string;
+  changeCity: (data: string) => void;
+}) {
   return (
     <div className="fixed top-0 left-0 right-0 px-2 border bg-white z-20 md:pb-0 pb-14  ">
       <div className="flex  items-center sm:relative md:static justify-between py-4 font-ubuntu  w-full  ">
@@ -34,7 +40,7 @@ export default function Header({ city }: { city: string }) {
               </div>
             </Link>
           </div>
-          <HeaderSearchBar category="" city={city} />
+          <HeaderSearchBar category="" city={city} changeCity={changeCity} />
         </div>
         <div className="flex gap-1">
           <LoginProfileButon />

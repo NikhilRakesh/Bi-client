@@ -74,8 +74,6 @@ export default async function BusinessProfilePage({
     .get(`users/buisnesses_na/?maping_id=${bid}`)
     .then((res) => res.data);
 
-  console.log(BusinessProfileData);
-
   return (
     <div className="bg-gradient-to-r from-indigo-50 to-sky-50 h-full  md:mt-[87px] mt-[100px] font-ubuntu relative">
       <CategoryHeader city={city} category={category} />
@@ -84,7 +82,7 @@ export default async function BusinessProfilePage({
         {BusinessProfileData?.buisness.image_gallery.length !== 0 && (
           <div className="bg-white hidden md:block p-3 mb-3 shadow-xl rounded-md">
             <BusinessProfileImageGallery
-              imageGallery={BusinessProfileData?.buisness.image_gallery || []}
+              imageGallery={BusinessProfileData?.buisness.image_gallery || []} category={category}
             />
           </div>
         )}
@@ -181,8 +179,8 @@ export default async function BusinessProfilePage({
               {BusinessProfileData?.buisness.image_gallery.length !== 0 && (
                 <BusinessProfileImageGallery
                   imageGallery={
-                    BusinessProfileData?.buisness.image_gallery || []
-                  }
+                    BusinessProfileData?.buisness.image_gallery || [] 
+                  } category={category}
                 />
               )}
             </div>

@@ -6,6 +6,7 @@ import HilightedBusiness from "@/components/HilightedBusiness/HilightedBusiness"
 import BestDealers from "@/components/Products/BestDealers";
 import RandomCategories from "@/components/RandomCategories/RandomCategories";
 import TopCities from "@/components/TopCities/TopCities";
+import { parseCookies, setcityCookie } from "@/lib/cookies";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -55,10 +56,15 @@ export default function HomePage({
   city: string;
 }) {
   const apiKey = process.env.NEXT_PUBLIC_Geocoding_api;
-
-  const [cityName, setCityName] = useState<string>("kollam");
+  const cookies = parseCookies();
+  const city_cookie = cookies?.city_cookie;
+  const [cityName, setCityName] = useState<string>(
+    city_cookie ? city_cookie : city || "chennai"
+  );
+  const [browser, setBrowser] = useState(false);
 
   async function getDeviceLocation() {
+    if (city_cookie) return;
     try {
       console.log("here");
 
@@ -66,7 +72,6 @@ export default function HomePage({
         navigator.geolocation.getCurrentPosition(resolve, reject);
       });
       const { latitude, longitude } = position.coords;
-      console.log(latitude, longitude);
 
       const searchUrl2 = `https://api.opencagedata.com/geocode/v1/json?q=${latitude},${longitude}&key=${apiKey}`;
       const response = await fetch(searchUrl2);
@@ -77,6 +82,7 @@ export default function HomePage({
         data2.results[0]?.components.state_district;
       if (district) {
         setCityName(district);
+        setcityCookie(district);
       } else {
         setCityName("chennai");
       }
@@ -86,11 +92,14 @@ export default function HomePage({
     }
   }
 
+  function changeCity(data: string) {
+    setCityName(data);
+  }
+
   useEffect(() => {
     getDeviceLocation();
-  }, []);
-
-  const City: string = city ? city : cityName;
+    setBrowser(true);
+  }, [city_cookie,cityName]);
 
   const adsData = HomeData.sections[4]?.data.map((item) => ({
     banner: item.banner,
@@ -120,9 +129,13 @@ export default function HomePage({
     tittle: item.title,
   }));
 
+  
+
+  if (!browser) return null;
+
   return (
     <div className="px-2 h-screen ">
-      <Header city={City} />
+      <Header city={cityName} changeCity={changeCity} />
       <div className="relative mt-[120px]">
         <div className="text-gray-600 font-ubuntuMedium md:text-3xl absolute w-full text-center md:top-[25px] top-[15px] ">
           <h1>
@@ -156,10 +169,10 @@ export default function HomePage({
           />
         </div>
       </div>
-      <HilightedBusiness images={adsData} Gencat={gencatData} city={City} />
-      <RandomCategories SubCat={subcatData} city={City} />
+      <HilightedBusiness images={adsData} Gencat={gencatData} city={cityName} />
+      <RandomCategories SubCat={subcatData} city={cityName} />
       <TopCities Cities={cityData} />
-      <BestDealers Products={productData} city={City} />
+      <BestDealers Products={productData} city={cityName} />
       <Footer />
       <BusinessListing />
     </div>

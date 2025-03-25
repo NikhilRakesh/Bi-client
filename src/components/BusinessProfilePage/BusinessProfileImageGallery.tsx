@@ -3,14 +3,44 @@
 import { useState, useEffect, useRef } from "react";
 import { baseurl } from "@/lib/api";
 
+interface PexelImage {
+  id: number;
+  width: number;
+  height: number;
+  url: string;
+  photographer: string;
+  photographer_id: number;
+  photographer_url: string;
+  src: {
+    original: string;
+    large: string;
+    medium: string;
+    small: string;
+    portrait: string;
+    landscape: string;
+  };
+  alt: string;
+}
+
+interface GalleryImage {
+  image: string;
+  buisness: number;
+}
+
+type MergedImage = GalleryImage | PexelImage;
+
 export default function BusinessProfileImageGallery({
   imageGallery,
+  category,
 }: {
-  imageGallery: { image: string; buisness: number }[];
+  imageGallery: GalleryImage[];
+  category: string;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pexelPics, setPexelPics] = useState<PexelImage[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const apiKey = process.env.NEXT_PUBLIC_Pexels_api;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -28,8 +58,32 @@ export default function BusinessProfileImageGallery({
       }
     }, 6000);
 
+    fetchPexelPhotos(category);
+
     return () => clearInterval(interval);
-  }, []);
+  }, [category]);
+
+  async function fetchPexelPhotos(query: string) {
+    if (!apiKey) {
+      throw new Error("API Key is missing");
+    }
+
+    const response = await fetch(
+      `https://api.pexels.com/v1/search?query=${query}&per_page=10`,
+      {
+        headers: {
+          Authorization: `${apiKey}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch data from Pexels");
+    }
+
+    const data = await response.json();
+    setPexelPics(data.photos);
+  }
 
   const openModal = (index: number) => {
     setCurrentImageIndex(index);
@@ -42,15 +96,17 @@ export default function BusinessProfileImageGallery({
 
   const nextImage = () => {
     setCurrentImageIndex((prevIndex) =>
-      prevIndex === imageGallery.length - 1 ? 0 : prevIndex + 1
+      prevIndex === mergedImages.length - 1 ? 0 : prevIndex + 1
     );
   };
 
   const prevImage = () => {
     setCurrentImageIndex((prevIndex) =>
-      prevIndex === 0 ? imageGallery.length - 1 : prevIndex - 1
+      prevIndex === 0 ? mergedImages.length - 1 : prevIndex - 1
     );
   };
+
+  const mergedImages: MergedImage[] = [...imageGallery, ...pexelPics];
 
   return (
     <div className="relative">
@@ -59,32 +115,27 @@ export default function BusinessProfileImageGallery({
           ref={scrollRef}
           className="flex gap-4 overflow-x-auto scroll-smooth scrollbar-hidden"
         >
-          {imageGallery.map((image, index) => (
+          {mergedImages.map((image, index) => (
             <div
               key={index}
-              className="relative md:w-96 md:h-72 w-48 h-56 flex-shrink-0"
+              className="relative md:w-64 md:h-48 w-48 h-56 flex-shrink-0"
               onClick={() => openModal(index)}
             >
               <img
-                src={baseurl + image.image}
-                alt={`Image ${image.buisness}`}
+                src={
+                  "image" in image ? baseurl + image.image : image.src.medium
+                }
+                alt={
+                  "buisness" in image
+                    ? `Image ${image.buisness}`
+                    : image.photographer
+                }
                 className="w-full h-full object-cover cursor-pointer rounded-lg shadow-lg transition-transform transform hover:scale-105"
               />
             </div>
           ))}
         </div>
       </div>
-
-      {/* <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
-        {imageGallery.map((_, index) => (
-          <div
-            key={index}
-            className={`w-2 h-2 rounded-full cursor-pointer ${
-              index === currentImageIndex ? "bg-white" : "bg-gray-400"
-            }`}
-          />
-        ))}
-      </div> */}
 
       {isModalOpen && (
         <div className="fixed sm:-inset-2 inset-0 z-50 flex justify-center items-center bg-black bg-opacity-75 px-4 md:px-0">
@@ -103,8 +154,16 @@ export default function BusinessProfileImageGallery({
                 &#10094;
               </button>
               <img
-                src={baseurl + imageGallery[currentImageIndex].image}
-                alt={`Image ${imageGallery[currentImageIndex].buisness}`}
+                src={
+                  "image" in mergedImages[currentImageIndex]
+                    ? baseurl + mergedImages[currentImageIndex].image
+                    : mergedImages[currentImageIndex].src.original
+                }
+                alt={`Image ${
+                  "buisness" in mergedImages[currentImageIndex]
+                    ? mergedImages[currentImageIndex].buisness
+                    : mergedImages[currentImageIndex].photographer
+                }`}
                 className="w-full md:w-96 object-contain"
               />
               <button

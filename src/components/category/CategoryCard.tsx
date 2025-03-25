@@ -150,7 +150,7 @@ const CategoryCard: React.FC<CardProps> = ({
         category={category}
       />
       <div className="flex flex-wrap justify-center gap-8 py-5 px-2">
-        {BusinessList?.results.length !== 0 ? (
+        {BusinessList?.results?.length !== 0 && Array.isArray(BusinessList.results) ? (
           BusinessList?.results?.map((card, index) => (
             <div
               onClick={() => {
@@ -270,7 +270,9 @@ const CategoryCard: React.FC<CardProps> = ({
           ))
         ) : (
           <div className="text-gray-700 h-full w-full flex justify-center items-center mt-32">
-            <p className="font-ubuntuMedium md:text-3xl text-xl ">No Result For {category}</p>
+            <p className="font-ubuntuMedium md:text-3xl text-xl ">
+              No Result For {category} in {city}
+            </p>
           </div>
         )}
 

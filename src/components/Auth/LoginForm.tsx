@@ -6,7 +6,8 @@ import api from "@/lib/api";
 import { AxiosError } from "axios";
 import { setAccessTokenCookie, setRefreshTokenCookie } from "@/lib/cookies";
 import Link from "next/link";
-
+import { auth } from "@/lib/firebase";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 export default function LoginForm() {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -27,6 +28,16 @@ export default function LoginForm() {
         phone: phone,
       });
       alert(response.data.otp);
+      if (window.recaptchaVerifier) {
+        const formattednumber = `+91${phone}`;
+        console.log(formattednumber, window.recaptchaVerifier, auth);
+        const confirmation = await signInWithPhoneNumber(
+          auth,
+          formattednumber,
+          window.recaptchaVerifier
+        );
+        console.log("confirmation", confirmation);
+      }
       if (!response?.data.exists) {
         setIsOtpSent(true);
         setIsOtpVerified(true);
@@ -35,7 +46,7 @@ export default function LoginForm() {
       }
     } catch (error) {
       console.error("Error sending OTP:", error);
-      throw error;
+      throw new Error("I failed you");
     }
   };
 
@@ -137,17 +148,38 @@ export default function LoginForm() {
   };
 
   useEffect(() => {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        auth,
+        "recaptcha-container",
+        {
+          size: "invisible",
+          callback: (res: string) => {
+            console.log("reCAPTCHA solved:", res);
+          },
+          "expired-callback": () => {
+            console.log("reCAPTCHA expired");
+          },
+        }
+      );
+    }
+    if (window.recaptchaVerifier) {
+      window.recaptchaVerifier.render().then((widgetId: string) => {
+        console.log("reCAPTCHA rendered with widgetId:", widgetId);
+      });
+    }
     if (InputRef.current) {
       InputRef.current.focus();
     }
     if (OtpInputRefs.current[0]) {
       OtpInputRefs.current[0]?.focus();
     }
-  }, [isOtpSent, isOtpVerified]);
+  }, [isOtpSent, isOtpVerified, auth]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="w-full max-w-lg md:bg-white md:rounded-lg md:shadow-xl p-8 space-y-6">
+        <div id="recaptcha-container"></div>
         <div className="flex justify-center mb-6">
           <img
             src="/Brandsinfo-logo.png"

@@ -90,7 +90,6 @@ const CategoryCard: React.FC<CardProps> = ({
   function filteredData(data: BusinessCard) {
     setBusinessList(data);
   }
-  console.log("BusinessLists", BusinessList);
 
   if (!browser)
     return (

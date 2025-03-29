@@ -74,18 +74,20 @@ export default async function BusinessProfilePage({
     .get(`users/buisnesses_na/?maping_id=${bid}`)
     .then((res) => res.data);
 
+  console.log(BusinessProfileData);
+
   return (
     <div className="bg-gradient-to-r from-indigo-50 to-sky-50 h-full  md:mt-[87px] mt-[100px] font-ubuntu relative">
       <CategoryHeader city={city} category={category} />
 
       <div className="md:px-20 px-3 py-5 w-full">
-        {BusinessProfileData?.buisness.image_gallery.length !== 0 && (
-          <div className="bg-white hidden md:block p-3 mb-3 shadow-xl rounded-md">
-            <BusinessProfileImageGallery
-              imageGallery={BusinessProfileData?.buisness.image_gallery || []} category={category}
-            />
-          </div>
-        )}
+        <div className="bg-white hidden md:block p-3 mb-3 shadow-xl rounded-md">
+          <BusinessProfileImageGallery
+            imageGallery={BusinessProfileData?.buisness.image_gallery || []}
+            category={category}
+          />
+        </div>
+
         <div className="md:flex gap-10 mb-28">
           <div className="w-full md:w-6/12 flex flex-col gap-y-7">
             <div className="w-full bg-white rounded-xl px-5 space-y-3 py-5 shadow-lg  overflow-hidden">
@@ -157,9 +159,9 @@ export default async function BusinessProfilePage({
               )}
 
               <div className="mt-6 flex justify-between  items-center gap-2 ">
-                <button className="flex w-4/12 items-center bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition duration-300">
+                <button className="flex w-4/12 items-center justify-center bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition duration-300">
                   <FaPhoneAlt className="mr-2" size={15} />
-                  <span className="text-xs">Call Enquiry</span>
+                  <span className="text-xs">Call</span>
                 </button>
 
                 <button className="flex w-4/12 items-center bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-300">
@@ -176,13 +178,10 @@ export default async function BusinessProfilePage({
               </div>
             </div>
             <div className="bg-white md:hidden block p-3 mb-3 shadow-xl rounded-md">
-              {BusinessProfileData?.buisness.image_gallery.length !== 0 && (
-                <BusinessProfileImageGallery
-                  imageGallery={
-                    BusinessProfileData?.buisness.image_gallery || [] 
-                  } category={category}
-                />
-              )}
+              <BusinessProfileImageGallery
+                imageGallery={BusinessProfileData?.buisness.image_gallery || []}
+                category={category}
+              />
             </div>
 
             <div className=" w-full md:block hidden ">

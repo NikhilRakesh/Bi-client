@@ -27,7 +27,6 @@ export default function HeaderSearchBar({ category, city, changeCity }: Data) {
   const [debouncedCityValue, setDebouncedCityValue] = useState(city);
   const router = useRouter();
   const apiKey = process.env.NEXT_PUBLIC_MapBox_api;
- 
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -53,7 +52,7 @@ export default function HeaderSearchBar({ category, city, changeCity }: Data) {
 
   async function selectLocation(data: string) {
     setCityValue(data);
-    changeCity(data)
+    changeCity(data);
     setcityCookie(data);
     setLocations([]);
     setOpenDropDown(false);
@@ -122,7 +121,7 @@ export default function HeaderSearchBar({ category, city, changeCity }: Data) {
           )}
         </div>
 
-        <div className="flex w-6/12 gap-1 relative items-center cursor-pointer hover:bg-gray-100 py-1 px-2 border border-orange-400">
+        <div className="flex w-6/12 gap-1 relative items-center cursor-pointer rounded-md hover:bg-gray-100 py-1 px-2 border border-orange-400">
           <MdLocationOn className="text-black" />
           <input
             type="text"

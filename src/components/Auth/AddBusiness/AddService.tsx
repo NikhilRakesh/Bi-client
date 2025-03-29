@@ -88,12 +88,19 @@ export default function AddService() {
   };
 
   const handleServiceAdd = async () => {
-    if (!serviceData.name || !serviceData.price || !serviceData.description) {
-      setServiceErrorMessage("Please fill in all required fields.");
-      return;
-    } else if (!selectedTitle) {
+    if (!selectedTitle) {
       settitleErrorMessage("Please add a title ");
       return;
+    } else if (
+      !serviceData.name ||
+      !serviceData.price ||
+      !serviceData.description
+    ) {
+      setServiceErrorMessage("Please fill in all required fields.");
+      return;
+    } else if (serviceData.images.length === 0) {
+      setServiceErrorMessage("Please add a image");
+      return
     }
 
     const updatedServices = [...addedServices];
@@ -141,7 +148,7 @@ export default function AddService() {
         setAddedServices(updatedServices);
         setServiceData({ name: "", price: "", description: "", images: [] });
         setServiceErrorMessage(null);
-        settitleErrorMessage('')
+        settitleErrorMessage("");
         setLoading(false);
       }
     } catch (error) {

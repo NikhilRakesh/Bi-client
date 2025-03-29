@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { FaClock } from "react-icons/fa";
 
 interface OpenStatusProps {
-  opensAt: string; 
-  closesAt: string; 
+  opensAt: string;
+  closesAt: string;
 }
 
 const OpenStatus = ({ opensAt, closesAt }: OpenStatusProps) => {
@@ -34,7 +34,7 @@ const OpenStatus = ({ opensAt, closesAt }: OpenStatusProps) => {
     const openTimeInMinutes = convertToMinutes(opensAt);
     const closeTimeInMinutes = convertToMinutes(closesAt);
     const currentTimeInMinutes = currentHour * 60 + currentMinute;
-    
+
     if (
       currentTimeInMinutes >= openTimeInMinutes &&
       currentTimeInMinutes <= closeTimeInMinutes
@@ -55,10 +55,22 @@ const OpenStatus = ({ opensAt, closesAt }: OpenStatusProps) => {
     }
   }, [opensAt, closesAt]);
 
+  const convertTo12HourFormat = (time24: string) => {
+    // Remove the seconds part (e.g., "22:15:00" → "22:15")
+    const timeWithoutSeconds = time24.split(":").slice(0, 2).join(":");
+
+    const date = new Date(`1970-01-01T${timeWithoutSeconds}:00Z`);
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
   return (
     <div className="flex items-center px-2 gap-1">
       <FaClock className="text-blue-500" size={15} />
-      <p className=" text-gray-500">
+      <p className="text-gray-500">
         <span
           className={`${
             openStatus.status === "open" ? "text-green-600" : "text-gray-600"
@@ -67,8 +79,8 @@ const OpenStatus = ({ opensAt, closesAt }: OpenStatusProps) => {
           {openStatus.status === "open" ? "Open" : "Closed"}
         </span>
         {openStatus.status === "open"
-          ? `. Closes at ${closesAt}`
-          : `. Opens at ${opensAt}`}
+          ? `. Closes at ${convertTo12HourFormat(closesAt)}`
+          : `. Opens at ${convertTo12HourFormat(opensAt)}`}
       </p>
     </div>
   );

@@ -67,6 +67,7 @@ export default function BusinessProfileImageGallery({
     if (!apiKey) {
       throw new Error("API Key is missing");
     }
+    if (imageGallery.length >= 5) return;
 
     const response = await fetch(
       `https://api.pexels.com/v1/search?query=${query}&per_page=10`,

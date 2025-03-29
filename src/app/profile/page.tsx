@@ -10,7 +10,7 @@ import { baseurl, token_api } from "@/lib/api";
 import { parseCookies } from "@/lib/cookies";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { FaPlus, FaBullhorn, FaEye, FaEdit } from "react-icons/fa";
+import { FaPlus, FaBullhorn, FaEye } from "react-icons/fa";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { MdLocationPin } from "react-icons/md";
 
@@ -127,12 +127,12 @@ const Profile = () => {
               <p className="text-gray-600">{profileData?.mobile_number}</p>
             </div>
           </div>
-          <button
+          {/* <button
             onClick={() => setIsModalOpen(true)}
             className="text-gray-600 absolute right-0 bottom-0 hover:text-gray-800 p-2 rounded-full hover:border-gray-300 focus:outline-none"
           >
             <FaEdit className="inline-block text-xl" />
-          </button>
+          </button> */}
         </div>
 
         <div>

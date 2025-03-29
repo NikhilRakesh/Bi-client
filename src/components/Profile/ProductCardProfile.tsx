@@ -47,7 +47,6 @@ interface Business {
   web_link: string;
   whatsapp_number: string;
   avg_time_spend_in_profile: string;
-  sa_rate: string;
 }
 
 interface ProductCardProfileProps {

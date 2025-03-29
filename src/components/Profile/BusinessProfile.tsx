@@ -2,7 +2,7 @@
 import PageNotAvailable from "@/components/Common/PageNotAvailable";
 import { parseCookies } from "@/lib/cookies";
 import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FaMapMarkerAlt,
   FaPhoneAlt,
@@ -62,7 +62,6 @@ interface Business {
   web_link: string;
   whatsapp_number: string;
   avg_time_spend_in_profile: string;
-  sa_rate: string;
   image: string;
 }
 
@@ -93,9 +92,29 @@ interface Service {
   searched: number;
 }
 
+interface mostsearchedproducts {
+  id: number;
+  name: string;
+  price: string;
+  searched: number;
+}
+interface mostsearchedservices {
+  id: number;
+  name: string;
+  price: string;
+  searched: number;
+}
+interface visits {
+  date: string;
+  count: number;
+}
 interface analytics {
   average_time_spend: string;
   keywords: [];
+  most_serched_products: mostsearchedproducts[];
+  most_serched_services: mostsearchedservices[];
+  searched: string;
+  visits: visits[];
 }
 
 interface Position {
@@ -138,6 +157,7 @@ export default function BusinessProfile() {
   const [isOpenTimeModalOpen, setIsOpenTimeModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [galleryModal, setGalleyModal] = useState(false);
+  const scrollToDivRef = useRef<HTMLDivElement | null>(null);
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
@@ -146,7 +166,6 @@ export default function BusinessProfile() {
       const response = await token_api(access_token).get(
         `users/buisnesses/?bid=${bid}`
       );
-      console.log(response.data);
       if (response.status === 200) {
         setProfileData(response.data.user);
         setBusinessData(response.data.buisness);
@@ -253,9 +272,18 @@ export default function BusinessProfile() {
     }
   }
 
+  const handleScrollToChildDiv = () => {
+    if (scrollToDivRef.current) {
+      scrollToDivRef.current.scrollIntoView({ behavior: "smooth" });
+      toast('Complete the information to boost your score!', {
+        icon: <img src="/Brandsinfo-logo.png" alt="Custom Icon" style={{ width: '20px', height: '20px' }} />,
+      });
+      
+    }
+  };
+
   useEffect(() => {
     setIsBrowser(true);
-    console.log("here");
 
     if (refresh_token) fetchProfileData();
   }, [refresh_token, refresh]);
@@ -319,9 +347,10 @@ export default function BusinessProfile() {
       <BusinessProfileAnalytics
         businessData={businessData}
         analyticsData={analyticsData}
+        handleScrollToChildDiv={handleScrollToChildDiv}
       />
 
-      <div className="md:p-8 p-4 mt-8 font-ubuntu">
+      <div ref={scrollToDivRef} className="md:p-8 p-4 mt-8 font-ubuntu">
         <div className="mb-6">
           <h3 className="md:text-2xl text-lg font-semibold text-gray-800 mb-4">
             Keywords That The Account Was Shown For

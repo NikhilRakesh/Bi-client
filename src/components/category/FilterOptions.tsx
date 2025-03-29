@@ -101,6 +101,30 @@ export default function FilterOptions({
       console.error("Error fetching filtered data:", error);
     }
   };
+  const handleAllFilter = async () => {
+    setOpenNow(true);
+    setTopRated(true);
+    setBiTrust(true);
+    setBiVerified(true);
+    const filters = {
+      q: category,
+      location: city,
+      open_now: openNow ? "True" : "false",
+      rated_high: topRated ? "True" : "false",
+      verified: biVerified ? "True" : "false",
+      assured: biTrust ? "True" : "false",
+    };
+
+    try {
+      const response = await api.get("users/esearch/", {
+        params: filters,
+      });
+
+      filteredData(response.data);
+    } catch (error) {
+      console.error("Error fetching filtered data:", error);
+    }
+  };
 
   useEffect(() => {
     if (browser) handleFilterChange();
@@ -194,7 +218,7 @@ export default function FilterOptions({
 
         <button
           className="px-6 sm:hidden md:block  py-2 sm:py-3 text-sm text-white bg-orange-400 rounded-md hover:bg-orange-500 transition-colors w-full lg:w-auto"
-          onClick={handleFilterChange}
+          onClick={handleAllFilter}
         >
           All Filters
         </button>

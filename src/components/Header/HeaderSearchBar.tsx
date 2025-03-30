@@ -134,16 +134,21 @@ export default function HeaderSearchBar({ category, city, changeCity }: Data) {
             className="text-black font-ubuntu text-sm bg-gray-100 outline-none w-11/12 "
           />
           {openDropDown && locations.length !== 0 && (
-            <div className="text-xs text-gray-700 absolute top-10 right-0 left-0 border p-2 bg-white w-full rounded-sm">
+            <div className="text-sm text-gray-700 absolute top-10 right-0 left-0 border p-2 bg-white w-full rounded-sm">
               {locations?.map((location, index) => (
                 <div
                   key={index}
                   onClick={() => {
                     selectLocation(location.place_name.split(",")[0]);
                   }}
-                  className="py-1"
+                  className="py-2"
                 >
-                  <p>{location.place_name.replace(", India", "")}</p>
+                  <div className="flex  justify-between items-center">
+                    <p className="truncate">{location.place_name.replace(", India", "")}</p>
+                    <div>
+                      <FaArrowUp className="-rotate-45 text-gray-500" size={10} />
+                    </div>
+                  </div>
                   <hr />
                 </div>
               ))}

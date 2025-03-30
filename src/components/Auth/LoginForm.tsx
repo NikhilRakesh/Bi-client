@@ -7,7 +7,11 @@ import { AxiosError } from "axios";
 import { setAccessTokenCookie, setRefreshTokenCookie } from "@/lib/cookies";
 import Link from "next/link";
 import { auth } from "@/lib/firebase";
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import {
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  ConfirmationResult,
+} from "firebase/auth";
 export default function LoginForm() {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -15,6 +19,9 @@ export default function LoginForm() {
   const [isAgreed, setIsAgreed] = useState(true);
   const [name, setName] = useState("");
   const [error, setError] = useState("");
+  const [confirmation, setConfirmation] = useState<ConfirmationResult | null>(
+    null
+  );
   const [isOtpVerified, setIsOtpVerified] = useState(false);
   const router = useRouter();
   const InputRef = useRef<HTMLInputElement>(null);
@@ -27,7 +34,7 @@ export default function LoginForm() {
       const response = await api.post("users/signup1/", {
         phone: phone,
       });
-      alert(response.data.otp);
+      // alert(response.data.otp);
       if (window.recaptchaVerifier) {
         const formattednumber = `+91${phone}`;
         console.log(formattednumber, window.recaptchaVerifier, auth);
@@ -37,11 +44,16 @@ export default function LoginForm() {
           window.recaptchaVerifier
         );
         console.log("confirmation", confirmation);
+        setConfirmation(confirmation);
       }
       if (!response?.data.exists) {
+        console.log("not exist");
+
         setIsOtpSent(true);
+
         setIsOtpVerified(true);
       } else {
+        console.log("exist");
         setIsOtpSent(true);
       }
     } catch (error) {
@@ -54,20 +66,28 @@ export default function LoginForm() {
     e.preventDefault();
     const otpString = otp.join("");
     try {
-      const response = await api.post("users/verifyotp/", {
-        phone: phone,
-        otp: otpString,
-      });
+      if (confirmation) {
+        console.log('inside confirmation');
+        
+        const result = await confirmation.confirm(otpString);
+        const idToken = await result.user.getIdToken();
+        console.log('idToken',idToken);
+        const response = await api.post("users/verifyotp/", {
+          phone: phone,
+          otp: otpString,
+          idToken
+        });
 
-      if (response.status === 201) {
-        const access_token = response.data.sessionid;
-        const refresh_token = response.data.refresh_token;
-        if (!access_token || !refresh_token) {
-          return;
+        if (response.status === 201) {
+          const access_token = response.data.sessionid;
+          const refresh_token = response.data.refresh_token;
+          if (!access_token || !refresh_token) {
+            return;
+          }
+          setAccessTokenCookie(access_token);
+          setRefreshTokenCookie(refresh_token);
+          router.back();
         }
-        setAccessTokenCookie(access_token);
-        setRefreshTokenCookie(refresh_token);
-        router.back();
       }
     } catch (error) {
       if (error instanceof AxiosError) {

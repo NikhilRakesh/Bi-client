@@ -173,12 +173,11 @@ export default function LoginForm() {
           },
         }
       );
-    }
-    if (window.recaptchaVerifier) {
       window.recaptchaVerifier.render().then((widgetId: string) => {
         console.log("reCAPTCHA rendered with widgetId:", widgetId);
       });
     }
+
     if (InputRef.current) {
       InputRef.current.focus();
     }

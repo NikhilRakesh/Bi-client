@@ -188,9 +188,9 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({
       throw error;
     }
   };
-
+  
   useEffect(() => {
-    if (!window.recaptchaVerifier) {
+    if (!window.recaptchaVerifier && isOpen) {
       window.recaptchaVerifier = new RecaptchaVerifier(
         auth,
         "recaptcha-container",
@@ -227,8 +227,8 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({
 
   return (
     <div className="fixed inset-0 top-0 left-0 w-full text-gray-700 h-screen flex justify-center items-center font-ubuntu bg-gray-600 bg-opacity-50 z-50">
-      <div id="recaptcha-container"></div>
       <div className="bg-white p-6 rounded-lg md:w-4/12 shadow-lg  relative z-60">
+        <div id="recaptcha-container"></div>
         <button
           onClick={onClose}
           className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 focus:outline-none"

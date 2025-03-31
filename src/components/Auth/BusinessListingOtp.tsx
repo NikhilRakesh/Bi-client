@@ -29,7 +29,6 @@ const BusinessListingOtp: React.FC = () => {
     null
   );
   const router = useRouter();
-
   useEffect(() => {
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(
@@ -188,7 +187,6 @@ const BusinessListingOtp: React.FC = () => {
 
   return (
     <div className="md:p-6 p-2 md:flex mb-10">
-      <div id="recaptcha-container" ></div>
       <div className="md:w-6/12 md:flex  flex-col justify-center items-center mt-5 hidden ">
         <div className="w-full md:w-5/12 rounded-3xl flex justify-center items-center shadow-2xl rotate-6  bg-white">
           <img
@@ -306,6 +304,7 @@ const BusinessListingOtp: React.FC = () => {
         setOtp={setOtp}
         handleResendOtp={handleResendOtp}
       />
+      <div id="recaptcha-container" ></div>
       <Toaster position="top-center" reverseOrder={true} />
     </div>
   );

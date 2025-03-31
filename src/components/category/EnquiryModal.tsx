@@ -6,7 +6,13 @@ import {
   setAccessTokenCookie,
   setRefreshTokenCookie,
 } from "@/lib/cookies";
+import { auth } from "@/lib/firebase";
 import { AxiosError } from "axios";
+import {
+  ConfirmationResult,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+} from "firebase/auth";
 import React, { useState, useRef, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { IoClose } from "react-icons/io5";
@@ -31,7 +37,9 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [error, setError] = useState<string | null>(null);
   const [isOtpValid, setIsOtpValid] = useState<boolean>(false);
-
+  const [confirmation, setConfirmation] = useState<ConfirmationResult | null>(
+    null
+  );
   const OtpInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const cookies = parseCookies();
   const access_token = cookies?.access_token;
@@ -76,6 +84,15 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({
             message,
           });
         } else {
+          if (window.recaptchaVerifier) {
+            const formattednumber = `+91${phone}`;
+            const confirmation = await signInWithPhoneNumber(
+              auth,
+              formattednumber,
+              window.recaptchaVerifier
+            );
+            setConfirmation(confirmation);
+          }
           response = await api.post("users/enquiries/", {
             mobile_number: phone,
             bid: bid,
@@ -108,21 +125,25 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({
     e.preventDefault();
     const otpString = otp.join("");
     try {
-      const response = await api.post("users/verifyotp/", {
-        phone: phone,
-        otp: otpString,
-      });
-
-      if (response.status === 201) {
-        const access_token = response.data.sessionid;
-        const refresh_token = response.data.refresh_token;
-        if (!access_token || !refresh_token) {
-          return;
+      if (confirmation) {
+        const result = await confirmation.confirm(otpString);
+        const idToken = await result.user.getIdToken();
+        const response = await api.post("users/verifyotp/", {
+          phone: phone,
+          otp: otpString,
+          idToken,
+        });
+        if (response.status === 201) {
+          const access_token = response.data.sessionid;
+          const refresh_token = response.data.refresh_token;
+          if (!access_token || !refresh_token) {
+            return;
+          }
+          setAccessTokenCookie(access_token);
+          setRefreshTokenCookie(refresh_token);
+          window.location.reload();
+          onClose();
         }
-        setAccessTokenCookie(access_token);
-        setRefreshTokenCookie(refresh_token);
-        window.location.reload();
-        onClose();
       }
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -169,6 +190,29 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({
   };
 
   useEffect(() => {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        auth,
+        "recaptcha-container",
+        {
+          size: "invisible",
+          callback: (res: string) => {
+            console.log("reCAPTCHA solved:", res);
+          },
+          "expired-callback": () => {
+            console.log("reCAPTCHA expired");
+          },
+        }
+      );
+    }
+    if (window.recaptchaVerifier) {
+      window.recaptchaVerifier.render().then((widgetId: string) => {
+        console.log("reCAPTCHA rendered with widgetId:", widgetId);
+      });
+    }
+  }, [auth]);
+
+  useEffect(() => {
     if (isOtpModalOpen) {
       OtpInputRefs.current[0]?.focus();
     }
@@ -183,6 +227,7 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({
 
   return (
     <div className="fixed inset-0 top-0 left-0 w-full text-gray-700 h-screen flex justify-center items-center font-ubuntu bg-gray-600 bg-opacity-50 z-50">
+      <div id="recaptcha-container"></div>
       <div className="bg-white p-6 rounded-lg md:w-4/12 shadow-lg  relative z-60">
         <button
           onClick={onClose}

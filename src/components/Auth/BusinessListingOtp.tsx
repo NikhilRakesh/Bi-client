@@ -69,11 +69,9 @@ const BusinessListingOtp: React.FC = () => {
     const otpString = otp.join("");
     try {
       if (confirmation) {
-        console.log("inside confirmation");
 
         const result = await confirmation.confirm(otpString);
         const idToken = await result.user.getIdToken();
-        console.log("idToken", idToken);
         const response = await api.post("users/verifyotp/", {
           phone: phone,
           otp: otpString,
@@ -166,13 +164,11 @@ const BusinessListingOtp: React.FC = () => {
         });
         if (window.recaptchaVerifier) {
           const formattednumber = `+91${phone}`;
-          console.log(formattednumber, window.recaptchaVerifier, auth);
           const confirmation = await signInWithPhoneNumber(
             auth,
             formattednumber,
             window.recaptchaVerifier
           );
-          console.log("confirmation", confirmation);
           setConfirmation(confirmation);
         }
         setYourOtp(response.data.otp);

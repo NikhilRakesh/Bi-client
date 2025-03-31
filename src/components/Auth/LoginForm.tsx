@@ -37,23 +37,17 @@ export default function LoginForm() {
       // alert(response.data.otp);
       if (window.recaptchaVerifier) {
         const formattednumber = `+91${phone}`;
-        console.log(formattednumber, window.recaptchaVerifier, auth);
         const confirmation = await signInWithPhoneNumber(
           auth,
           formattednumber,
           window.recaptchaVerifier
         );
-        console.log("confirmation", confirmation);
         setConfirmation(confirmation);
       }
       if (!response?.data.exists) {
-        console.log("not exist");
-
         setIsOtpSent(true);
-
         setIsOtpVerified(true);
       } else {
-        console.log("exist");
         setIsOtpSent(true);
       }
     } catch (error) {
@@ -67,15 +61,12 @@ export default function LoginForm() {
     const otpString = otp.join("");
     try {
       if (confirmation) {
-        console.log('inside confirmation');
-        
         const result = await confirmation.confirm(otpString);
         const idToken = await result.user.getIdToken();
-        console.log('idToken',idToken);
         const response = await api.post("users/verifyotp/", {
           phone: phone,
           otp: otpString,
-          idToken
+          idToken,
         });
 
         if (response.status === 201) {

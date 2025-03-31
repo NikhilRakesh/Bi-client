@@ -9,6 +9,12 @@ import { AxiosError } from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { setAccessTokenCookie, setRefreshTokenCookie } from "../../lib/cookies";
 import Link from "next/link";
+import {
+  ConfirmationResult,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+} from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 const BusinessListingOtp: React.FC = () => {
   const phoneInputRef = useRef<HTMLInputElement | null>(null);
@@ -19,13 +25,36 @@ const BusinessListingOtp: React.FC = () => {
   const [yourOtp, setYourOtp] = useState<string>("");
   const [nameInputVisible, setNameInputVisible] = useState(false);
   const [error, setError] = useState<string>("");
+  const [confirmation, setConfirmation] = useState<ConfirmationResult | null>(
+    null
+  );
   const router = useRouter();
 
   useEffect(() => {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        auth,
+        "recaptcha-container",
+        {
+          size: "invisible",
+          callback: (res: string) => {
+            console.log("reCAPTCHA solved:", res);
+          },
+          "expired-callback": () => {
+            console.log("reCAPTCHA expired");
+          },
+        }
+      );
+    }
+    if (window.recaptchaVerifier) {
+      window.recaptchaVerifier.render().then((widgetId: string) => {
+        console.log("reCAPTCHA rendered with widgetId:", widgetId);
+      });
+    }
     if (phoneInputRef.current) {
       phoneInputRef.current.focus();
     }
-  }, []);
+  }, [auth]);
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -39,20 +68,28 @@ const BusinessListingOtp: React.FC = () => {
     e.preventDefault();
     const otpString = otp.join("");
     try {
-      const response = await api.post("users/verifyotp/", {
-        phone: phone,
-        otp: otpString,
-      });
+      if (confirmation) {
+        console.log("inside confirmation");
 
-      if (response.status === 201) {
-        const access_token = response.data.sessionid;
-        const refresh_token = response.data.refresh_token;
-        if (!access_token || !refresh_token) {
-          return;
+        const result = await confirmation.confirm(otpString);
+        const idToken = await result.user.getIdToken();
+        console.log("idToken", idToken);
+        const response = await api.post("users/verifyotp/", {
+          phone: phone,
+          otp: otpString,
+          idToken,
+        });
+
+        if (response.status === 201) {
+          const access_token = response.data.sessionid;
+          const refresh_token = response.data.refresh_token;
+          if (!access_token || !refresh_token) {
+            return;
+          }
+          setAccessTokenCookie(access_token);
+          setRefreshTokenCookie(refresh_token);
+          router.push("/business-listing/add-business?step=1");
         }
-        setAccessTokenCookie(access_token);
-        setRefreshTokenCookie(refresh_token);
-        router.push("/business-listing/add-business?step=1");
       }
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -127,13 +164,21 @@ const BusinessListingOtp: React.FC = () => {
         const response = await api.post("users/signup1/", {
           phone: phone,
         });
-
-        console.log(response.data);
+        if (window.recaptchaVerifier) {
+          const formattednumber = `+91${phone}`;
+          console.log(formattednumber, window.recaptchaVerifier, auth);
+          const confirmation = await signInWithPhoneNumber(
+            auth,
+            formattednumber,
+            window.recaptchaVerifier
+          );
+          console.log("confirmation", confirmation);
+          setConfirmation(confirmation);
+        }
         setYourOtp(response.data.otp);
         if (!response?.data.exists) {
           setNameInputVisible(true);
         } else {
-          alert(`this is your otp: ${response.data.otp}`);
           setIsModalOpen(true);
         }
       } catch (error) {

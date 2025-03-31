@@ -43,7 +43,7 @@ export default function MerchantPolicy() {
         </p>
         <ul className="list-disc pl-6 text-gray-700 mb-4">
           <li><strong>Account</strong> means a unique account created for You to access our Service or parts of our Service.</li>
-          <li><strong>Affiliate</strong> means an entity that controls, is controlled by or is under common control with a party, where "control" means ownership of 50% or more of the shares, equity interest or other securities entitled to vote for election of directors or other managing authority.</li>
+          <li><strong>Affiliate</strong> means an entity that controls, is controlled by or is under common control with a party, where &quot;control&quot; means ownership of 50% or more of the shares, equity interest or other securities entitled to vote for election of directors or other managing authority.</li>
           <li><strong>Application</strong> refers to Bi Merchant, the software program provided by the Company.</li>
           <li><strong>Company</strong> refers to Bi Merchant.</li>
           <li><strong>Country</strong> refers to: Kerala, India</li>
@@ -76,7 +76,7 @@ export default function MerchantPolicy() {
           Usage Data
         </h3>
         <p className="text-gray-700 mb-4">
-          Usage Data is collected automatically when using the Service and may include information such as Your Device's IP address, browser type, browser version, pages visited, time spent on pages, and other diagnostic data.
+          Usage Data is collected automatically when using the Service and may include information such as Your Device&apos;s IP address, browser type, browser version, pages visited, time spent on pages, and other diagnostic data.
         </p>
 
         <h2 className="text-xl font-semibold text-gray-800 mt-6">

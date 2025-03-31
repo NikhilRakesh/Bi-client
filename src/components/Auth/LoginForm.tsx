@@ -190,7 +190,7 @@ export default function LoginForm() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="w-full max-w-lg md:bg-white md:rounded-lg md:shadow-xl p-8 space-y-6">
-        <div id="recaptcha-container"></div>
+        <div id="recaptcha-container" className="hidden"></div>
         <div className="flex justify-center mb-6">
           <img
             src="/Brandsinfo-logo.png"

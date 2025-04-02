@@ -21,7 +21,7 @@ const TopCities: React.FC<TopCitiesProps> = ({ Cities }) => {
           <div
             key={index}
             className={`relative group flex-shrink-0 w-48 h-60 rounded-lg overflow-hidden cursor-pointer shadow-lg transform transition-all duration-300 ${
-              city.name === "Tirupur"
+              city.name === "Tiruppur"
                 ? "bg-[#f28b21] text-white"
                 : "bg-[#f28b21] text-gray-700"
             }`}
@@ -32,14 +32,14 @@ const TopCities: React.FC<TopCitiesProps> = ({ Cities }) => {
               alt={city.name}
               className="object-cover w-full h-full group-hover:opacity-80  group-hover:scale-110 transition-transform  duration-300"
             />
-            {city.name === "Tirupur" && (
+            {city.name === "Tiruppur" && (
               <div className="absolute top-0 text-sm font-ubuntu text-center w-full">
                 <p className="text-gray-300 py-2 italic shine-text-home">We Are Here Offically</p>
               </div>
             )}  
             <div
               className={`absolute bottom-0 w-full p-4 bg-gradient-to-t ${
-                city.name === "Tirupur" ? "from-[#e19951]" : "from-gray-800"
+                city.name === "Tiruppur" ? "from-[#e19951]" : "from-gray-800"
               } text-white transition-opacity duration-300`}
             >
               <span className="font-ubuntu">{city.name}</span>

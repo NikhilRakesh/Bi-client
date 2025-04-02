@@ -81,12 +81,14 @@ export default async function BusinessProfilePage({
       <CategoryHeader city={city} category={category} />
 
       <div className="md:px-20 px-3 py-5 w-full">
-        <div className="bg-white hidden md:block p-3 mb-3 shadow-xl rounded-md">
-          <BusinessProfileImageGallery
-            imageGallery={BusinessProfileData?.buisness.image_gallery || []}
-            category={category}
-          />
-        </div>
+        {BusinessProfileData?.buisness?.plan?.image_gallery && (
+          <div className="bg-white hidden md:block p-3 mb-3 shadow-xl rounded-md">
+            <BusinessProfileImageGallery
+              imageGallery={BusinessProfileData?.buisness.image_gallery || []}
+              dcats={BusinessProfileData.dcats}
+            />
+          </div>
+        )}
 
         <div className="md:flex gap-10 mb-28">
           <div className="w-full md:w-6/12 flex flex-col gap-y-7">
@@ -111,6 +113,21 @@ export default async function BusinessProfilePage({
                         ).getFullYear()}
                       </p>
                     )}
+                  </div>
+                  <div className="rounded-tl-lg flex gap-4 rounded-tr-lg px-3 w-full bg-opacity-30">
+                    {BusinessProfileData?.buisness.assured &&
+                      BusinessProfileData?.buisness.plan.bi_assured && (
+                        <img
+                          className="w-16 mt-2"
+                          src="/Brandsinfo-assured.png"
+                          alt=""
+                        />
+                      )}
+                   {BusinessProfileData?.buisness.verified && BusinessProfileData?.buisness.plan.bi_verification && <img
+                      className="w-16 md:block hidden mt-2"
+                      src="/Brandsinfo-verified.png"
+                      alt=""
+                    />}
                   </div>
                   <span className="text-gray-500 font-semibold font-ubuntuMedium text-xs absolute top-[-10px] left-[-10px]">
                     MEET
@@ -140,7 +157,6 @@ export default async function BusinessProfilePage({
                   )}
                 </div>
               </div>
-
               {BusinessProfileData?.buisness.opens_at &&
                 BusinessProfileData?.buisness.closes_at && (
                   <OpenStatus
@@ -159,16 +175,31 @@ export default async function BusinessProfilePage({
               )}
 
               <div className="mt-6 flex justify-between  items-center gap-2 ">
-                <button className="flex w-4/12 items-center justify-center bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition duration-300">
+                <button
+                  className={`flex ${
+                    BusinessProfileData?.buisness?.plan?.call_action_button
+                      ? "w-4/12"
+                      : "w-full"
+                  } items-center justify-center bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition duration-300`}
+                >
                   <FaPhoneAlt className="mr-2" size={15} />
-                  <span className="text-xs">Call</span>
+                  {BusinessProfileData?.buisness?.plan?.call_action_button ? (
+                    <span className="text-xs">Call</span>
+                  ) : (
+                    <span className="text-xs">Phone Number</span>
+                  )}
                 </button>
 
-                <button className="flex w-4/12 items-center bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-300">
-                  <FaWhatsapp className="mr-2" size={15} />
-                  <span className="text-xs">WhatsApp</span>
-                </button>
-                {BusinessProfileData?.buisness?.latittude &&
+                {BusinessProfileData?.buisness?.plan?.call_action_button &&
+                  BusinessProfileData?.buisness?.plan?.whatsapp_chat && (
+                    <button className="flex w-4/12 items-center bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-300">
+                      <FaWhatsapp className="mr-2" size={15} />
+                      <span className="text-xs">WhatsApp</span>
+                    </button>
+                  )}
+                {BusinessProfileData?.buisness?.plan?.call_action_button &&
+                  BusinessProfileData?.buisness?.plan?.google_map &&
+                  BusinessProfileData?.buisness?.latittude &&
                   BusinessProfileData?.buisness?.longitude && (
                     <LocationButton
                       latitude={BusinessProfileData?.buisness?.latittude}
@@ -177,12 +208,16 @@ export default async function BusinessProfilePage({
                   )}
               </div>
             </div>
-            <div className="bg-white md:hidden block p-3 mb-3 shadow-xl rounded-md">
-              <BusinessProfileImageGallery
-                imageGallery={BusinessProfileData?.buisness.image_gallery || []}
-                category={category}
-              />
-            </div>
+            {BusinessProfileData?.buisness?.plan?.image_gallery && (
+              <div className="bg-white md:hidden block p-3 mb-3 shadow-xl rounded-md">
+                <BusinessProfileImageGallery
+                  imageGallery={
+                    BusinessProfileData?.buisness.image_gallery || []
+                  }
+                  dcats={BusinessProfileData.dcats}
+                />
+              </div>
+            )}
 
             <div className=" w-full md:block hidden ">
               <ReviewList bid={BusinessProfileData?.buisness?.id} />
@@ -191,10 +226,6 @@ export default async function BusinessProfilePage({
 
           <div className="w-full md:6/12 overflow-hidden mt-5 md:mt-0">
             <div className="w-full space-y-6 border px-5 py-2 bg-white rounded-xl shadow-lg ">
-              {BusinessProfileData?.offers.length !== 0 && (
-                <OfferBiProfile Offers={BusinessProfileData?.offers} />
-              )}
-
               <div>
                 <h1 className="font-ubuntuMedium text-gray-700 md:text-xl">
                   About
@@ -285,6 +316,9 @@ export default async function BusinessProfilePage({
                   )}
                 </div>
               </div>
+              {BusinessProfileData?.offers.length !== 0 && (
+                <OfferBiProfile Offers={BusinessProfileData?.offers} />
+              )}
             </div>
             {(BusinessProfileData?.products.length !== 0 ||
               BusinessProfileData?.services.length !== 0) && (

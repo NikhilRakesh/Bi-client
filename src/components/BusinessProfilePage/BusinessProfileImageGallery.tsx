@@ -31,10 +31,10 @@ type MergedImage = GalleryImage | PexelImage;
 
 export default function BusinessProfileImageGallery({
   imageGallery,
-  category,
+  dcats
 }: {
   imageGallery: GalleryImage[];
-  category: string;
+  dcats: string[];
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,10 +58,10 @@ export default function BusinessProfileImageGallery({
       }
     }, 6000);
 
-    fetchPexelPhotos(category);
+    fetchPexelPhotos(dcats[0]);
 
     return () => clearInterval(interval);
-  }, [category]);
+  }, [dcats]);
 
   async function fetchPexelPhotos(query: string) {
     if (!apiKey) {

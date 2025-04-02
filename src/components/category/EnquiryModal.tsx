@@ -111,6 +111,7 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({
           setIsSubmitting(false);
           setName("");
           setPhone("");
+          setIsOtpModalOpen(false);
           onClose();
         }
       } catch (error) {
@@ -128,6 +129,7 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({
       if (confirmation) {
         const result = await confirmation.confirm(otpString);
         const idToken = await result.user.getIdToken();
+        console.log(idToken);
         const response = await api.post("users/verifyotp/", {
           phone: phone,
           otp: otpString,
@@ -188,7 +190,14 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({
       throw error;
     }
   };
-  
+  function closethisModal() {
+    setIsOtpModalOpen(false);
+    setIsSubmitting(false);
+    setName("");
+    setPhone("");
+    onClose();
+  }
+
   useEffect(() => {
     if (!window.recaptchaVerifier && isOpen) {
       window.recaptchaVerifier = new RecaptchaVerifier(
@@ -210,7 +219,7 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({
         console.log("reCAPTCHA rendered with widgetId:", widgetId);
       });
     }
-  }, [auth]);
+  }, [auth, isOpen]);
 
   useEffect(() => {
     if (isOtpModalOpen) {
@@ -230,7 +239,7 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({
       <div className="bg-white p-6 rounded-lg md:w-4/12 shadow-lg  relative z-60">
         <div id="recaptcha-container"></div>
         <button
-          onClick={onClose}
+          onClick={closethisModal}
           className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 focus:outline-none"
         >
           <IoClose size={24} />

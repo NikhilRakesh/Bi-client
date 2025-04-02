@@ -22,11 +22,30 @@ export default function HeaderSearchBar({ category, city, changeCity }: Data) {
   const [inputValue, setInputValue] = useState(category.replace(/-/g, " "));
   const [cityValue, setCityValue] = useState(city);
   const [openDropDown, setOpenDropDown] = useState(false);
+  const [clickInput, setClickInput] = useState(false);
   const [Categories, setCategories] = useState<string[]>([]);
   const [locations, setLocations] = useState<location[]>([]);
   const [debouncedCityValue, setDebouncedCityValue] = useState(city);
   const router = useRouter();
   const apiKey = process.env.NEXT_PUBLIC_MapBox_api;
+  const placeholderTexts = [
+    "Restaurants",
+    "Beauty Spa",
+    "Estate Agent",
+    "Event ",
+  ];
+  const [placeholder, setPlaceholder] = useState(placeholderTexts[0]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholder((prev) => {
+        const currentIndex = placeholderTexts.indexOf(prev);
+        return placeholderTexts[(currentIndex + 1) % placeholderTexts.length];
+      });
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -54,6 +73,7 @@ export default function HeaderSearchBar({ category, city, changeCity }: Data) {
     setCityValue(data);
     changeCity(data);
     setcityCookie(data);
+    setClickInput(false);
     setLocations([]);
     setOpenDropDown(false);
   }
@@ -89,12 +109,22 @@ export default function HeaderSearchBar({ category, city, changeCity }: Data) {
 
   return (
     <div className="flex justify-between gap-2 items-center md:min-w-fit w-full ">
-      <div className="border flex items-center py-1  border-l-[#f28b21] border-r-[#f28b21] bg-gray-100 relative">
-        <div className="w-6/12">
+      <div className="border flex items-center py-1  border-l-[#f28b21] border-r-[#f28b21] bg-gray-100 relative ">
+        <div className={`${clickInput ? "w-6/12" : "w-9/12"}`}>
           <input
-            className=" w-full p-1 bg-gray-100 font-ubuntu outline-none text-black text-sm"
+            className=" w-full p-1 bg-gray-100 font-ubuntu hidden md:block outline-none text-black text-sm"
             type="text"
-            placeholder="what are you looking for?"
+            placeholder={`what are you looking for? ${
+              !clickInput ? placeholder : ""
+            }`}
+            id="searchinput-home"
+            onChange={handleChange}
+            value={inputValue}
+          />
+          <input
+            className=" w-full p-1 md:hidden block bg-gray-100 font-ubuntu outline-none text-black text-sm"
+            type="text"
+            placeholder={`what are you looking for? `}
             id="searchinput-home"
             onChange={handleChange}
             value={inputValue}
@@ -121,17 +151,25 @@ export default function HeaderSearchBar({ category, city, changeCity }: Data) {
           )}
         </div>
 
-        <div className="flex w-6/12 gap-1 relative items-center cursor-pointer rounded-md hover:bg-gray-100 py-1 px-2 border border-orange-400">
+        <div
+          className={`flex  gap-1 relative items-center cursor-pointer rounded-md   hover:bg-gray-100 py-1 px-2 ${
+            clickInput ? " border border-orange-400 " : "md:w-4/12"
+          }`}
+        >
           <MdLocationOn className="text-black" />
           <input
             type="text"
             onClick={() => {
               setCityValue("");
               setOpenDropDown(true);
+              setClickInput(true);
             }}
             onChange={(e) => setCityValue(e.target.value)}
             value={cityValue}
-            className="text-black font-ubuntu text-sm bg-gray-100 outline-none w-11/12 "
+            className={`text-black font-ubuntu text-sm bg-gray-100 outline-none truncate ${
+              cityValue ? "w-11/12" : ""
+            }  `}
+            placeholder="select location"
           />
           {openDropDown && locations.length !== 0 && (
             <div className="text-sm text-gray-700 absolute top-10 right-0 left-0 border p-2 bg-white w-full rounded-sm">
@@ -144,9 +182,14 @@ export default function HeaderSearchBar({ category, city, changeCity }: Data) {
                   className="py-2"
                 >
                   <div className="flex  justify-between items-center">
-                    <p className="truncate">{location.place_name.replace(", India", "")}</p>
+                    <p className="truncate">
+                      {location.place_name.replace(", India", "")}
+                    </p>
                     <div>
-                      <FaArrowUp className="-rotate-45 text-gray-500" size={10} />
+                      <FaArrowUp
+                        className="-rotate-45 text-gray-500"
+                        size={10}
+                      />
                     </div>
                   </div>
                   <hr />

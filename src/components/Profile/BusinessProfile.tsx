@@ -33,6 +33,27 @@ import { IoPersonSharp } from "react-icons/io5";
 import OfferModal from "./OfferModal";
 import BackButton from "../Common/BackButton";
 
+interface PlanDetails {
+  bi_analytics: boolean;
+  bi_assured: boolean;
+  bi_certification: boolean;
+  bi_verification: boolean;
+  call_action_button: boolean;
+  contact_info: boolean;
+  email_id: boolean;
+  google_map: boolean;
+  image_gallery: boolean;
+  plan_name: string;
+  products_and_service_visibility: boolean;
+  profile_sharing_URL: boolean;
+  profile_social_media_URL_links: boolean;
+  profile_view_count: boolean;
+  profile_visit: boolean;
+  reviews_ratings: boolean;
+  video_gallery: boolean;
+  whatsapp_chat: boolean;
+}
+
 interface Business {
   building_name: string;
   buisness_type: string;
@@ -45,7 +66,7 @@ interface Business {
   id: number;
   incharge_number: string;
   instagram_link: string;
-  latitude: string;
+  latittude: string;
   locality: number;
   longitude: string;
   email: string;
@@ -63,6 +84,7 @@ interface Business {
   whatsapp_number: string;
   avg_time_spend_in_profile: string;
   image: string;
+  plan: PlanDetails;
 }
 
 interface UserProfile {
@@ -174,6 +196,7 @@ export default function BusinessProfile() {
         setAnalyticsData(response.data.analytics);
         setOfferData(response.data.offers);
       }
+      console.log(response.data);
     } catch (error) {
       console.error("Unknown error:", error);
 
@@ -275,10 +298,15 @@ export default function BusinessProfile() {
   const handleScrollToChildDiv = () => {
     if (scrollToDivRef.current) {
       scrollToDivRef.current.scrollIntoView({ behavior: "smooth" });
-      toast('Complete the information to boost your score!', {
-        icon: <img src="/Brandsinfo-logo.png" alt="Custom Icon" style={{ width: '20px', height: '20px' }} />,
+      toast("Complete the information to boost your score!", {
+        icon: (
+          <img
+            src="/Brandsinfo-logo.png"
+            alt="Custom Icon"
+            style={{ width: "20px", height: "20px" }}
+          />
+        ),
       });
-      
     }
   };
 
@@ -351,21 +379,23 @@ export default function BusinessProfile() {
       />
 
       <div ref={scrollToDivRef} className="md:p-8 p-4 mt-8 font-ubuntu">
-        <div className="mb-6">
-          <h3 className="md:text-2xl text-lg font-semibold text-gray-800 mb-4">
-            Keywords That The Account Was Shown For
-          </h3>
-          <div className="flex overflow-x-auto gap-4 py-2">
-            {analyticsData?.keywords.map((keyword, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 p-1 md:p-3 rounded-lg shadow-lg w-max"
-              >
-                <span className="text-gray-700 font-medium">{keyword}</span>
-              </div>
-            ))}
+        {businessData?.plan?.bi_analytics && (
+          <div className="mb-6">
+            <h3 className="md:text-2xl text-lg font-semibold text-gray-800 mb-4">
+              Keywords That The Account Was Shown For
+            </h3>
+            <div className="flex overflow-x-auto gap-4 py-2">
+              {analyticsData?.keywords?.map((keyword, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 p-1 md:p-3 rounded-lg shadow-lg w-max"
+                >
+                  <span className="text-gray-700 font-medium">{keyword}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="mb-6">
           <h3 className="md:text-2xl text-lg font-semibold text-gray-800 mb-4">
@@ -642,12 +672,12 @@ export default function BusinessProfile() {
               </div>
 
               <div>
-                {businessData.latitude && businessData.longitude ? (
+                {businessData.latittude && businessData.longitude ? (
                   <div className="flex items-center space-x-2">
                     <span className="text-gray-600">Location Added</span>
-                    <span className="text-gray-500">
-                      ({businessData.latitude}, {businessData.longitude})
-                    </span>
+                    {/* <span className="text-gray-500">
+                      ({businessData.latittude}, {businessData.longitude})
+                    </span> */}
                   </div>
                 ) : (
                   <button
@@ -660,7 +690,7 @@ export default function BusinessProfile() {
                     <IoIosAddCircle className="text-white" size={18} />
                     <div className="flex">
                       <p className="text-xs text-white">Add </p>
-                      <p className="text-xs text-white">Location </p>
+                      <p className="text-xs text-white"> Location </p>
                     </div>
                   </button>
                 )}

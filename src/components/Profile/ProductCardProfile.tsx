@@ -18,6 +18,27 @@ interface Product {
   searched: number;
 }
 
+interface PlanDetails {
+  bi_analytics: boolean;
+  bi_assured: boolean;
+  bi_certification: boolean;
+  bi_verification: boolean;
+  call_action_button: boolean;
+  contact_info: boolean;
+  email_id: boolean;
+  google_map: boolean;
+  image_gallery: boolean;
+  plan_name: string;
+  products_and_service_visibility: boolean;
+  profile_sharing_URL: boolean;
+  profile_social_media_URL_links: boolean;
+  profile_view_count: boolean;
+  profile_visit: boolean;
+  reviews_ratings: boolean;
+  video_gallery: boolean;
+  whatsapp_chat: boolean;
+}
+
 interface Business {
   building_name: string;
   buisness_type: string;
@@ -30,7 +51,7 @@ interface Business {
   id: number;
   incharge_number: string;
   instagram_link: string;
-  latitude: string;
+  latittude: string;
   locality: number;
   longitude: string;
   email: string;
@@ -47,10 +68,11 @@ interface Business {
   web_link: string;
   whatsapp_number: string;
   avg_time_spend_in_profile: string;
+  plan: PlanDetails;
 }
 
 interface ProductCardProfileProps {
-  productData: Product[];    
+  productData: Product[];
   render: () => void;
   businessData: Business;
 }
@@ -60,7 +82,7 @@ export default function ProductCardProfile({
   render,
   businessData,
 }: ProductCardProfileProps) {
-  const [loading, setLoading] = useState<boolean>(false);           
+  const [loading, setLoading] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const cookies = parseCookies();
   const access_token = cookies?.access_token;
@@ -96,7 +118,9 @@ export default function ProductCardProfile({
         <div>
           {productData.length !== 0 ? (
             <div className="flex justify-between">
-              <h2 className="md:text-2xl text-xl font-semibold font-ubuntuMedium text-gray-800">Products</h2>
+              <h2 className="md:text-2xl text-xl font-semibold font-ubuntuMedium text-gray-800">
+                Products
+              </h2>
               <button
                 onClick={toggleModal}
                 className="text-gray-300 md:text-base text-sm font-ubuntu bg-black px-1 py-1 rounded-md"
@@ -146,13 +170,15 @@ export default function ProductCardProfile({
                 </h3>
               </div>
 
-              <div className="text-sm text-gray-600 flex gap-2 mt-2">
-                <FaSearch className="text-gray-600" size={20} />
-                <span>Appeared in Search:</span>
-                <span className="font-semibold text-gray-800">
-                  {product.searched}%
-                </span>
-              </div>
+              {businessData.plan.bi_analytics && (
+                <div className="text-sm text-gray-600 flex gap-2 mt-2">
+                  <FaSearch className="text-gray-600" size={20} />
+                  <span>Appeared in Search:</span>
+                  <span className="font-semibold text-gray-800">
+                    {product.searched}%
+                  </span>
+                </div>
+              )}
 
               <div className="mt-3 w-full">
                 <button

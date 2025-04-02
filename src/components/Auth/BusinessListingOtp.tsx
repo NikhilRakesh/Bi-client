@@ -15,6 +15,7 @@ import {
   signInWithPhoneNumber,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import LoadingSpinner from "../Common/LoadingSpinner";
 
 const BusinessListingOtp: React.FC = () => {
   const phoneInputRef = useRef<HTMLInputElement | null>(null);
@@ -28,6 +29,7 @@ const BusinessListingOtp: React.FC = () => {
   const [confirmation, setConfirmation] = useState<ConfirmationResult | null>(
     null
   );
+  const [loading, setIsLoaing] = useState(false);
   const router = useRouter();
   useEffect(() => {
     if (!window.recaptchaVerifier) {
@@ -68,7 +70,7 @@ const BusinessListingOtp: React.FC = () => {
     const otpString = otp.join("");
     try {
       if (confirmation) {
-
+        setIsLoaing(true)
         const result = await confirmation.confirm(otpString);
         const idToken = await result.user.getIdToken();
         const response = await api.post("users/verifyotp/", {
@@ -80,6 +82,7 @@ const BusinessListingOtp: React.FC = () => {
         if (response.status === 201) {
           const access_token = response.data.sessionid;
           const refresh_token = response.data.refresh_token;
+          setIsLoaing(false)
           if (!access_token || !refresh_token) {
             return;
           }
@@ -89,6 +92,7 @@ const BusinessListingOtp: React.FC = () => {
         }
       }
     } catch (error) {
+      setIsLoaing(false)
       if (error instanceof AxiosError) {
         // console.error("Error sending OTP:", error.message);
         if (error.status === 400) toast.error("invalid verification code");
@@ -162,6 +166,7 @@ const BusinessListingOtp: React.FC = () => {
           phone: phone,
         });
         if (window.recaptchaVerifier) {
+          setIsLoaing(true)
           const formattednumber = `+91${phone}`;
           const confirmation = await signInWithPhoneNumber(
             auth,
@@ -176,7 +181,9 @@ const BusinessListingOtp: React.FC = () => {
         } else {
           setIsModalOpen(true);
         }
+        setIsLoaing(false)
       } catch (error) {
+        setIsLoaing(false)
         console.error("Error sending OTP:", error);
         throw error;
       }
@@ -304,8 +311,9 @@ const BusinessListingOtp: React.FC = () => {
         setOtp={setOtp}
         handleResendOtp={handleResendOtp}
       />
-      <div id="recaptcha-container" ></div>
+      <div id="recaptcha-container"></div>
       <Toaster position="top-center" reverseOrder={true} />
+      {loading && <LoadingSpinner />}
     </div>
   );
 };

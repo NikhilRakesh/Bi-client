@@ -6,6 +6,27 @@ import ProfileGraph from "./ProfileGraph";
 import MobileProfileScore from "./MobileProfileScore";
 import MobileProfileGraph from "./MobileProfileGraph";
 
+interface PlanDetails {
+  bi_analytics: boolean;
+  bi_assured: boolean;
+  bi_certification: boolean;
+  bi_verification: boolean;
+  call_action_button: boolean;
+  contact_info: boolean;
+  email_id: boolean;
+  google_map: boolean;
+  image_gallery: boolean;
+  plan_name: string;
+  products_and_service_visibility: boolean;
+  profile_sharing_URL: boolean;
+  profile_social_media_URL_links: boolean;
+  profile_view_count: boolean;
+  profile_visit: boolean;
+  reviews_ratings: boolean;
+  video_gallery: boolean;
+  whatsapp_chat: boolean;
+}
+
 interface Business {
   building_name: string;
   buisness_type: string;
@@ -18,7 +39,7 @@ interface Business {
   id: number;
   incharge_number: string;
   instagram_link: string;
-  latitude: string;
+  latittude: string;
   locality: number;
   longitude: string;
   email: string;
@@ -35,6 +56,8 @@ interface Business {
   web_link: string;
   whatsapp_number: string;
   avg_time_spend_in_profile: string;
+  image: string;
+  plan: PlanDetails;
 }
 interface mostsearchedproducts {
   id: number;
@@ -94,25 +117,32 @@ export default function BusinessProfileAnalytics({
     <div className="bg-gradient-to-r from-indigo-50 to-sky-50 bg-white shadow-2xl rounded-2xl p-4 md:p-8 mt-8 font-ubuntu">
       <div className="bg-gradient-to-r from-indigo-100 to-sky-100 bg-white shadow-md rounded-lg py-5 md:py-0 px-6 font-ubuntu ">
         <div className="flex flex-col md:flex-row justify-between space-y-6 md:space-y-0 md:space-x-8">
-          <div className="flex items-center space-x-4">
-            <FaSearch className="text-indigo-600 md:text-3xl" />
-            <div className="flex flex-row md:flex-col gap-2 items-center">
-              <p className="md:text-xl font-semibold text-gray-800">
-                {analyticsData?.searched}
-              </p>
-              <p className="text-sm text-gray-500">Search Appearance Rate</p>
-            </div>
-          </div>
+          {businessData.plan.bi_analytics &&
+            businessData.plan.profile_visit && (
+              <div className="flex items-center space-x-4">
+                <FaSearch className="text-indigo-600 md:text-3xl" />
+                <div className="flex flex-row md:flex-col gap-2 items-center">
+                  <p className="md:text-xl font-semibold text-gray-800">
+                    {analyticsData?.searched}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Search Appearance Rate
+                  </p>
+                </div>
+              </div>
+            )}
 
-          <div className="flex items-center space-x-4">
-            <FaClock className="text-indigo-600 md:text-3xl" />
-            <div className="flex flex-row md:flex-col gap-2 items-center">
-              <p className="text-xl font-semibold text-gray-800">
-                {formatTime(Number(analyticsData?.average_time_spend))}
-              </p>
-              <p className="text-sm text-gray-500">Avg. Profile Time</p>
+          {businessData.plan.bi_analytics && (
+            <div className="flex items-center space-x-4">
+              <FaClock className="text-indigo-600 md:text-3xl" />
+              <div className="flex flex-row md:flex-col gap-2 items-center">
+                <p className="text-xl font-semibold text-gray-800">
+                  {formatTime(Number(analyticsData?.average_time_spend))}
+                </p>
+                <p className="text-sm text-gray-500">Avg. Profile Time</p>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="flex items-center space-x-4">
             <BsQuestionCircleFill className="text-indigo-600 md:text-3xl" />
@@ -167,76 +197,80 @@ export default function BusinessProfileAnalytics({
           </div>
         </div>
       </div>
-      <div className="md:flex gap-5 mt-8">
-        <div className="flex-1">
-          <h2 className="md:text-xl font-semibold font-ubuntuMedium text-gray-700">
-            Profile Visits Over Time
-          </h2>
+      {businessData.plan.bi_analytics && (
+        <div className="md:flex gap-5 mt-8">
+          <div className="flex-1">
+            <h2 className="md:text-xl font-semibold font-ubuntuMedium text-gray-700">
+              Profile Visits Over Time
+            </h2>
 
-          <div className="mt-2 text-sm md:text-lg font-medium text-gray-500">
-            <span>Total Visits: </span>
-            <span className="text-orange-500">
-              {businessData.no_of_views}
-            </span>{" "}
+            <div className="mt-2 text-sm md:text-lg font-medium text-gray-500">
+              <span>Total Visits: </span>
+              <span className="text-orange-500">
+                {businessData.no_of_views}
+              </span>{" "}
+            </div>
+            <div className="hidden md:block">
+              {analyticsData?.visits && (
+                <ProfileGraph business={analyticsData} />
+              )}
+            </div>
+            <div className="md:hidden block">
+              {analyticsData?.visits && (
+                <MobileProfileGraph business={analyticsData} />
+              )}
+            </div>
           </div>
-          <div className="hidden md:block">
-            {analyticsData?.visits && <ProfileGraph business={analyticsData} />}
-          </div>
-          <div className="md:hidden block">
-            {analyticsData?.visits && (
-              <MobileProfileGraph business={analyticsData} />
-            )}
-          </div>
-        </div>
 
-        <div className="flex-1">
-          <h2 className="md:text-xl font-semibold font-ubuntuMedium text-gray-700 mb-4">
-            {analyticsData &&
-              (analyticsData.most_serched_products?.length > 0 &&
-              analyticsData.most_serched_services?.length > 0
-                ? "Most Searched Products and Services"
-                : analyticsData.most_serched_products?.length > 0
-                ? "Most Searched Products"
-                : analyticsData.most_serched_services?.length > 0
-                ? "Most Searched Services"
-                : "")}
-          </h2>
-          <div className="flex flex-col space-y-4 h-[250px] overflow-y-auto custom-scrollbar px-3">
-            {[
-              ...(analyticsData?.most_serched_products || []),
-              ...(analyticsData?.most_serched_services || []),
-            ]
-              ?.sort((a, b) => b.searched - a.searched)
-              ?.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white text-sm md:text-base rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-102"
-                >
-                  <div className="md:p-4 px-2 py-1">
-                    <div className="flex items-center justify-between">
-                      <h3 className="md:text-md font-semibold text-gray-800">
-                        {item.name}
-                      </h3>
-                      <span className="text-xs text-gray-500">
-                        ₹ {item.price}
-                      </span>
-                    </div>
-                    <div className="mt-2 flex items-center text-gray-500 text-xs">
-                      <FaSearch className="mr-2 text-yellow-500" />
-                      <span>{item.searched} Searches</span>
+          <div className="flex-1">
+            <h2 className="md:text-xl font-semibold font-ubuntuMedium text-gray-700 mb-4">
+              {analyticsData &&
+                (analyticsData.most_serched_products?.length > 0 &&
+                analyticsData.most_serched_services?.length > 0
+                  ? "Most Searched Products and Services"
+                  : analyticsData.most_serched_products?.length > 0
+                  ? "Most Searched Products"
+                  : analyticsData.most_serched_services?.length > 0
+                  ? "Most Searched Services"
+                  : "")}
+            </h2>
+            <div className="flex flex-col space-y-4 h-[250px] overflow-y-auto custom-scrollbar px-3">
+              {[
+                ...(analyticsData?.most_serched_products || []),
+                ...(analyticsData?.most_serched_services || []),
+              ]
+                ?.sort((a, b) => b.searched - a.searched)
+                ?.map((item) => (
+                  <div
+                    key={item.id}
+                    className="bg-white text-sm md:text-base rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-102"
+                  >
+                    <div className="md:p-4 px-2 py-1">
+                      <div className="flex items-center justify-between">
+                        <h3 className="md:text-md font-semibold text-gray-800">
+                          {item.name}
+                        </h3>
+                        <span className="text-xs text-gray-500">
+                          ₹ {item.price}
+                        </span>
+                      </div>
+                      <div className="mt-2 flex items-center text-gray-500 text-xs">
+                        <FaSearch className="mr-2 text-yellow-500" />
+                        <span>{item.searched} Searches</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            {!analyticsData?.most_serched_products?.length &&
-              !analyticsData?.most_serched_services?.length && (
-                <div className="text-gray-500 text-xs">
-                  No products or services available
-                </div>
-              )}
+                ))}
+              {!analyticsData?.most_serched_products?.length &&
+                !analyticsData?.most_serched_services?.length && (
+                  <div className="text-gray-500 text-xs">
+                    No products or services available
+                  </div>
+                )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

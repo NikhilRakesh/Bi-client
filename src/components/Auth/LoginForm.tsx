@@ -12,6 +12,7 @@ import {
   signInWithPhoneNumber,
   ConfirmationResult,
 } from "firebase/auth";
+import LoadingSpinner from "../Common/LoadingSpinner";
 export default function LoginForm() {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -23,6 +24,7 @@ export default function LoginForm() {
     null
   );
   const [isOtpVerified, setIsOtpVerified] = useState(false);
+  const [loading, setIsLoaing] = useState(false);
   const router = useRouter();
   const InputRef = useRef<HTMLInputElement>(null);
   const OtpInputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -36,6 +38,7 @@ export default function LoginForm() {
       });
       // alert(response.data.otp);
       if (window.recaptchaVerifier) {
+        setIsLoaing(true)
         const formattednumber = `+91${phone}`;
         const confirmation = await signInWithPhoneNumber(
           auth,
@@ -45,12 +48,15 @@ export default function LoginForm() {
         setConfirmation(confirmation);
       }
       if (!response?.data.exists) {
+        setIsLoaing(false)
         setIsOtpSent(true);
         setIsOtpVerified(true);
       } else {
+        setIsLoaing(false)
         setIsOtpSent(true);
       }
     } catch (error) {
+      setIsLoaing(false)
       console.error("Error sending OTP:", error);
       throw new Error("I failed you");
     }
@@ -61,6 +67,7 @@ export default function LoginForm() {
     const otpString = otp.join("");
     try {
       if (confirmation) {
+        setIsLoaing(true)
         const result = await confirmation.confirm(otpString);
         const idToken = await result.user.getIdToken();
         const response = await api.post("users/verifyotp/", {
@@ -72,6 +79,7 @@ export default function LoginForm() {
         if (response.status === 201) {
           const access_token = response.data.sessionid;
           const refresh_token = response.data.refresh_token;
+          setIsLoaing(false)
           if (!access_token || !refresh_token) {
             return;
           }
@@ -81,8 +89,8 @@ export default function LoginForm() {
         }
       }
     } catch (error) {
+      setIsLoaing(false)
       if (error instanceof AxiosError) {
-        // console.error("Error sending OTP:", error.message);
         if (error.status === 400) setError("invalid verification code");
       } else {
         console.error("Unknown error:", error);
@@ -189,7 +197,7 @@ export default function LoginForm() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="w-full max-w-lg md:bg-white md:rounded-lg md:shadow-xl p-8 space-y-6">
-        <div id="recaptcha-container" ></div>
+        <div id="recaptcha-container"></div>
         <div className="flex justify-center mb-6">
           <img
             src="/Brandsinfo-logo.png"
@@ -376,6 +384,7 @@ export default function LoginForm() {
           </div>
         )}
       </div>
+      {loading && <LoadingSpinner />}
     </div>
   );
 }

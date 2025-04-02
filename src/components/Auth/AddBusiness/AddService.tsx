@@ -100,7 +100,7 @@ export default function AddService() {
       return;
     } else if (serviceData.images.length === 0) {
       setServiceErrorMessage("Please add a image");
-      return
+      return;
     }
 
     const updatedServices = [...addedServices];
@@ -225,7 +225,7 @@ export default function AddService() {
             type="text"
             value={title || ""}
             onChange={handleTitleChange}
-            placeholder="Enter Service Title"
+            placeholder="Enter Service Category"
             className=" px-4 py-2 w-full text-black rounded-md outline-none"
           />
           {!selectedTitle && (
@@ -249,12 +249,12 @@ export default function AddService() {
             className="text-[#f28b21] text-sm mt-2"
             disabled={!selectedTitle}
           >
-            + Add New Title
+            + Add New Category
           </button>
         )}
         {selectedTitle && (
           <p className="text-gray-800 text-xs mt-2 font-ubuntu">
-            Services will be added under this title:{" "}
+            Services will be added under this category:{" "}
             <strong>{selectedTitle}</strong>
           </p>
         )}

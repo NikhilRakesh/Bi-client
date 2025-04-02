@@ -140,7 +140,7 @@ export default function Footer() {
               Contact Us
             </h4>
             <ul className="space-y-1 text-gray-600 text-sm">
-              <li>
+              {/* <li>
                 <Link
                   href="/contact"
                   className="hover:text-blue-600 cursor-pointer hover:underline"
@@ -155,7 +155,10 @@ export default function Footer() {
                 >
                   Support
                 </Link>
-              </li>
+              </li> */}
+              <li>brandsinfoguide@gmail.com</li>
+              <li>+91 90957 30182</li>
+              <li>Maniyakarampalayam Road, Tirupur, TamilNadu</li>
             </ul>
           </div>
 
@@ -166,7 +169,7 @@ export default function Footer() {
             <ul className="space-y-1 text-gray-600 text-sm">
               <li>
                 <Link
-                  href="/about"
+                  href="/about-us"
                   className="hover:text-blue-600 cursor-pointer hover:underline"
                 >
                   Our Story
@@ -196,14 +199,14 @@ export default function Footer() {
                   Join Us
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
-                  href="/jobs"
+                  href="/careers"
                   className="hover:text-blue-600 cursor-pointer hover:underline"
                 >
                   Current Openings
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>

@@ -14,6 +14,20 @@ import { FaPlus, FaBullhorn, FaEye } from "react-icons/fa";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { MdLocationPin } from "react-icons/md";
 
+interface Plan {
+  bi_assured: boolean;
+  bi_certification: boolean;
+  bi_verification: boolean;
+  google_map: boolean;
+  image_gallery: boolean;
+  plan_name: string;
+  products_and_service_visibility: boolean;
+  profile_view_count: boolean;
+  profile_visit: boolean;
+  video_gallery: boolean;
+  whatsapp_chat: boolean;
+}
+
 interface Business {
   id: number;
   name: string;
@@ -38,6 +52,7 @@ interface Business {
   since: string | null;
   web_link: string;
   image: string;
+  plan: Plan;
 }
 
 interface UserProfile {
@@ -63,12 +78,11 @@ const Profile = () => {
   const fetchProfileData = async () => {
     try {
       const response = await token_api(access_token).get("users/buisnesses/");
-
-      setProfileData(response.data.userprofile);
+      setProfileData(response.data.user);
       setBusinessData(response.data.buisnesses);
+      console.log(response.data);
     } catch (error) {
       console.error("Unknown error:", error);
-
       throw error;
     }
   };
@@ -182,15 +196,16 @@ const Profile = () => {
                             {business.locality}
                           </p>
                         </div>
-                        <div className="flex items-center space-x-2 text-gray-700  py-2 ">
-                          <FaEye className="text-blue-600" />
-                          <span className="md:text-lg text-sm font-semibold">
-                            {business?.no_of_views} Views
-                          </span>
-                        </div>
+                        {business?.plan?.profile_visit && (
+                          <div className="flex items-center space-x-2 text-gray-700  py-2 ">
+                            <FaEye className="text-blue-600" />
+                            <span className="md:text-lg text-sm font-semibold">
+                              {business?.no_of_views} Views
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
-
                     <div className="flex md:flex-col flex-row justify-end w-full md:w-auto ">
                       <div className="text-center md:flex justify-center hidden">
                         {business?.score && (
@@ -203,14 +218,28 @@ const Profile = () => {
                         )}
                       </div>
                       <div className="md:flex hidden justify-center sm:justify-end w-full md:w-auto">
-                        <button
-                          onClick={pricingPage}
-                          className="bg-yellow-500 text-white h-fit px-6 py-2 rounded-lg flex items-center hover:bg-yellow-600 transition-colors shadow-lg"
-                        >
-                          <FaBullhorn className="mr-2" />
-                          Promote Business
-                        </button>
+                        {business?.plan?.plan_name === "Default Plan" ? (
+                          <button
+                            onClick={pricingPage}
+                            className="bg-yellow-500 text-white h-fit px-6 py-2 rounded-lg flex items-center hover:bg-yellow-600 transition-colors shadow-lg"
+                          >
+                            <FaBullhorn className="mr-2" />
+                            Promote Business
+                          </button>
+                        ) : (
+                          <div className=" text-black h-fit px-6 py-1 rounded-md flex gap-2 items-center ">
+                            <img
+                              src="/verified-user.png"
+                              className="w-5 h-5"
+                              alt=""
+                            />
+                            <span className="font-ubuntu font-semibold">
+                              {business?.plan?.plan_name}
+                            </span>
+                          </div>
+                        )}
                       </div>
+
                       <div className="flex md:hidden absolute bottom-2 right-10 justify-end w-full md:w-auto">
                         <button
                           onClick={pricingPage}

@@ -19,7 +19,7 @@ interface ProductData {
 interface Category {
   id: string;
   name: string;
-}
+} 
 
 export default function AddProduct() {
   const searchParams = useSearchParams();

@@ -2,8 +2,8 @@ import axios from "axios";
 import { parseCookies, setAccessTokenCookie } from "./cookies";
 const refreshToken = parseCookies().refresh_token;
 
-// export const baseurl = "https://mq459llx-8000.inc1.devtunnels.ms/";
-export const baseurl = "https://api.brandsinfo.in";
+export const baseurl = "https://mq459llx-8000.inc1.devtunnels.ms/";
+// export const baseurl = "https://api.brandsinfo.in";
 
 const api = axios.create({
   baseURL: `${baseurl}`,

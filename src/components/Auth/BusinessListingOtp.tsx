@@ -4,10 +4,14 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import { RiDoubleQuotesL } from "react-icons/ri";
 import BLOtpModal from "./BLOtpModal";
 import { useRouter } from "next/navigation";
-import api from "@/lib/api";
+import api, { token_api } from "@/lib/api";
 import { AxiosError } from "axios";
 import toast, { Toaster } from "react-hot-toast";
-import { setAccessTokenCookie, setRefreshTokenCookie } from "../../lib/cookies";
+import {
+  parseCookies,
+  setAccessTokenCookie,
+  setRefreshTokenCookie,
+} from "../../lib/cookies";
 import Link from "next/link";
 import {
   ConfirmationResult,
@@ -16,6 +20,10 @@ import {
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import LoadingSpinner from "../Common/LoadingSpinner";
+interface userdata {
+  first_name: string;
+  mobile_number: string;
+}
 
 const BusinessListingOtp: React.FC = () => {
   const phoneInputRef = useRef<HTMLInputElement | null>(null);
@@ -26,12 +34,16 @@ const BusinessListingOtp: React.FC = () => {
   const [yourOtp, setYourOtp] = useState<string>("");
   const [nameInputVisible, setNameInputVisible] = useState(false);
   const [error, setError] = useState<string>("");
+  const [userData, setUserData] = useState<userdata | null>(null);
   const [confirmation, setConfirmation] = useState<ConfirmationResult | null>(
     null
   );
   const [loading, setIsLoaing] = useState(false);
   const router = useRouter();
+  const cookies = parseCookies();
+  const access_token = cookies?.access_token;
   useEffect(() => {
+    if (access_token) fetchProfileData();
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(
         auth,
@@ -57,6 +69,20 @@ const BusinessListingOtp: React.FC = () => {
     }
   }, [auth]);
 
+  async function fetchProfileData() {
+    if (!access_token) return;
+    try {
+      const response = await token_api(access_token).get("users/userdata/");
+      if (response.status === 200) {
+        setUserData(response.data);
+        setPhone(response.data.mobile_number);
+      }
+    } catch (error) {
+      console.error("Unknown error:", error);
+      throw error;
+    }
+  }
+
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setError("");
@@ -70,7 +96,7 @@ const BusinessListingOtp: React.FC = () => {
     const otpString = otp.join("");
     try {
       if (confirmation) {
-        setIsLoaing(true)
+        setIsLoaing(true);
         const result = await confirmation.confirm(otpString);
         const idToken = await result.user.getIdToken();
         const response = await api.post("users/verifyotp/", {
@@ -82,7 +108,7 @@ const BusinessListingOtp: React.FC = () => {
         if (response.status === 201) {
           const access_token = response.data.sessionid;
           const refresh_token = response.data.refresh_token;
-          setIsLoaing(false)
+          setIsLoaing(false);
           if (!access_token || !refresh_token) {
             return;
           }
@@ -92,7 +118,7 @@ const BusinessListingOtp: React.FC = () => {
         }
       }
     } catch (error) {
-      setIsLoaing(false)
+      setIsLoaing(false);
       if (error instanceof AxiosError) {
         // console.error("Error sending OTP:", error.message);
         if (error.status === 400) toast.error("invalid verification code");
@@ -158,6 +184,10 @@ const BusinessListingOtp: React.FC = () => {
       setError("Please enter phone number");
       return;
     }
+    if (phone === userData?.mobile_number) {
+      router.push("/business-listing/add-business?step=1");
+      return;
+    }
     if (phone.length < 10) {
       setError("Please enter valid mobile number");
     } else {
@@ -166,7 +196,7 @@ const BusinessListingOtp: React.FC = () => {
           phone: phone,
         });
         if (window.recaptchaVerifier) {
-          setIsLoaing(true)
+          setIsLoaing(true);
           const formattednumber = `+91${phone}`;
           const confirmation = await signInWithPhoneNumber(
             auth,
@@ -181,9 +211,9 @@ const BusinessListingOtp: React.FC = () => {
         } else {
           setIsModalOpen(true);
         }
-        setIsLoaing(false)
+        setIsLoaing(false);
       } catch (error) {
-        setIsLoaing(false)
+        setIsLoaing(false);
         console.error("Error sending OTP:", error);
         throw error;
       }

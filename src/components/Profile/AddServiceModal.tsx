@@ -135,6 +135,7 @@ export default function AddService({
           name: serviceData.name,
           price: serviceData.price,
           images: serviceData.images,
+          description: serviceData.description,
           cat: cat_id,
           buisness: id,
         }
@@ -146,7 +147,7 @@ export default function AddService({
         setServiceErrorMessage(null);
         settitleErrorMessage("");
         setLoading(false);
-        render()
+        render();
         onClose();
       }
     } catch (error) {
@@ -185,7 +186,10 @@ export default function AddService({
       <div className="bg-white py-5 px-5 rounded-md">
         <h2 className="text-2xl text-center font-ubuntuMedium text-gray-600 mb-6 flex justify-center items-center">
           Add Service
-          <IoCloseOutline onClick={onClose} className="text-gray-700 cursor-pointer text-3xl  absolute right-[520px]" />
+          <IoCloseOutline
+            onClick={onClose}
+            className="text-gray-700 cursor-pointer text-3xl  absolute right-[520px]"
+          />
         </h2>
 
         <div className="mb-4">

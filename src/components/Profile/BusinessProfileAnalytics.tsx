@@ -7,24 +7,20 @@ import MobileProfileScore from "./MobileProfileScore";
 import MobileProfileGraph from "./MobileProfileGraph";
 
 interface PlanDetails {
-  bi_analytics: boolean;
   bi_assured: boolean;
   bi_certification: boolean;
   bi_verification: boolean;
-  call_action_button: boolean;
-  contact_info: boolean;
-  email_id: boolean;
   google_map: boolean;
   image_gallery: boolean;
   plan_name: string;
   products_and_service_visibility: boolean;
-  profile_sharing_URL: boolean;
-  profile_social_media_URL_links: boolean;
   profile_view_count: boolean;
   profile_visit: boolean;
-  reviews_ratings: boolean;
   video_gallery: boolean;
   whatsapp_chat: boolean;
+  sa_rate: boolean;
+  keywords: boolean;
+  average_time_spend: boolean;
 }
 
 interface Business {
@@ -117,22 +113,19 @@ export default function BusinessProfileAnalytics({
     <div className="bg-gradient-to-r from-indigo-50 to-sky-50 bg-white shadow-2xl rounded-2xl p-4 md:p-8 mt-8 font-ubuntu">
       <div className="bg-gradient-to-r from-indigo-100 to-sky-100 bg-white shadow-md rounded-lg py-5 md:py-0 px-6 font-ubuntu ">
         <div className="flex flex-col md:flex-row justify-between space-y-6 md:space-y-0 md:space-x-8">
-          {businessData.plan.bi_analytics &&
-            businessData.plan.profile_visit && (
-              <div className="flex items-center space-x-4">
-                <FaSearch className="text-indigo-600 md:text-3xl" />
-                <div className="flex flex-row md:flex-col gap-2 items-center">
-                  <p className="md:text-xl font-semibold text-gray-800">
-                    {analyticsData?.searched}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Search Appearance Rate
-                  </p>
-                </div>
+          {businessData.plan.sa_rate && (
+            <div className="flex items-center space-x-4">
+              <FaSearch className="text-indigo-600 md:text-3xl" />
+              <div className="flex flex-row md:flex-col gap-2 items-center">
+                <p className="md:text-xl font-semibold text-gray-800">
+                  {analyticsData?.searched}
+                </p>
+                <p className="text-sm text-gray-500">Search Appearance Rate</p>
               </div>
-            )}
+            </div>
+          )}
 
-          {businessData.plan.bi_analytics && (
+          {businessData.plan.average_time_spend && (
             <div className="flex items-center space-x-4">
               <FaClock className="text-indigo-600 md:text-3xl" />
               <div className="flex flex-row md:flex-col gap-2 items-center">
@@ -197,7 +190,7 @@ export default function BusinessProfileAnalytics({
           </div>
         </div>
       </div>
-      {businessData.plan.bi_analytics && (
+      {businessData.plan.profile_visit && (
         <div className="md:flex gap-5 mt-8">
           <div className="flex-1">
             <h2 className="md:text-xl font-semibold font-ubuntuMedium text-gray-700">

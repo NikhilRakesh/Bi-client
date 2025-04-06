@@ -23,14 +23,15 @@ const OpenStatus = ({ opensAt, closesAt }: OpenStatusProps) => {
 
   useEffect(() => {
     const currentTime = new Date();
+    
     const currentHour = currentTime.getHours();
     const currentMinute = currentTime.getMinutes();
-
+    
     const convertToMinutes = (time: string) => {
       const [hours, minutes] = time?.split(":")?.map((x) => parseInt(x, 10));
       return hours * 60 + minutes;
     };
-
+    
     const openTimeInMinutes = convertToMinutes(opensAt);
     const closeTimeInMinutes = convertToMinutes(closesAt);
     const currentTimeInMinutes = currentHour * 60 + currentMinute;
@@ -56,16 +57,15 @@ const OpenStatus = ({ opensAt, closesAt }: OpenStatusProps) => {
   }, [opensAt, closesAt]);
 
   const convertTo12HourFormat = (time24: string) => {
-    // Remove the seconds part (e.g., "22:15:00" → "22:15")
     const timeWithoutSeconds = time24.split(":").slice(0, 2).join(":");
-
-    const date = new Date(`1970-01-01T${timeWithoutSeconds}:00Z`);
+    const date = new Date(`1970-01-01T${timeWithoutSeconds}:00`);
     return date.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
     });
   };
+  
 
   return (
     <div className="flex items-center px-2 gap-1">

@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import CategoryCardSkelton from "../Skeltons/CategoryCardSkelton";
 import EnquiryModal from "./EnquiryModal";
 import FilterOptions from "./FilterOptions";
+import { parseCookies } from "@/lib/cookies";
+import Link from "next/link";
 
 interface Offer {
   buisness: number;
@@ -16,6 +18,19 @@ interface Offer {
   offer: number;
   valid_upto: string;
 }
+interface Plan {
+  bi_assured: boolean;
+  bi_certification: boolean;
+  bi_verification: boolean;
+  google_map: boolean;
+  image_gallery: boolean;
+  plan_name: string;
+  products_and_service_visibility: boolean;
+  profile_view_count: boolean;
+  profile_visit: boolean;
+  video_gallery: boolean;
+  whatsapp_chat: boolean;
+}
 
 interface results {
   id: number;
@@ -24,6 +39,8 @@ interface results {
   whatsapp_number: string;
   locality: string;
   city: string;
+  building_name: string;
+  state: string;
   rating: number;
   redirect_link: {
     id: number;
@@ -32,8 +49,10 @@ interface results {
   };
   offers: Offer[];
   assured: boolean;
+  plan: Plan;
   verified: boolean;
 }
+
 interface Metadata {
   buisness: string | null;
   cc_combination: boolean;
@@ -82,6 +101,8 @@ const CategoryCard: React.FC<CardProps> = ({
   const [bid, setBid] = useState(0);
   const handleCloseModal = () => setIsModalOpen(false);
   const [BusinessList, setBusinessList] = useState<BusinessCard>(BusinessLists);
+  const cookies = parseCookies();
+  const access_token = cookies?.access_token;
 
   useEffect(() => {
     setBrowser(true);
@@ -120,9 +141,9 @@ const CategoryCard: React.FC<CardProps> = ({
     const offer = offers[0];
     if (offer) {
       if (offer.is_percent) {
-        return `${offer.offer}% off on purchases over ₹${offer.minimum_bill_amount}`;
+        return `${offer.offer}% off above ₹${offer.minimum_bill_amount}`;
       } else {
-        return `₹${offer.offer} flat off on purchases over ₹${offer.minimum_bill_amount}`;
+        return `₹${offer.offer} flat off above ₹${offer.minimum_bill_amount}`;
       }
     }
     return "Visit the profile for more details and services";
@@ -141,129 +162,180 @@ const CategoryCard: React.FC<CardProps> = ({
     return displayedKeywords;
   };
 
+  function formattedNumber(number: number) {
+    const Number = number.toFixed(1);
+    return Number;
+  }
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white md:bg-gray-100">
       <FilterOptions
         filteredData={filteredData}
         city={city}
         category={category}
       />
-      <div className="flex flex-wrap justify-center gap-8 py-5 px-2">
-        {BusinessList?.results?.length !== 0 && Array.isArray(BusinessList.results) ? (
+      <div className="flex flex-col justify-center md:gap-8 gap-3 py-5 px-4 md:mx-56 md:bg-white">
+        {BusinessList?.results?.length !== 0 &&
+        Array.isArray(BusinessList.results) ? (
           BusinessList?.results?.map((card, index) => (
             <div
               onClick={() => {
                 handleOnclick(card.redirect_link.link);
               }}
               key={index}
-              className="md:w-80 cursor-pointer md:h-full h-full w-full font-ubuntu bg-white backdrop-blur-lg rounded-lg shadow-2xl flex md:flex-col transform transition-transform duration-300 hover:scale-105 hover:shadow-3xl border border-white/10"
+              className=" cursor-pointer bg-white overflow-hidden border-b border-gray-300 pb-5"
             >
-              <div className="relative w-4/12 md:w-full">
-                <img
-                  src={baseurl + card.image}
-                  alt={card.name}
-                  className="md:w-full w-36 md:h-48 h-full object-cover rounded-t-lg"
-                />
-                <div className="flex w-full gap-1 rounded-tl-lg rounded-tr-lg bg-gray-800 bg-opacity-30 text-sm justify-end text-white rounded-bl-md absolute top-0 right-0">
+              <div className="flex">
+                <div className="relative w-4/12   md:w-full  lg:w-60 xl:w-72 md:h-56">
+                  <img
+                    src={baseurl + card.image}
+                    alt={card.name}
+                    className=" w-36 md:w-full h-full object-cover rounded-t-lg"
+                  />
+                  {/* <div className="absolute top-0 w-full right-0 p-2 bg-gray-800 bg-opacity-30 rounded-tl-lg rounded-tr-lg flex gap-2 items-center">
                   {card.assured && (
-                    <div className="rounded-tl-lg rounded-tr-lg px-3 w-full bg-opacity-30">
+                    <img
+                      className="w-16 mt-2"
+                      src="/Brandsinfo-assured.png"
+                      alt="Assured"
+                    />
+                  )}
+                  {card.rating !== 0 && (
+                    <div className="flex items-center  px-2 bg-gradient-to-r from-green-600 to-green-700 rounded-tr-lg rounded-bl-md text-white text-sm">
+                      <CiStar className="text-yellow-400" />
+                      <span>{formattedNumber(card.rating)}</span>
+                    </div>
+                  )}
+                </div> */}
+                  <div className="absolute inset-0 bg-black bg-opacity-10 group-hover:bg-opacity-20 transition-all duration-300 rounded-lg"></div>
+                </div>
+
+                <div className="p-4 flex flex-col gap-2">
+                  <h2 className="text-lg font-medium font-ubuntuMedium text-gray-800 truncate">
+                    {card.name}
+                  </h2>
+
+                  <div className=" flex gap-3">
+                    {card.rating !== 0 && (
+                      <div className="flex items-center w-fit h-fit  px-2 bg-gradient-to-r from-green-600 to-green-700 rounded-tr-lg rounded-bl-md text-white text-sm">
+                        <CiStar className="text-yellow-400" />
+                        <span>{formattedNumber(card.rating)}</span>
+                      </div>
+                    )}
+                    {card.assured && card?.plan?.bi_assured && (
                       <img
                         className="w-16 mt-2"
                         src="/Brandsinfo-assured.png"
-                        alt=""
+                        alt="Assured"
                       />
-                    </div>
-                  )}
-                  {card.rating !== 0 && (
-                    <div className="flex items-center px-2 rounded-tr-lg rounded-bl-md gap-1 bg-gradient-to-r from-green-600 to-green-700">
-                      <CiStar className="text-yellow-400" />
-                      <span>{card.rating}</span>
-                    </div>
-                  )}
-                </div>
-                <div className="absolute hidden md:block inset-0 bg-gradient-to-b from-transparent to-black opacity-40 rounded-t-lg"></div>
-                <h2 className="text-[20px] hidden md:block absolute top-[155px] right-0 left-2 font-ubuntuMedium font-bold text-gray-100 truncate z-10">
-                  {card.name}
-                </h2>
-                <div className="absolute inset-0 bg-black bg-opacity-10 group-hover:bg-opacity-10 transition-all duration-300 rounded-lg"></div>
-              </div>
-
-              <div className="p-4 flex flex-col gap-2 w-8/12 md:w-full">
-                <h2 className="text-[20px] md:hidden block font-ubuntuMedium font-bold text-gray-800 truncate z-10">
-                  {card.name}
-                </h2>
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <MdLocationOn className="text-gray-600" size={18} />
-                    <p className="text-sm text-gray-600 truncate">{`${card.locality}, ${card.city}`}</p>
-                  </div>
-                  {card.verified && (
-                    <div>
+                    )}
+                    {card.verified && card?.plan?.bi_verification && (
                       <img
-                        className="w-16 md:block hidden mt-2"
+                        className="w-16 mt-2 "
                         src="/Brandsinfo-verified.png"
-                        alt=""
+                        alt="Verified"
                       />
-                    </div>
-                  )}
-                  {card.verified && (
-                    <div>
-                      <img
-                        className="w-16 block md:hidden absolute top-0 right-2 mt-2"
-                        src="/Brandsinfo-verified.png"
-                        alt=""
-                      />
-                    </div>
-                  )}
-                  <div
-                    onClick={(e) => handleEnquiry(card.id, e)}
-                    className="flex gap-1 z-10 items-center cursor-pointer"
-                  >
-                    <img src="/chat.png" alt="" />
+                    )}
                   </div>
-                </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <div className="flex items-center gap-2">
+                      <MdLocationOn className="text-gray-600" size={18} />
+                      <p className="text-gray-600 text-xs md:text-sm break-words">{`${card.locality}, ${card.city}, ${card.state}`}</p>
+                      </div>
+                  </div>
 
-                {card.offers.length !== 0 ? (
-                  <div className="px-2 py-1 mb-2 bg-yellow-100 rounded-md text-sm text-yellow-800 flex items-center justify-between">
-                    <span className="truncate">{offerHandle(card.offers)}</span>
-                  </div>
-                ) : (
-                  <div className="rounded-md mb-2 text-sm text-gray-800 flex items-center gap-2 overflow-hidden max-w-full">
-                    {card?.redirect_link?.meta_keywords && (
-                      <div className="flex flex-nowrap overflow-hidden w-full">
-                        {keywordHandle(card?.redirect_link?.meta_keywords)?.map(
-                          (keyword, index) => (
+                  {card.offers.length > 0 ? (
+                    <div className="px-2 py-1 mb-2 bg-yellow-100 rounded-md text-sm text-yellow-800 flex items-center justify-between">
+                      <span>{offerHandle(card.offers)}</span>
+                    </div>
+                  ) : (
+                    <div className="rounded-md mb-2 text-xs md:text-sm text-gray-800 flex items-center gap-2 overflow-hidden max-w-full">
+                      {card?.redirect_link?.meta_keywords && (
+                        <div className="flex flex-nowrap overflow-hidden w-full">
+                          {keywordHandle(
+                            card?.redirect_link?.meta_keywords
+                          )?.map((keyword, index) => (
                             <p
                               key={index}
                               className="px-2 py-1 rounded-md shadow-sm bg-gray-100 whitespace-nowrap overflow-hidden text-ellipsis"
                             >
                               {keyword}
                             </p>
-                          )
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="md:flex hidden gap-2 mt-auto">
+                    <div className="w-full">
+                      <a
+                        href={`tel:${card.whatsapp_number}`}
+                        onClick={handleLinkClick}
+                        className="flex justify-center items-center text-center w-full bg-green-500 text-white text-sm px-4 py-2 rounded-md hover:bg-green-700 transition-all"
+                      >
+                        Call Now
+                      </a>
+                    </div>
+                    {card?.plan?.whatsapp_chat && (
+                      <div className="w-full">
+                        {access_token ? (
+                          <a
+                            href={`https://wa.me/${card.whatsapp_number}`}
+                            onClick={handleLinkClick}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex justify-center items-center text-center w-full bg-green-100 text-green-600 px-4 py-2 text-sm rounded-md hover:bg-green-200 transition-colors"
+                          >
+                            WhatsApp
+                          </a>
+                        ) : (
+                          <Link
+                            onClick={handleLinkClick}
+                            href={"/login"}
+                            className="flex justify-center items-center text-center bg-green-100 text-green-600 px-4 py-2 text-sm rounded-md hover:bg-green-200 transition-colors"
+                          >
+                            WhatsApp
+                          </Link>
                         )}
                       </div>
                     )}
                   </div>
-                )}
-
-                <div className="flex gap-2 z-10 mt-auto">
+                </div>
+              </div>
+              <div className="md:hidden flex gap-2 mt-2 w-full">
+                <div className="w-full">
                   <a
                     href={`tel:${card.whatsapp_number}`}
                     onClick={handleLinkClick}
-                    className="flex-1 text-center bg-green-500 text-white text-sm px-4 py-2 rounded-md hover:from-green-700 hover:to-green-800 transition-all"
+                    className="flex justify-center items-center text-center w-full bg-green-500 text-white text-sm px-4 py-2 rounded-md hover:bg-green-700 transition-all"
                   >
                     Call Now
                   </a>
-                  <a
-                    href={`https://wa.me/${card.whatsapp_number}`}
-                    onClick={handleLinkClick}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 text-center bg-green-100 text-green-600 px-4 py-2 text-sm rounded-md hover:bg-green-200 transition-colors"
-                  >
-                    WhatsApp
-                  </a>
                 </div>
+                {card?.plan?.whatsapp_chat && (
+                  <div className="w-full">
+                    {access_token ? (
+                      <a
+                        href={`https://wa.me/${card.whatsapp_number}`}
+                        onClick={handleLinkClick}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex justify-center items-center text-center w-full bg-green-100 text-green-600 px-4 py-2 text-sm rounded-md hover:bg-green-200 transition-colors"
+                      >
+                        WhatsApp
+                      </a>
+                    ) : (
+                      <Link
+                        onClick={handleLinkClick}
+                        href={"/login"}
+                        className="flex justify-center items-center text-center bg-green-100 text-green-600 px-4 py-2 text-sm rounded-md hover:bg-green-200 transition-colors"
+                      >
+                        WhatsApp
+                      </Link>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           ))

@@ -4,7 +4,8 @@ import { FaSquareXTwitter } from "react-icons/fa6";
 
 export default function Footer() {
   return (
-    <footer className="text-black font-ubuntu py-12 bg-gray-100 mt-10">
+    <footer className="text-black font-ubuntu py-12 bg-gray-100 pt-10 ">
+      <hr className=" border-gray-300 pb-10" />
       <div className="max-w-screen-xl mx-auto px-6">
         <div className="text-center mb-12">
           <h3 className="text-3xl font-ubuntuMedium font-semibold mb-4">

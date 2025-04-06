@@ -1,9 +1,21 @@
-"use client";
 import { token_api } from "@/lib/api";
 import { parseCookies } from "@/lib/cookies";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { FaRegEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import EditOfferModal from "./EditOfferModal";
 
+interface Offerwithid {
+  offer_type: string;
+  minimum_bill_amount: number;
+  valid_upto: string;
+  is_percent: boolean;
+  is_flat: boolean;
+  buisness: string | null;
+  offer: number;
+  id: number;
+}
 interface Offer {
   offer_type: string;
   minimum_bill_amount: number;
@@ -13,6 +25,7 @@ interface Offer {
   buisness: string | null;
   offer: number;
 }
+
 interface Offers {
   offer_type: string;
   minimum_bill_amount: number;
@@ -21,6 +34,7 @@ interface Offers {
   is_flat: boolean;
   offer: number;
   buisness: string | null;
+  id: number;
 }
 
 interface OfferModalProps {
@@ -35,7 +49,7 @@ export default function OfferModal({
   offerDatas,
 }: OfferModalProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [offerType, setOfferType] = useState("");
   const [isPercent, setIsPercent] = useState(false);
   const [isFlat, setIsFlat] = useState(false);
@@ -44,7 +58,7 @@ export default function OfferModal({
   );
   const [validUpto, setValidUpto] = useState("");
   const [offerValue, setOfferValue] = useState<number | string>("");
-
+  const [selectedOffer, setSelectedOffer] = useState<Offerwithid | null>(null);
   const cookies = parseCookies();
   const access_token = cookies?.access_token;
 
@@ -69,6 +83,7 @@ export default function OfferModal({
 
       if (response.status === 201) {
         render();
+        toast.success("The offer has been added successfully.");
         setIsModalOpen(false);
         setOfferType("");
         setIsPercent(false);
@@ -89,7 +104,6 @@ export default function OfferModal({
 
   const handleOfferTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOfferType = e.target.value;
-
     setOfferType(selectedOfferType);
 
     if (selectedOfferType === "Percentage") {
@@ -101,8 +115,60 @@ export default function OfferModal({
     }
   };
 
+  const getOfferPreview = () => {
+    // if (!offerType || !offerValue || !minimumBillAmount) return "";
+
+    const value = Number(offerValue);
+    const minimumAmount = Number(minimumBillAmount);
+
+    if (isPercent) {
+      return `${value}% off above ₹${minimumAmount}`;
+    } else if (isFlat) {
+      return `₹${value} flat off above ₹${minimumAmount}`;
+    }
+    return "";
+  };
+
+  function handleEditClick(offer: Offerwithid) {
+    setSelectedOffer(offer);
+    setIsEditModalOpen(true);
+  }
+
+  async function handleSave(updatedOffer: Offerwithid) {
+    try {
+      const response = await token_api(access_token).patch(
+        `users/offers/edit/${updatedOffer?.id}`,
+        updatedOffer
+      );
+
+      if (response.status === 200) {
+        render();
+        toast.success("The offer has been successfully updated.");
+      }
+    } catch (error) {
+      console.error("Unknown error:", error);
+      toast.error("Something went wrong, please try again.");
+    }
+  }
+
+  async function deleteOffer(id: number) {
+    try {
+      const response = await token_api(access_token).delete(
+        `users/offers/delete/${id}/`
+      );
+
+      if (response.status === 200) {
+        render();
+        toast.success("The offer has been successfully deleted.");
+      }
+    } catch (error) {
+      console.error("Unknown error:", error);
+      toast.error("Something went wrong, please try again.");
+    }
+  }
+
   return (
-    <div className="md:px-8  font-ubuntu">
+    <div className="md:px-8 font-ubuntu">
       {offerDatas.length === 0 && (
         <button
           onClick={() => setIsModalOpen(true)}
@@ -194,6 +260,11 @@ export default function OfferModal({
                 />
               </div>
 
+              <div className="mt-4 text-gray-600 flex gap-2 bg-gray-200 rounded-md px-2">
+                <strong className="font-ubuntu">Offer Preview:</strong>
+                <p className="text-sm">{getOfferPreview()}</p>
+              </div>
+
               <div className="flex justify-between">
                 <button
                   type="button"
@@ -216,13 +287,13 @@ export default function OfferModal({
 
       {offerDatas.length !== 0 && (
         <div className="mt-6 p-6 bg-gradient-to-r from-indigo-50 to-sky-50 bg-white rounded-lg font-ubuntuMedium shadow-lg">
-          <div className="flex  justify-between ">
+          <div className="flex justify-between">
             <h3 className="md:text-3xl text-lg font-semibold mb-6 text-gray-800">
               Offers
             </h3>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="bg-orange-500 text-white md:py-2 p-1  md:w-3/12 h-full rounded font-ubuntuMedium"
+              className="bg-orange-500 text-white md:py-2 p-1 md:w-3/12 h-full rounded font-ubuntuMedium"
             >
               Add Offer
             </button>
@@ -241,14 +312,14 @@ export default function OfferModal({
             return (
               <div
                 key={index}
-                className=" bg-gradient-to-r from-indigo-100 to-sky-100 bg-white rounded-lg shadow-md px-2 py-1 md:py-2 mb-6 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl"
+                className="bg-gradient-to-r relative from-indigo-100 to-sky-100 bg-white rounded-lg shadow-md px-2 py-1 md:py-2 mb-6"
               >
-                <div className="flex items-center space-x-4 ">
+                <div className="flex items-center space-x-4">
                   <div className="md:w-8 md:h-8 w-6 h-6 flex items-center justify-center rounded-full bg-gradient-to-r from-indigo-500 to-indigo-700 shadow-md">
                     {offer.is_percent ? (
-                      <span className=" font-semibold text-white">%</span>
+                      <span className="font-semibold text-white">%</span>
                     ) : (
-                      <span className=" font-semibold text-white">₹</span>
+                      <span className="font-semibold text-white">₹</span>
                     )}
                   </div>
                   <div className="flex-1">
@@ -257,10 +328,18 @@ export default function OfferModal({
                     </p>
                   </div>
                 </div>
-                <div className="mt-4">
+                <div className="mt-4 ">
                   <span className="md:text-sm text-xs text-gray-500">
                     Expiry Date: <strong>{offer.valid_upto}</strong>
                   </span>
+                </div>
+                <div className="flex flex-col gap-5 absolute top-5 right-6">
+                  <button onClick={() => handleEditClick(offer)}>
+                    <FaRegEdit className="text-gray-600" />
+                  </button>
+                  <button onClick={() => deleteOffer(offer.id)}>
+                    <MdDelete className="text-red-500" />
+                  </button>
                 </div>
               </div>
             );
@@ -269,6 +348,13 @@ export default function OfferModal({
       )}
 
       <Toaster />
+      {selectedOffer && isEditModalOpen && (
+        <EditOfferModal
+          onClose={() => setIsEditModalOpen(false)}
+          offer={selectedOffer}
+          onSave={handleSave}
+        />
+      )}
     </div>
   );
 }

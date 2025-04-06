@@ -15,13 +15,13 @@ import {
   FaFacebook,
   FaInstagram,
   FaYoutube,
-  FaWhatsapp,
 } from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import ReviewList from "@/components/BusinessProfilePage/ReviewList";
 import OfferBiProfile from "@/components/BusinessProfilePage/OfferBiProfile";
 import { Metadata } from "next";
 import LocationButton from "@/components/BusinessProfilePage/LocationButton";
+import WhatsappButon from "@/components/Common/WhatsappButon";
 
 export async function generateMetadata({
   params,
@@ -123,11 +123,14 @@ export default async function BusinessProfilePage({
                           alt=""
                         />
                       )}
-                   {BusinessProfileData?.buisness.verified && BusinessProfileData?.buisness.plan.bi_verification && <img
-                      className="w-16 md:block hidden mt-2"
-                      src="/Brandsinfo-verified.png"
-                      alt=""
-                    />}
+                    {BusinessProfileData?.buisness.verified &&
+                      BusinessProfileData?.buisness.plan.bi_verification && (
+                        <img
+                          className="w-16 md:block hidden mt-2"
+                          src="/Brandsinfo-verified.png"
+                          alt=""
+                        />
+                      )}
                   </div>
                   <span className="text-gray-500 font-semibold font-ubuntuMedium text-xs absolute top-[-10px] left-[-10px]">
                     MEET
@@ -177,27 +180,26 @@ export default async function BusinessProfilePage({
               <div className="mt-6 flex justify-between  items-center gap-2 ">
                 <button
                   className={`flex ${
-                    BusinessProfileData?.buisness?.plan?.call_action_button
+                    BusinessProfileData?.buisness?.plan?.whatsapp_chat&&BusinessProfileData?.buisness?.plan?.google_map&& BusinessProfileData?.buisness?.latittude &&
+                    BusinessProfileData?.buisness?.longitude
                       ? "w-4/12"
                       : "w-full"
                   } items-center justify-center bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition duration-300`}
                 >
                   <FaPhoneAlt className="mr-2" size={15} />
-                  {BusinessProfileData?.buisness?.plan?.call_action_button ? (
+                  {BusinessProfileData?.buisness?.plan?.whatsapp_chat ? (
                     <span className="text-xs">Call</span>
                   ) : (
                     <span className="text-xs">Phone Number</span>
                   )}
                 </button>
 
-                {BusinessProfileData?.buisness?.plan?.call_action_button &&
-                  BusinessProfileData?.buisness?.plan?.whatsapp_chat && (
-                    <button className="flex w-4/12 items-center bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-300">
-                      <FaWhatsapp className="mr-2" size={15} />
-                      <span className="text-xs">WhatsApp</span>
-                    </button>
-                  )}
-                {BusinessProfileData?.buisness?.plan?.call_action_button &&
+                {BusinessProfileData?.buisness?.plan?.whatsapp_chat && (
+                  <WhatsappButon
+                    number={BusinessProfileData?.buisness?.whatsapp_number}
+                  />
+                )}
+                {
                   BusinessProfileData?.buisness?.plan?.google_map &&
                   BusinessProfileData?.buisness?.latittude &&
                   BusinessProfileData?.buisness?.longitude && (

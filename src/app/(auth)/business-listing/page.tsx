@@ -1,5 +1,6 @@
 import BLHeader from "@/components/Auth/BLHeader";
 import BusinessListingOtp from "@/components/Auth/BusinessListingOtp";
+import LoginButton from "@/components/Common/LoginButton";
 import Footer from "@/components/Footer/Footer";
 import Image from "next/image";
 import Link from "next/link";
@@ -35,12 +36,7 @@ export default function BusinessListing() {
           </div>
 
           <div className="md:block hidden cursor-pointer">
-            <Link
-              href="/login"
-              className="bg-[#f28b21] hover:bg-[#f8ac5f] px-6 py-3 font-ubuntuMedium rounded-md text-white text-center inline-block"
-            >
-                <p className="text-sm">Login / Sign Up</p>
-            </Link>
+            <LoginButton />
           </div>
         </div>
         <Image

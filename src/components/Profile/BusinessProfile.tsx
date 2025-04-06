@@ -32,26 +32,24 @@ import ImageGalleryModal from "@/components/Profile/ImageGalleryModal";
 import { IoPersonSharp } from "react-icons/io5";
 import OfferModal from "./OfferModal";
 import BackButton from "../Common/BackButton";
+import { MdOutlineInfo } from "react-icons/md";
+import LocationWarningModal from "./LocationWarningModal";
 
 interface PlanDetails {
-  bi_analytics: boolean;
   bi_assured: boolean;
   bi_certification: boolean;
   bi_verification: boolean;
-  call_action_button: boolean;
-  contact_info: boolean;
-  email_id: boolean;
   google_map: boolean;
   image_gallery: boolean;
   plan_name: string;
   products_and_service_visibility: boolean;
-  profile_sharing_URL: boolean;
-  profile_social_media_URL_links: boolean;
   profile_view_count: boolean;
   profile_visit: boolean;
-  reviews_ratings: boolean;
   video_gallery: boolean;
   whatsapp_chat: boolean;
+  sa_rate: boolean;
+  keywords: boolean;
+  average_time_spend: boolean;
 }
 
 interface Business {
@@ -96,7 +94,7 @@ interface Product {
   name: string;
   price: string;
   description: string;
-  product_images: { image: string }[];
+  product_images: { image: string; id:number }[];
   sub_cat: number;
   buisness: number;
   id: number;
@@ -107,7 +105,7 @@ interface Service {
   id: number;
   name: string;
   description: string;
-  image: string;
+  service_images: { image: string; id: number }[];
   price: string;
   buisness: number;
   cat: number;
@@ -154,6 +152,7 @@ interface OfferData {
   is_flat: boolean;
   offer: number;
   buisness: string | null;
+  id: number;
 }
 
 export default function BusinessProfile() {
@@ -180,6 +179,7 @@ export default function BusinessProfile() {
   const [loading, setLoading] = useState(false);
   const [galleryModal, setGalleyModal] = useState(false);
   const scrollToDivRef = useRef<HTMLDivElement | null>(null);
+  const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
@@ -270,11 +270,12 @@ export default function BusinessProfile() {
         navigator.geolocation.getCurrentPosition(resolve, reject);
       });
       const { latitude, longitude } = position.coords;
+
       try {
         const response = await token_api(access_token).patch(
           `users/buisnessesedit/${bid}/`,
           {
-            ["latitude"]: latitude,
+            ["latittude"]: latitude,
             ["longitude"]: longitude,
           }
         );
@@ -309,6 +310,19 @@ export default function BusinessProfile() {
       });
     }
   };
+  const convertTo12HourFormat = (time24: string) => {
+    const timeWithoutSeconds = time24.split(":").slice(0, 2).join(":");
+    const date = new Date(`1970-01-01T${timeWithoutSeconds}:00`);
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+  function ProceedAccessLocation() {
+    setIsWarningModalOpen(false);
+    getDeviceLocation();
+  }
 
   useEffect(() => {
     setIsBrowser(true);
@@ -328,27 +342,13 @@ export default function BusinessProfile() {
     <div className="bg-gradient-to-r h-screen from-indigo-100 to-sky-100 overflow-x-hidden  bg-white shadow-2xl rounded-2xl px-4 md:px-8 py-5 font-ubuntu ">
       <ProfileHeader />
       <BackButton />
-      {/* <div className="bg-gradient-to-r from-orange-500 to-orange-400 p-8 rounded-3xl shadow-xl text-white">
-        <h2 className="text-3xl font-bold font-ubuntuMedium">
-          Boost Your Business with Our Premium Packages!
-        </h2>
-        <p className="mt-2 text-lg">
-          Unlock more features, visibility, and growth with our exclusive
-          packages designed to promote your business.
-        </p>
-        <button
-          className="mt-4 bg-black text-gray-200 py-3 px-8 rounded-xl shadow-md hover:scale-105 transition duration-300"
-        >
-          Choose a Package
-        </button>
-      </div> */}
 
       <div className="flex items-center space-x-6 mt-5 group ">
         <div className="relative rounded-full overflow-hidden">
           <img
             src={baseurl + businessData.image}
             alt={businessData?.name}
-            className="object-cover  w-24 h-24 rounded-full shadow-xl transform group-hover:scale-110 transition duration-300"
+            className="object-cover  w-24 h-24 rounded-sm shadow-xl transform group-hover:scale-110 transition duration-300"
           />
           <div className="absolute bottom-0 left-0 cursor-pointer right-0 flex justify-center items-center bg-gray-800 bg-opacity-50 rounded-b-full p-1">
             <AiOutlineEdit
@@ -379,7 +379,7 @@ export default function BusinessProfile() {
       />
 
       <div ref={scrollToDivRef} className="md:p-8 p-4 mt-8 font-ubuntu">
-        {businessData?.plan?.bi_analytics && (
+        {businessData?.plan?.keywords && (
           <div className="mb-6">
             <h3 className="md:text-2xl text-lg font-semibold text-gray-800 mb-4">
               Keywords That The Account Was Shown For
@@ -482,27 +482,33 @@ export default function BusinessProfile() {
               </p>
             </div>
 
-            <div className="flex items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 p-4 rounded-lg shadow-lg">
-              <div className="flex items-center space-x-2">
+            <div className="flex items-center relative justify-between bg-gradient-to-r from-indigo-50 to-sky-50 p-4 rounded-lg shadow-lg">
+              <div className="flex items-center space-x-2 ">
                 <FaEnvelope size={24} className="text-gray-700" />
                 <span className="text-gray-700 font-medium">Email</span>
               </div>
               {businessData?.email ? (
                 <span className="text-gray-600">{businessData?.email}</span>
               ) : (
-                <button
-                  onClick={() => setopenEmailModal(true)}
-                  className="flex items-center gap-1 cursor-pointer"
-                >
-                  <IoIosAddCircle className="text-gray-700" size={14} />
-                  <div>
-                    <p className="text-xs text-gray-800">Add Email</p>
+                <div>
+                  <button
+                    onClick={() => setopenEmailModal(true)}
+                    className="flex items-center gap-1 cursor-pointer"
+                  >
+                    <IoIosAddCircle className="text-gray-700" size={14} />
+                    <div>
+                      <p className="text-xs text-gray-800">Add Email</p>
+                    </div>
+                  </button>
+                  <div className="text-xs bg-red-100 text-red-500 px-2 absolute top-0 right-0 rounded-tr-md flex gap-1 items-center rounded-bl-md">
+                    <MdOutlineInfo />
+                    <p>missing</p>
                   </div>
-                </button>
+                </div>
               )}
             </div>
 
-            <div className="flex items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 p-4 rounded-lg shadow-lg">
+            <div className="flex relative items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 p-4 rounded-lg shadow-lg">
               <div className="flex items-center space-x-2">
                 <FaPhoneAlt size={24} className="text-gray-700" />
                 <span className="text-gray-700 font-medium">Phone</span>
@@ -512,7 +518,7 @@ export default function BusinessProfile() {
               </span>
             </div>
 
-            <div className="flex items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 p-4 rounded-lg shadow-lg">
+            <div className="flex relative items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 p-4 rounded-lg shadow-lg">
               <div className="flex items-center space-x-2">
                 <FaGlobe size={24} className="text-gray-700" />
                 <span className="text-gray-700 font-medium">Website</span>
@@ -535,21 +541,27 @@ export default function BusinessProfile() {
                   </div>
                 </div>
               ) : (
-                <button
-                  onClick={() => {
-                    handleOpenModal("web_link");
-                  }}
-                  className="flex items-center gap-1 "
-                >
-                  <IoIosAddCircle className="text-gray-500" size={14} />
-                  <div>
-                    <p className="text-xs text-gray-800">Add Website</p>
+                <div>
+                  <button
+                    onClick={() => {
+                      handleOpenModal("web_link");
+                    }}
+                    className="flex items-center gap-1 "
+                  >
+                    <IoIosAddCircle className="text-gray-500" size={14} />
+                    <div>
+                      <p className="text-xs text-gray-800">Add Website</p>
+                    </div>
+                  </button>
+                  <div className="text-xs bg-red-100 text-red-500 px-2 absolute top-0 right-0 rounded-tr-md flex gap-1 items-center rounded-bl-md">
+                    <MdOutlineInfo />
+                    <p>missing</p>
                   </div>
-                </button>
+                </div>
               )}
             </div>
 
-            <div className="flex items-center justify-between  bg-gradient-to-r from-indigo-50 to-sky-50 p-4 rounded-lg shadow-lg">
+            <div className="flex relative items-center justify-between  bg-gradient-to-r from-indigo-50 to-sky-50 p-4 rounded-lg shadow-lg">
               <div className="flex items-center space-x-2">
                 <FaClock size={24} className="text-gray-700" />
                 <span className="text-gray-700 font-medium">
@@ -558,38 +570,33 @@ export default function BusinessProfile() {
               </div>
               <div>
                 {!businessData?.opens_at || !businessData?.closes_at ? (
-                  <button
-                    onClick={() => setIsOpenTimeModalOpen(true)}
-                    className="w-full md:w-auto flex gap-1 items-center "
-                  >
-                    <IoIosAddCircle className="text-gray-500" size={14} />
-                    <div>
-                      <p className="text-xs text-gray-800">Add Time</p>
+                  <div>
+                    <button
+                      onClick={() => setIsOpenTimeModalOpen(true)}
+                      className="w-full md:w-auto flex gap-1 items-center "
+                    >
+                      <IoIosAddCircle className="text-gray-500" size={14} />
+                      <div>
+                        <p className="text-xs text-gray-800">Add Time</p>
+                      </div>
+                    </button>
+                    <div className="text-xs bg-red-100 text-red-500 px-2 absolute top-0 right-0 rounded-tr-md flex gap-1 items-center rounded-bl-md">
+                      <MdOutlineInfo />
+                      <p>missing</p>
                     </div>
-                  </button>
+                  </div>
                 ) : (
-                  <span className="text-gray-600">
-                    {new Date(
-                      `1970-01-01T${businessData?.opens_at}`
-                    ).toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: false,
-                    })}{" "}
+                  <span className="text-gray-600 text-sm">
+                    {convertTo12HourFormat(businessData?.opens_at)}
                     <span className="px-2">-</span>
-                    {new Date(
-                      `1970-01-01T${businessData?.closes_at}`
-                    ).toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: false,
-                    })}
+
+                    {convertTo12HourFormat(businessData?.closes_at)}
                   </span>
                 )}
               </div>
             </div>
 
-            <div className="flex items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 p-4 rounded-lg shadow-lg">
+            <div className="flex relative items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 p-4 rounded-lg shadow-lg">
               <div className="flex items-center space-x-2">
                 <FaFlag size={24} className="text-gray-700" />
                 <span className="text-gray-700 font-medium">Since</span>
@@ -598,22 +605,28 @@ export default function BusinessProfile() {
                 {businessData.since ? (
                   <span className="text-gray-600">{businessData.since}</span>
                 ) : (
-                  <button
-                    onClick={() => {
-                      handleOpenModal("since");
-                    }}
-                    className="w-full md:w-auto flex gap-1 items-center "
-                  >
-                    <IoIosAddCircle className="text-gray-500" size={14} />
-                    <div>
-                      <p className="text-xs text-gray-800">Add Year</p>
+                  <div>
+                    <button
+                      onClick={() => {
+                        handleOpenModal("since");
+                      }}
+                      className="w-full md:w-auto flex gap-1 items-center "
+                    >
+                      <IoIosAddCircle className="text-gray-500" size={14} />
+                      <div>
+                        <p className="text-xs text-gray-800">Add Year</p>
+                      </div>
+                    </button>
+                    <div className="text-xs bg-red-100 text-red-500 px-2 absolute top-0 right-0 rounded-tr-md flex gap-1 items-center rounded-bl-md">
+                      <MdOutlineInfo />
+                      <p>missing</p>
                     </div>
-                  </button>
+                  </div>
                 )}
               </div>
             </div>
 
-            <div className="flex items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 p-4 rounded-lg shadow-lg">
+            <div className="flex relative items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 p-4 rounded-lg shadow-lg">
               <div className="flex items-center space-x-2">
                 <FaPhoneAlt size={24} className="text-gray-700" />
                 <span className="text-gray-700 font-medium">Incharge</span>
@@ -624,22 +637,28 @@ export default function BusinessProfile() {
                     {businessData.incharge_number}
                   </span>
                 ) : (
-                  <button
-                    onClick={() => {
-                      handleOpenModal("incharge_number");
-                    }}
-                    className="w-full md:w-auto flex gap-1 items-center "
-                  >
-                    <IoIosAddCircle className="text-gray-500" size={14} />
-                    <div>
-                      <p className="text-xs text-gray-800">Add Number</p>
+                  <div>
+                    <button
+                      onClick={() => {
+                        handleOpenModal("incharge_number");
+                      }}
+                      className="w-full md:w-auto flex gap-1 items-center "
+                    >
+                      <IoIosAddCircle className="text-gray-500" size={14} />
+                      <div>
+                        <p className="text-xs text-gray-800">Add Number</p>
+                      </div>
+                    </button>
+                    <div className="text-xs bg-red-100 text-red-500 px-2 absolute top-0 right-0 rounded-tr-md flex gap-1 items-center rounded-bl-md">
+                      <MdOutlineInfo />
+                      <p>missing</p>
                     </div>
-                  </button>
+                  </div>
                 )}
               </div>
             </div>
 
-            <div className="flex items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 p-4 rounded-lg shadow-lg">
+            <div className="flex relative items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 p-4 rounded-lg shadow-lg">
               <div className="flex items-center space-x-2">
                 <IoPersonSharp size={24} className="text-gray-700" />
                 <span className="text-gray-700 font-medium">Manager</span>
@@ -650,22 +669,28 @@ export default function BusinessProfile() {
                     {businessData.manager_name}
                   </span>
                 ) : (
-                  <button
-                    onClick={() => {
-                      handleOpenModal("manager_name");
-                    }}
-                    className="w-full md:w-auto flex gap-1 items-center "
-                  >
-                    <IoIosAddCircle className="text-gray-500" size={14} />
-                    <div>
-                      <p className="text-xs text-gray-800">Add Name</p>
+                  <div>
+                    <button
+                      onClick={() => {
+                        handleOpenModal("manager_name");
+                      }}
+                      className="w-full md:w-auto flex gap-1 items-center "
+                    >
+                      <IoIosAddCircle className="text-gray-500" size={14} />
+                      <div>
+                        <p className="text-xs text-gray-800">Add Name</p>
+                      </div>
+                    </button>
+                    <div className="text-xs bg-red-100 text-red-500 px-2 absolute top-0 right-0 rounded-tr-md flex gap-1 items-center rounded-bl-md">
+                      <MdOutlineInfo />
+                      <p>missing</p>
                     </div>
-                  </button>
+                  </div>
                 )}
               </div>
             </div>
 
-            <div className="flex items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 p-4 rounded-lg shadow-lg">
+            <div className="flex relative items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 p-4 rounded-lg shadow-lg">
               <div className="flex items-center space-x-2">
                 <FaLocationCrosshairs size={24} className="text-gray-700" />
                 <span className="text-gray-700 font-medium">Shop Location</span>
@@ -680,19 +705,25 @@ export default function BusinessProfile() {
                     </span> */}
                   </div>
                 ) : (
-                  <button
-                    onClick={getDeviceLocation}
-                    className={` md:w-auto flex justify-center gap-1 items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-all duration-300 ${
-                      loading ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
-                    disabled={loading}
-                  >
-                    <IoIosAddCircle className="text-white" size={18} />
-                    <div className="flex">
-                      <p className="text-xs text-white">Add </p>
-                      <p className="text-xs text-white"> Location </p>
+                  <div>
+                    <button
+                      onClick={() => setIsWarningModalOpen(true)}
+                      className={` md:w-auto flex justify-center gap-1 items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-all duration-300 ${
+                        loading ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
+                      disabled={loading}
+                    >
+                      <IoIosAddCircle className="text-white" size={18} />
+                      <div className="flex">
+                        <p className="text-xs text-white">Add </p>
+                        <p className="text-xs text-white"> Location </p>
+                      </div>
+                    </button>
+                    <div className="text-xs bg-red-100 text-red-500 px-2 absolute top-0 right-0 rounded-tr-md flex gap-1 items-center rounded-bl-md">
+                      <MdOutlineInfo />
+                      <p>missing</p>
                     </div>
-                  </button>
+                  </div>
                 )}
               </div>
             </div>
@@ -790,6 +821,10 @@ export default function BusinessProfile() {
       {galleryModal && (
         <ImageGalleryModal onClose={() => setGalleyModal(false)} />
       )}
+      {isWarningModalOpen && (
+        <LocationWarningModal onClose={() => setIsWarningModalOpen(false)} proceed={ProceedAccessLocation} />
+      )}
+
       <Toaster />
     </div>
   );

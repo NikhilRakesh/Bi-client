@@ -17,6 +17,8 @@ interface Review {
 export default function ReviewList({ bid }: { bid: number }) {
   const [openModal, setOpenModal] = useState(false);
   const [render, setRender] = useState(false);
+  const [imageModal, setImageModal] = useState(false);
+  const [image, setImage] = useState("");
   const [loading, setLoading] = useState(true);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [totalPages, setTotalPages] = useState(0);
@@ -47,9 +49,7 @@ export default function ReviewList({ bid }: { bid: number }) {
   const renderStars = (rating: number) => {
     return (
       <>
-        {[
-          ...Array(5),
-        ].map((_, index) => (
+        {[...Array(5)].map((_, index) => (
           <React.Fragment key={index}>
             {index < rating ? (
               <AiFillStar className="text-yellow-500" size={20} />
@@ -77,7 +77,6 @@ export default function ReviewList({ bid }: { bid: number }) {
   };
 
   function RenderComponent() {
-
     setRender(!render);
   }
 
@@ -105,7 +104,11 @@ export default function ReviewList({ bid }: { bid: number }) {
     }
     return pageNumbers;
   };
-  
+
+  function openImage(url: string) {
+    setImage(url);
+    setImageModal(true);
+  }
 
   return (
     <div className="py-6 bg-white rounded-xl shadow-lg font-ubuntu">
@@ -149,6 +152,7 @@ export default function ReviewList({ bid }: { bid: number }) {
                     {review.image.map((img, idx) => (
                       <React.Fragment key={idx}>
                         <img
+                          onClick={() => openImage(img.image)}
                           src={baseurl + img.image}
                           alt={`review-image-${idx}`}
                           className="w-16 h-16 object-cover rounded-md border-2 border-gray-300"
@@ -187,6 +191,40 @@ export default function ReviewList({ bid }: { bid: number }) {
           onClose={handleCloseModal}
           render={RenderComponent}
         />
+      )}
+      {imageModal && image && (
+        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4">
+            <button
+              onClick={() => setImageModal(false)}
+              className="absolute top-5 right-5 p-2 text-white hover:text-gray-300 transition-colors"
+              aria-label="Close image"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-8 w-8"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          <div className="relative max-w-[90vw] max-h-[90vh]">
+
+            <div className="flex justify-center items-center h-full">
+              <img
+                src={baseurl + image}
+                alt="Full size preview"
+                className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-xl"
+              />
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

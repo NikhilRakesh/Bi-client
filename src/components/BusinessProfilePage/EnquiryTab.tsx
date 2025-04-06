@@ -21,7 +21,7 @@ export default function EnquiryTab({
   if (!browser) return;
 
   return (
-    <div className=" w-full md:px-5 px-3 fixed bottom-2 shadow-2xl">
+    <div className=" w-full md:px-5 px-3 fixed bottom-2 shadow-2xl ">
       <div className="bg-white/90 rounded-lg shadow-lg p-5 flex justify-between">
         <div className="font-ubuntu text-gray-700">
           <p className="font-ubuntuMedium md:text-lg">

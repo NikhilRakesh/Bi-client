@@ -2,17 +2,18 @@
 
 import { baseurl, token_api } from "@/lib/api";
 import { FaSearch, FaTrash } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoadingSpinner from "../Common/LoadingSpinner";
 import { parseCookies } from "@/lib/cookies";
 import toast, { Toaster } from "react-hot-toast";
 import AddServiceModal from "./AddServiceModal";
+import ServiceEditModal from "./ServiceEditModal";
 
 interface Service {
   id: number;
   name: string;
   description: string;
-  image: string;
+  service_images: { image: string; id: number }[];
   price: string;
   buisness: number;
   cat: number;
@@ -20,24 +21,20 @@ interface Service {
 }
 
 interface PlanDetails {
-  bi_analytics: boolean;
   bi_assured: boolean;
   bi_certification: boolean;
   bi_verification: boolean;
-  call_action_button: boolean;
-  contact_info: boolean;
-  email_id: boolean;
   google_map: boolean;
   image_gallery: boolean;
   plan_name: string;
   products_and_service_visibility: boolean;
-  profile_sharing_URL: boolean;
-  profile_social_media_URL_links: boolean;
   profile_view_count: boolean;
   profile_visit: boolean;
-  reviews_ratings: boolean;
   video_gallery: boolean;
   whatsapp_chat: boolean;
+  sa_rate: boolean;
+  keywords: boolean;
+  average_time_spend: boolean;
 }
 
 interface Business {
@@ -87,6 +84,18 @@ export default function ServiceCardProfile({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const cookies = parseCookies();
   const access_token = cookies?.access_token;
+  const [isPSModalOpen, setIsPSModalOpen] = useState(false);
+  const [Service, setService] = useState<Service | null>(null);
+
+  useEffect(() => {
+    if (Service && services.length > 0) {
+      const foundItem = services.find((item) => item.id === Service.id);
+
+      if (foundItem && foundItem !== Service) {
+        setService(foundItem);
+      }
+    }
+  }, [services]);
 
   const handleDelete = async (id: number, name: string) => {
     setLoading(true);
@@ -111,6 +120,15 @@ export default function ServiceCardProfile({
   const toggleModal = () => {
     setIsModalOpen((prev) => !prev);
   };
+
+  function openPsModal(Service: Service) {
+    setService(Service);
+    setIsPSModalOpen(true);
+  }
+
+  function closePSModal() {
+    setIsPSModalOpen(false);
+  }
 
   return (
     <div className="mt-8 w-full">
@@ -157,7 +175,7 @@ export default function ServiceCardProfile({
                 <p className="text-sm text-white">{service.cat}</p>
               </div>
               <img
-                src={baseurl + service.image}
+                src={baseurl + service.service_images[0].image}
                 alt={service.name}
                 className="w-full h-48 object-cover rounded-t-xl transition-transform duration-500 ease-in-out transform hover:scale-105"
               />
@@ -170,7 +188,7 @@ export default function ServiceCardProfile({
                 </h3>
               </div>
 
-              {businessData.plan.bi_analytics && (
+              {businessData.plan.products_and_service_visibility && (
                 <div className="text-sm text-gray-600 flex gap-2 mt-2">
                   <FaSearch className="text-gray-600" size={20} />
                   <span>Appeared in Search:</span>
@@ -180,13 +198,19 @@ export default function ServiceCardProfile({
                 </div>
               )}
 
-              <div className="mt-3 w-full">
+              <div className="mt-3 w-full flex gap-2">
                 <button
                   onClick={() => handleDelete(service.id, service.name)}
                   className="px-4 py-2 bg-red-600 flex justify-center items-center gap-2 w-full text-sm rounded-lg hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-all duration-300"
                 >
                   <FaTrash className="text-white" size={15} />
                   <p>Delete</p>
+                </button>
+                <button
+                  onClick={() => openPsModal(service)}
+                  className="px-4 py-2 flex justify-center gap-2 items-center bg-black w-full text-sm rounded-lg  focus:outline-none  text-gray-200 transition-all duration-300"
+                >
+                  <span>Edit</span>
                 </button>
               </div>
             </div>
@@ -198,6 +222,13 @@ export default function ServiceCardProfile({
       {isModalOpen && (
         <AddServiceModal
           onClose={() => setIsModalOpen(!isModalOpen)}
+          render={render}
+        />
+      )}
+      {isPSModalOpen && Service && (
+        <ServiceEditModal
+          data={Service}
+          onClose={closePSModal}
           render={render}
         />
       )}

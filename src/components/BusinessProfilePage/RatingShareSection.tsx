@@ -1,3 +1,4 @@
+'use client'
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import ShareButton from "./ShareButton";
 
@@ -34,7 +35,7 @@ const RatingShareSection: React.FC<ShareButtonProps> = ({
     <div className="flex justify-between items-center bg-gradient-to-r from-indigo-50 to-sky-50 p-2 rounded-md mt-2">
       <div className="flex items-center space-x-2">
         <div className="flex items-center space-x-1">{renderStars(rating)}</div>
-        {rating > 0 && <p className="text-gray-700">{rating}</p>}
+        {rating > 0 && <p className="text-gray-700">{rating?.toFixed(1)}</p>}
       </div>
       {share_link && <ShareButton share_link={share_link} />}
     </div>

@@ -14,6 +14,19 @@ interface Offer {
   offer: number;
   valid_upto: string;
 }
+interface Plan {
+  bi_assured: boolean;
+  bi_certification: boolean;
+  bi_verification: boolean;
+  google_map: boolean;
+  image_gallery: boolean;
+  plan_name: string;
+  products_and_service_visibility: boolean;
+  profile_view_count: boolean;
+  profile_visit: boolean;
+  video_gallery: boolean;
+  whatsapp_chat: boolean;
+}
 
 interface results {
   id: number;
@@ -22,6 +35,8 @@ interface results {
   whatsapp_number: string;
   locality: string;
   city: string;
+  building_name: string;
+  state: string;
   rating: number;
   redirect_link: {
     id: number;
@@ -30,6 +45,7 @@ interface results {
   };
   offers: Offer[];
   assured: boolean;
+  plan: Plan;
   verified: boolean;
 }
 
@@ -119,8 +135,7 @@ export default async function CategoryList({
     .get(`users/esearch/?q=${category}&location=${city}`)
     .then((res) => res.data);
 
-    console.log(BusinessList);
-    
+  console.log(BusinessList);
 
   return (
     <div className="bg-gradient-to-r from-indigo-50 to-sky-50 ">

@@ -2,41 +2,38 @@
 
 import { baseurl, token_api } from "@/lib/api";
 import { FaSearch, FaTrash } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoadingSpinner from "../Common/LoadingSpinner";
 import { parseCookies } from "@/lib/cookies";
 import toast, { Toaster } from "react-hot-toast";
 import AddProductModal from "./AddProductModal";
+import ProdctEditModal from "../Common/ProdctEditModal";
 
 interface Product {
   id: number;
   name: string;
   description: string;
-  product_images: { image: string }[];
+  product_images: { image: string; id:number }[];
   price: string;
   sub_cat: number;
   searched: number;
 }
 
 interface PlanDetails {
-  bi_analytics: boolean;
   bi_assured: boolean;
   bi_certification: boolean;
   bi_verification: boolean;
-  call_action_button: boolean;
-  contact_info: boolean;
-  email_id: boolean;
   google_map: boolean;
   image_gallery: boolean;
   plan_name: string;
   products_and_service_visibility: boolean;
-  profile_sharing_URL: boolean;
-  profile_social_media_URL_links: boolean;
   profile_view_count: boolean;
   profile_visit: boolean;
-  reviews_ratings: boolean;
   video_gallery: boolean;
   whatsapp_chat: boolean;
+  sa_rate: boolean;
+  keywords: boolean;
+  average_time_spend: boolean;
 }
 
 interface Business {
@@ -84,6 +81,8 @@ export default function ProductCardProfile({
 }: ProductCardProfileProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPSModalOpen, setIsPSModalOpen] = useState(false);
+  const [Product, setProduct] = useState<Product | null>(null);
   const cookies = parseCookies();
   const access_token = cookies?.access_token;
 
@@ -110,6 +109,24 @@ export default function ProductCardProfile({
   const toggleModal = () => {
     setIsModalOpen((prev) => !prev);
   };
+
+  function closePSModal() {
+    setIsPSModalOpen(false);
+  }
+
+  function openPsModal(product: Product) {
+    setProduct(product);
+    setIsPSModalOpen(true);
+  }
+  useEffect(() => {
+    if (Product && productData.length > 0) {
+      const foundItem = productData.find((item) => item.id === Product.id);
+      
+      if (foundItem && foundItem !== Product) {
+        setProduct(foundItem);  
+      }
+    }
+  }, [productData]);
 
   return (
     <div className="mt-8 w-full ">
@@ -149,7 +166,7 @@ export default function ProductCardProfile({
         {productData.map((product) => (
           <div
             key={product.id}
-            className="bg-white border w-7/12 md:w-2/12 border-gray-200 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform flex-shrink-0"
+            className="bg-white border cursor-pointer w-7/12 md:w-2/12 border-gray-200 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform flex-shrink-0"
           >
             <div className="relative">
               <div className="absolute z-10 top-0 flex justify-between w-full bg-black bg-opacity-50 text-white p-2 font-semibold">
@@ -170,7 +187,7 @@ export default function ProductCardProfile({
                 </h3>
               </div>
 
-              {businessData.plan.bi_analytics && (
+              {businessData.plan.products_and_service_visibility && (
                 <div className="text-sm text-gray-600 flex gap-2 mt-2">
                   <FaSearch className="text-gray-600" size={20} />
                   <span>Appeared in Search:</span>
@@ -180,13 +197,19 @@ export default function ProductCardProfile({
                 </div>
               )}
 
-              <div className="mt-3 w-full">
+              <div className="mt-3 w-full flex gap-2">
                 <button
                   onClick={() => handleDelete(product.id, product.name)}
-                  className="px-4 py-2 flex justify-center gap-2 items-center bg-red-600 w-full text-sm rounded-lg hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-all duration-300"
+                  className="px-4 py-2 flex justify-center gap-2 items-center bg-red-600 w-full text-sm rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 text-white transition-all duration-300"
                 >
-                  <FaTrash className="text-white" size={15} />
-                  <p> Delete</p>
+                  <FaTrash size={15} />
+                  <span>Delete</span>
+                </button>
+                <button
+                  onClick={() => openPsModal(product)}
+                  className="px-4 py-2 flex justify-center gap-2 items-center bg-black w-full text-sm rounded-lg  focus:outline-none  text-gray-200 transition-all duration-300"
+                >
+                  <span>Edit</span>
                 </button>
               </div>
             </div>
@@ -202,6 +225,13 @@ export default function ProductCardProfile({
             render={render}
           />
         </div>
+      )}
+      {isPSModalOpen && Product && (
+        <ProdctEditModal
+          data={Product}
+          onClose={closePSModal}
+          render={render}
+        />
       )}
       <Toaster />
     </div>

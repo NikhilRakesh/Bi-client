@@ -202,8 +202,6 @@ const BusinessInformation = ({
       updateBusinessData({ pincode: value });
 
       if (value.length === 6) {
-        // const searchUrl = `https://us1.locationiq.com/v1/search?key=pk.1b719781ccfda4d770c5a67dd6f1316b&q=${value}&format=json`;
-        // const searchUrl = `https://api.postalpincode.in/pincode/${value}`;
         const searchUrl = `https://nominatim.openstreetmap.org/search?postalcode=${value}&country=India&format=json`;
 
         try {
@@ -316,6 +314,17 @@ const BusinessInformation = ({
               {errors.productOrServiceError}
             </p>
           )}
+        </div>
+
+        <div className="mb-4">
+          <textarea
+            id="description"
+            name="description"
+            value={safeBusinessData.description}
+            onChange={handleInputChange}
+            placeholder="Enter your business description"
+            className="w-full px-4 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#f28b21]"
+          />
         </div>
 
         <div className="mb-4">

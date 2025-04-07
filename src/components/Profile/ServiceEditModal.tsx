@@ -2,7 +2,7 @@
 
 import { FaTimes, FaPlus, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useCallback, useEffect, useState } from "react";
-import api, { baseurl, get_api_form, token_api } from "@/lib/api";
+import { baseurl, get_api_form, token_api } from "@/lib/api";
 import { CiCircleRemove, CiImageOn } from "react-icons/ci";
 import { FiCheckCircle, FiUpload } from "react-icons/fi";
 import { parseCookies } from "@/lib/cookies";

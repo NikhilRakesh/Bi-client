@@ -14,6 +14,7 @@ import {
   FaYoutube,
   FaFlag,
 } from "react-icons/fa";
+import { FiChevronDown, FiChevronUp, FiSearch } from "react-icons/fi";
 import { IoIosAddCircle } from "react-icons/io";
 import { FaLocationCrosshairs, FaSquareXTwitter } from "react-icons/fa6";
 import ProfileHeader from "@/components/Header/ProfileHeader";
@@ -34,6 +35,7 @@ import OfferModal from "./OfferModal";
 import BackButton from "../Common/BackButton";
 import { MdOutlineInfo } from "react-icons/md";
 import LocationWarningModal from "./LocationWarningModal";
+import BusinessCatAdd from "./BusinessCatAdd";
 
 interface PlanDetails {
   bi_assured: boolean;
@@ -94,7 +96,7 @@ interface Product {
   name: string;
   price: string;
   description: string;
-  product_images: { image: string; id:number }[];
+  product_images: { image: string; id: number }[];
   sub_cat: number;
   buisness: number;
   id: number;
@@ -155,6 +157,11 @@ interface OfferData {
   id: number;
 }
 
+interface dcat {
+  id: number;
+  cat_name: string;
+}
+
 export default function BusinessProfile() {
   const [isBrowser, setIsBrowser] = useState(false);
   const cookies = parseCookies();
@@ -164,6 +171,7 @@ export default function BusinessProfile() {
   const bid = searchParams.get("bid");
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
   const [businessData, setBusinessData] = useState<Business | null>(null);
+  const [dcat, setDcat] = useState<dcat[] | null>(null);
   const [offerData, setOfferData] = useState<OfferData[]>([]);
   const [productData, setProductData] = useState<Product[]>([]);
   const [serviceData, setServiceData] = useState<Service[]>([]);
@@ -180,6 +188,8 @@ export default function BusinessProfile() {
   const [galleryModal, setGalleyModal] = useState(false);
   const scrollToDivRef = useRef<HTMLDivElement | null>(null);
   const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
@@ -195,6 +205,7 @@ export default function BusinessProfile() {
         setServiceData(response.data.services);
         setAnalyticsData(response.data.analytics);
         setOfferData(response.data.offers);
+        setDcat(response.data.d_cats);
       }
       console.log(response.data);
     } catch (error) {
@@ -310,6 +321,7 @@ export default function BusinessProfile() {
       });
     }
   };
+
   const convertTo12HourFormat = (time24: string) => {
     const timeWithoutSeconds = time24.split(":").slice(0, 2).join(":");
     const date = new Date(`1970-01-01T${timeWithoutSeconds}:00`);
@@ -319,10 +331,20 @@ export default function BusinessProfile() {
       hour12: true,
     });
   };
+
   function ProceedAccessLocation() {
     setIsWarningModalOpen(false);
     getDeviceLocation();
   }
+
+  const filteredKeywords =
+    analyticsData?.keywords?.filter((keyword: string) =>
+      keyword.toLowerCase().includes(searchQuery.toLowerCase())
+    ) || [];
+
+  const visibleKeywords = expanded
+    ? filteredKeywords
+    : filteredKeywords.slice(0, 5);
 
   useEffect(() => {
     setIsBrowser(true);
@@ -377,25 +399,82 @@ export default function BusinessProfile() {
         analyticsData={analyticsData}
         handleScrollToChildDiv={handleScrollToChildDiv}
       />
+      {dcat && <BusinessCatAdd render={render} dcat={dcat} bid={bid} />}
 
       <div ref={scrollToDivRef} className="md:p-8 p-4 mt-8 font-ubuntu">
-        {businessData?.plan?.keywords && (
-          <div className="mb-6">
-            <h3 className="md:text-2xl text-lg font-semibold text-gray-800 mb-4">
-              Keywords That The Account Was Shown For
-            </h3>
-            <div className="flex overflow-x-auto gap-4 py-2">
-              {analyticsData?.keywords?.map((keyword, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 p-1 md:p-3 rounded-lg shadow-lg w-max"
-                >
-                  <span className="text-gray-700 font-medium">{keyword}</span>
+        {businessData?.plan?.keywords &&
+          analyticsData?.keywords.length !== 0 && (
+            <div className="mb-8">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900">
+                    Keywords That The Account Was Shown For
+                  </h3>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Keywords that triggered your content in search results
+                  </p>
                 </div>
-              ))}
+
+                <div className="relative w-full md:w-64">
+                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search keywords..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-10 text-gray-700 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none transition-all"
+                  />
+                </div>
+              </div>
+
+              {filteredKeywords.length === 0 ? (
+                <div className="bg-gray-50 rounded-lg p-6 text-center text-gray-500">
+                  No keywords found matching your search
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
+                    {visibleKeywords.map((keyword, index) => (
+                      <div
+                        key={index}
+                        className="bg-white border border-gray-200 rounded-lg p-4 hover:border-blue-300 hover:shadow-sm transition-all"
+                      >
+                        <div className="flex items-start">
+                          <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-2">
+                            {index + 1}
+                          </span>
+                          <span className="font-medium text-gray-800 break-words">
+                            {keyword}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {filteredKeywords.length > 5 && (
+                    <div className="mt-4 text-center">
+                      <button
+                        onClick={() => setExpanded(!expanded)}
+                        className="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium"
+                      >
+                        {expanded ? (
+                          <>
+                            <FiChevronUp className="mr-1" />
+                            Show Less
+                          </>
+                        ) : (
+                          <>
+                            <FiChevronDown className="mr-1" />
+                            View All {filteredKeywords.length} Keywords
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
-          </div>
-        )}
+          )}
 
         <div className="mb-6">
           <h3 className="md:text-2xl text-lg font-semibold text-gray-800 mb-4">
@@ -822,7 +901,10 @@ export default function BusinessProfile() {
         <ImageGalleryModal onClose={() => setGalleyModal(false)} />
       )}
       {isWarningModalOpen && (
-        <LocationWarningModal onClose={() => setIsWarningModalOpen(false)} proceed={ProceedAccessLocation} />
+        <LocationWarningModal
+          onClose={() => setIsWarningModalOpen(false)}
+          proceed={ProceedAccessLocation}
+        />
       )}
 
       <Toaster />

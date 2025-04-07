@@ -31,7 +31,6 @@ export default function ImageGalleryModal({
 
       if (response.status === 200) {
         const imageUrls = response.data;
-        console.log(response.data);
 
         setImages(imageUrls);
       } else {

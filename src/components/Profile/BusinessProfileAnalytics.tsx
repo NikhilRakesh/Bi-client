@@ -183,7 +183,7 @@ export default function BusinessProfileAnalytics({
               </p>
             </div>
             <div className="flex ">
-              <button className="mt-2 text-sm bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-300">
+              <button  onClick={() => handleScrollToChildDiv()} className="mt-2 text-sm bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-300">
                 Increase Score
               </button>
             </div>
@@ -227,7 +227,14 @@ export default function BusinessProfileAnalytics({
                   ? "Most Searched Services"
                   : "")}
             </h2>
-            <div className="flex flex-col space-y-4 h-[250px] overflow-y-auto custom-scrollbar px-3">
+            <div
+              className={`flex flex-col space-y-4 ${
+                !analyticsData?.most_serched_products?.length &&
+                !analyticsData?.most_serched_services?.length
+                  ? ""
+                  : "h-[250px]"
+              } overflow-y-auto custom-scrollbar px-3`}
+            >
               {[
                 ...(analyticsData?.most_serched_products || []),
                 ...(analyticsData?.most_serched_services || []),
@@ -256,8 +263,8 @@ export default function BusinessProfileAnalytics({
                 ))}
               {!analyticsData?.most_serched_products?.length &&
                 !analyticsData?.most_serched_services?.length && (
-                  <div className="text-gray-500 text-xs">
-                    No products or services available
+                  <div className="text-gray-500 text-xs text-center">
+                    No products or services searched
                   </div>
                 )}
             </div>

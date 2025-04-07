@@ -1,15 +1,6 @@
 "use client";
 import { useState } from "react";
 
-interface Offer {
-  offer_type: string;
-  minimum_bill_amount: number;
-  valid_upto: string;
-  is_percent: boolean;
-  is_flat: boolean;
-  buisness: string | null;
-  offer: number;
-}
 interface Offerwithid {
     offer_type: string;
     minimum_bill_amount: number;
@@ -42,9 +33,6 @@ export default function EditOfferModal({
     onSave(updatedOffer);
     onClose();
   };
-  
-console.log('offer',updatedOffer);
-
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">

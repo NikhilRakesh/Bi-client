@@ -1,25 +1,33 @@
+"use client";
 import { baseurl } from "@/lib/api";
+import { useState } from "react";
 import { Toaster } from "react-hot-toast";
+import ServiceDetailPage from "../Ecommerce/ServiceDetailPage";
 
 interface Service {
   id: number;
   name: string;
   description: string;
   price: string;
-  image: string;
+  service_images: { image: string }[];
   cat: string;
   searched: number;
 }
+
 interface CardProps {
   data: Service;
+  onClick: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ data }) => {
+const Card: React.FC<CardProps> = ({ data, onClick }) => {
   return (
-    <div className="bg-white border w-52 md:w-52 border-gray-200 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform flex-shrink-0">
+    <div
+      onClick={onClick}
+      className="bg-white cursor-pointer border w-52 md:w-52 border-gray-200 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform flex-shrink-0"
+    >
       <div className="relative">
         <img
-          src={baseurl + data?.image}
+          src={baseurl + data?.service_images[0].image}
           alt={data.name}
           className="w-full h-48 object-cover rounded-t-xl transition-transform duration-500 ease-in-out transform hover:scale-105"
         />
@@ -45,6 +53,18 @@ interface ProductCardProfileProps {
 }
 
 export default function ServiceCard({ serviceData }: ProductCardProfileProps) {
+  const [Service, setService] = useState<Service | null>(null);
+  const [openModal, setOpenModal] = useState(false);
+
+  function viewService(Service: Service) {
+    setService(Service);
+    setOpenModal(true);
+  }
+
+  function closeModal() {
+    setOpenModal(false);
+    setService(null);
+  }
   return (
     <div className="w-full h-full">
       <h2 className="text-2xl font-semibold text-gray-800 font-ubuntuMedium">
@@ -52,10 +72,17 @@ export default function ServiceCard({ serviceData }: ProductCardProfileProps) {
       </h2>
       <div className="flex gap-8 mt-4 p-2 overflow-x-auto custom-scrollbar whitespace-nowrap">
         {serviceData.map((product) => (
-          <Card key={product.id} data={product} />
+          <Card
+            key={product.id}
+            data={product}
+            onClick={() => viewService(product)}
+          />
         ))}
       </div>
       <Toaster />
+      {openModal && Service && (
+        <ServiceDetailPage onClose={closeModal} itemdata={Service} />
+      )}
     </div>
   );
 }

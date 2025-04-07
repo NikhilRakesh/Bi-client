@@ -21,7 +21,7 @@ export default function ImageGalleryWithModal({
   const cookies = parseCookies();
   const access_token = cookies?.access_token;
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [displayImages, setDisplayImages] = useState(7); 
+  const [displayImages, setDisplayImages] = useState(7);
   const [images, setImages] = useState<images[]>([]);
   const [refresh, setRefresh] = useState(false);
   const [submit, setSubmit] = useState(false);
@@ -39,6 +39,10 @@ export default function ImageGalleryWithModal({
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    if (file && file.size > 1024 * 1024) {
+      toast.error("File size exceeds 1MB. Please upload a smaller file");
+      return;
+    }
     if (file) {
       setSelectedImage(file);
     }

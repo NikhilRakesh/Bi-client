@@ -4,6 +4,7 @@ import api, { get_api_form } from "@/lib/api";
 import { parseCookies } from "@/lib/cookies";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { AiOutlineUpload } from "react-icons/ai";
 import { IoIosAdd, IoIosAddCircle } from "react-icons/io";
 
@@ -79,6 +80,12 @@ export default function AddService() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
+      for (let i = 0; i < files.length; i++) {
+        if (files[i].size > 1024 * 1024) { 
+          toast.error("One or more files exceed the 1MB size limit.");
+          return; 
+        }
+      }
       const imageFiles = Array.from(files).map((file) => file);
       setServiceData((prevData) => ({
         ...prevData,

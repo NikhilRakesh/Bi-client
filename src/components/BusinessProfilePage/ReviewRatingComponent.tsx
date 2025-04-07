@@ -46,6 +46,12 @@ export default function ReviewRatingComponent({
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = e.target.files;
     if (fileList) {
+      for (let i = 0; i < fileList.length; i++) {
+        if (fileList[i].size > 1024 * 1024) {
+          toast.error("One or more files exceed the 1MB size limit.");
+          return;
+        }
+      }
       setImages([...images, ...Array.from(fileList)]);
     }
   };

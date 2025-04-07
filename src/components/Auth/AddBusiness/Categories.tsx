@@ -1,4 +1,5 @@
 "use client";
+import LoadingSpinner from "@/components/Common/LoadingSpinner";
 import CategorySkeleton from "@/components/Skeltons/CategorySkeleton";
 import api, { token_api } from "@/lib/api";
 import { parseCookies } from "@/lib/cookies";
@@ -11,6 +12,7 @@ interface Category {
   id: number;
   name: string;
 }
+
 interface specificCategories {
   cat_name: string;
   id: number;
@@ -33,6 +35,7 @@ export default function Categories() {
   const [suggestedCategories, setsuggestedCategories] = useState<Category[]>(
     []
   );
+  const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
 
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,12 +79,15 @@ export default function Categories() {
   };
 
   const getSpecificCategory = async (id: number) => {
+    setLoading(true);
     try {
       const response = await api.get(`users/get_descats/?gcid=${id}`);
       if (response.status === 200) {
         setspecificCategories(response.data);
+        setLoading(false);
       }
     } catch (error) {
+      setLoading(false);
       console.error("Unknown error:", error);
       throw error;
     }
@@ -92,6 +98,7 @@ export default function Categories() {
       toast.error("please select a specific category");
       return;
     }
+    setLoading(true);
     try {
       const response = await token_api(access_token).post(
         `users/add_descats/`,
@@ -99,9 +106,11 @@ export default function Categories() {
       );
       if (response.status === 200) {
         toast.success("Successfully Added Specific Categories");
+        setLoading(false);
         router.push(`/business-listing/add-business?step=5`);
       }
     } catch (error) {
+      setLoading(false);
       console.error("Unknown error:", error);
       throw error;
     }
@@ -244,6 +253,7 @@ export default function Categories() {
         </>
       )}
       <Toaster />
+      {loading && <LoadingSpinner />}
     </div>
   );
 }

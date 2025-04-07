@@ -4,7 +4,6 @@ import { CiStar } from "react-icons/ci";
 import { baseurl } from "@/lib/api";
 import { useEffect, useState } from "react";
 import CategoryCardSkelton from "../Skeltons/CategoryCardSkelton";
-import EnquiryModal from "./EnquiryModal";
 import FilterOptions from "./FilterOptions";
 import { parseCookies } from "@/lib/cookies";
 import Link from "next/link";
@@ -97,9 +96,6 @@ const CategoryCard: React.FC<CardProps> = ({
   category,
 }) => {
   const [browser, setBrowser] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [bid, setBid] = useState(0);
-  const handleCloseModal = () => setIsModalOpen(false);
   const [BusinessList, setBusinessList] = useState<BusinessCard>(BusinessLists);
   const cookies = parseCookies();
   const access_token = cookies?.access_token;
@@ -126,12 +122,6 @@ const CategoryCard: React.FC<CardProps> = ({
     const truncatedUrl = urlWithDashes.split(",")[0];
     window.open(truncatedUrl, "_blank");
   };
-
-  function handleEnquiry(id: number, e: React.MouseEvent) {
-    e.stopPropagation();
-    setBid(id);
-    setIsModalOpen(true);
-  }
 
   const handleLinkClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -346,12 +336,6 @@ const CategoryCard: React.FC<CardProps> = ({
             </p>
           </div>
         )}
-
-        <EnquiryModal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          bid={bid}
-        />
       </div>
     </div>
   );

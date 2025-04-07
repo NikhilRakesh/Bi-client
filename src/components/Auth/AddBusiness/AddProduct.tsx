@@ -4,6 +4,7 @@ import api, { get_api_form } from "@/lib/api";
 import { parseCookies } from "@/lib/cookies";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
+import { Toaster } from "react-hot-toast";
 import { FaArrowUp } from "react-icons/fa";
 import { IoIosAddCircle } from "react-icons/io";
 
@@ -65,6 +66,12 @@ export default function AddProduct() {
       if (files.length + productData.images.length > 5) {
         setImageError("You can only upload up to 5 images.");
       } else {
+        for (let i = 0; i < files.length; i++) {
+          if (files[i].size > 1024 * 1024) { 
+            setImageError("One or more files exceed the 1MB size limit.");
+            return; 
+          }
+        }
         const selectedImages = Array.from(files).map((file) => file);
 
         setProductData((prevData) => ({
@@ -542,6 +549,7 @@ export default function AddProduct() {
         </div>
       )}
       {loading && <LoadingSpinner />}
+      <Toaster/>
     </div>
   );
 }

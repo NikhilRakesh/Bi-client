@@ -333,7 +333,7 @@ export default function OfferModal({
                     Expiry Date: <strong>{offer.valid_upto}</strong>
                   </span>
                 </div>
-                <div className="flex flex-col gap-5 absolute top-5 right-6">
+                <div className="flex flex-col gap-5 absolute top-7 md:top-5 right-6">
                   <button onClick={() => handleEditClick(offer)}>
                     <FaRegEdit className="text-gray-600" />
                   </button>

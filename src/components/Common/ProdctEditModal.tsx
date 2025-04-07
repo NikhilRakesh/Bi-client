@@ -2,7 +2,7 @@
 
 import { FaTimes, FaPlus, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useCallback, useEffect, useState } from "react";
-import api, { baseurl, get_api_form, token_api } from "@/lib/api";
+import { baseurl, get_api_form, token_api } from "@/lib/api";
 import { CiCircleRemove, CiImageOn } from "react-icons/ci";
 import { FiCheckCircle, FiUpload } from "react-icons/fi";
 import { parseCookies } from "@/lib/cookies";
@@ -199,8 +199,8 @@ export default function ProdctEditModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30">
-      <div className="relative w-full max-w-4xl bg-white rounded-2xl overflow-hidden shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center min-h-screen justify-center p-4 bg-black/30">
+      <div className="relative w-full max-w-4xl bg-white rounded-2xl overflow-y-auto shadow-2xl">
         <div className="absolute top-4  right-4 flex justify-between items-center z-10">
           <div className="flex space-x-2">
             <button

@@ -6,11 +6,11 @@ import { baseurl } from "@/lib/api";
 interface Data {
   name: string;
   description: string;
-  product_images: { image: string }[];
+  service_images: { image: string; }[];
   price: string;
 }
 
-export default function ProductDetailPage({
+export default function ServiceDetailPage({
   onClose,
   itemdata,
 }: {
@@ -21,7 +21,7 @@ export default function ProductDetailPage({
     name: itemdata.name,
     description: itemdata.description,
     price: itemdata.price,
-    images: itemdata.product_images,
+    images: itemdata.service_images,
   });
 
   const [activeImage, setActiveImage] = useState(0);

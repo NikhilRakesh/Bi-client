@@ -241,6 +241,7 @@ const Profile = () => {
                       </div>
 
                       <div className="flex md:hidden absolute bottom-2 right-10 justify-end w-full md:w-auto">
+                      {business?.plan?.plan_name === "Default Plan" ? (
                         <button
                           onClick={pricingPage}
                           className="bg-yellow-500 text-white h-fit px-6 py-1 text-sm rounded-lg flex items-center hover:bg-yellow-600 transition-colors shadow-lg"
@@ -248,6 +249,18 @@ const Profile = () => {
                           <FaBullhorn className="mr-2" />
                           Promote Business
                         </button>
+                          ) : (
+                            <div className=" text-black h-fit px-6 py-1 rounded-md flex gap-2 items-center ">
+                            <img
+                              src="/verified-user.png"
+                              className="w-5 h-5"
+                              alt=""
+                            />
+                            <span className="font-ubuntu font-semibold">
+                              {business?.plan?.plan_name}
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

@@ -120,16 +120,19 @@ interface mostsearchedproducts {
   price: string;
   searched: number;
 }
+
 interface mostsearchedservices {
   id: number;
   name: string;
   price: string;
   searched: number;
 }
+
 interface visits {
   date: string;
   count: number;
 }
+
 interface analytics {
   average_time_spend: string;
   keywords: [];
@@ -337,10 +340,11 @@ export default function BusinessProfile() {
     getDeviceLocation();
   }
 
-  const filteredKeywords =
-    analyticsData?.keywords?.filter((keyword: string) =>
-      keyword.toLowerCase().includes(searchQuery.toLowerCase())
-    ) || [];
+  const filteredKeywords = Array.isArray(analyticsData?.keywords)
+    ? analyticsData.keywords.filter((keyword: string) =>
+        keyword.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
 
   const visibleKeywords = expanded
     ? filteredKeywords

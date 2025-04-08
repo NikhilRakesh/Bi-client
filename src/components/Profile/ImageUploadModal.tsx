@@ -3,7 +3,7 @@ import { get_api_form } from "@/lib/api";
 import { parseCookies } from "@/lib/cookies";
 import { useSearchParams } from "next/navigation";
 import React, { useState } from "react";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { FaImage } from "react-icons/fa";
 
 interface ImageUploadModalProps {
@@ -27,9 +27,19 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > 1024 * 1024) {
+        toast.error("File size exceeds 1MB. Please upload a smaller file");
+        return;
+      }
       setSelectedImage(file);
     }
   };
+
+
+  function closeModal(){
+    setSelectedImage(null)
+    onClose()
+  }
 
   const uploadImage = async () => {
     if (selectedImage) {
@@ -61,7 +71,7 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
           <div className="bg-white p-6 rounded-md w-96">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold">Upload Image</h2>
-              <button onClick={onClose} className="text-gray-500 text-xl">
+              <button onClick={closeModal} className="text-gray-500 text-xl">
                 &times;
               </button>
             </div>
@@ -99,7 +109,7 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
 
             <div className="mt-4 flex justify-between items-center gap-3">
               <button
-                onClick={onClose}
+                onClick={closeModal}
                 className="bg-gray-800 w-6/12 text-white py-2 px-4 rounded-md"
               >
                 Close
@@ -112,6 +122,7 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
               </button>
             </div>
           </div>
+          <Toaster/>
         </div>
       )}
     </>

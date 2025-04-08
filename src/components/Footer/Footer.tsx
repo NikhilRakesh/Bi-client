@@ -159,7 +159,7 @@ export default function Footer() {
               </li> */}
               <li>brandsinfoguide@gmail.com</li>
               <li>+91 90957 30182</li>
-              <li>Maniyakarampalayam Road, Tirupur, TamilNadu</li>
+              <li>MG Pudhur,  kRC Complex 1st Floor, Tirupur, TamilNadu, 641606</li>
             </ul>
           </div>
 

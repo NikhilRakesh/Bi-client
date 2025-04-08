@@ -295,6 +295,7 @@ export default function BusinessProfile() {
         );
 
         if (response.status === 200) {
+          render()
           toast.success("Location added successfully!");
         } else {
           toast.error("Failed to add location.");

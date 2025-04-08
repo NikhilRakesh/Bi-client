@@ -142,7 +142,7 @@ export default async function CategoryList({
       <CategoryHeader city={city} category={category} />
       <div className="md:mt-[90px] mt-[100px] min-h-screen">
         {/* <CategoryBanner /> */}
-        <div className=" bg-white font-ubuntuMedium md:text-3xl text-gray-600 pt-2 md:py-4 md:px-10 px-5 text-left">
+        <div className=" bg-white font-ubuntuMedium md:text-3xl  text-gray-600 pt-2 md:py-4 md:px-10 px-5 text-left">
           <h1>
             Popular {category} in {city}
           </h1>

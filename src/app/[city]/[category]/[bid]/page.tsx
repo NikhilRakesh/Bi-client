@@ -180,7 +180,9 @@ export default async function BusinessProfilePage({
               <div className="mt-6 flex justify-between  items-center gap-2 ">
                 <button
                   className={`flex ${
-                    BusinessProfileData?.buisness?.plan?.whatsapp_chat&&BusinessProfileData?.buisness?.plan?.google_map&& BusinessProfileData?.buisness?.latittude &&
+                    BusinessProfileData?.buisness?.plan?.whatsapp_chat &&
+                    BusinessProfileData?.buisness?.plan?.google_map &&
+                    BusinessProfileData?.buisness?.latittude &&
                     BusinessProfileData?.buisness?.longitude
                       ? "w-4/12"
                       : "w-full"
@@ -199,8 +201,7 @@ export default async function BusinessProfilePage({
                     number={BusinessProfileData?.buisness?.whatsapp_number}
                   />
                 )}
-                {
-                  BusinessProfileData?.buisness?.plan?.google_map &&
+                {BusinessProfileData?.buisness?.plan?.google_map &&
                   BusinessProfileData?.buisness?.latittude &&
                   BusinessProfileData?.buisness?.longitude && (
                     <LocationButton
@@ -261,7 +262,7 @@ export default async function BusinessProfilePage({
                   <div className="flex items-center space-x-2">
                     <FaGlobe className="text-gray-600" size={20} />
                     <a
-                      href={BusinessProfileData?.buisness?.web_link}
+                      href={`https://${BusinessProfileData?.buisness?.web_link}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="md:text-lg text-blue-600 hover:text-blue-700"
@@ -273,7 +274,7 @@ export default async function BusinessProfilePage({
                 <div className="flex items-center space-x-4">
                   {BusinessProfileData?.buisness?.facebook_link && (
                     <a
-                      href={BusinessProfileData?.buisness?.facebook_link}
+                      href={`https://${BusinessProfileData?.buisness?.facebook_link}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -285,7 +286,7 @@ export default async function BusinessProfilePage({
                   )}
                   {BusinessProfileData?.buisness?.instagram_link && (
                     <a
-                      href={BusinessProfileData?.buisness?.instagram_link}
+                      href={`https://${BusinessProfileData?.buisness?.instagram_link}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -297,7 +298,7 @@ export default async function BusinessProfilePage({
                   )}
                   {BusinessProfileData?.buisness?.x_link && (
                     <a
-                      href={BusinessProfileData?.buisness?.x_link}
+                      href={`https://${BusinessProfileData?.buisness?.x_link}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -306,7 +307,7 @@ export default async function BusinessProfilePage({
                   )}
                   {BusinessProfileData?.buisness?.youtube_link && (
                     <a
-                      href={BusinessProfileData?.buisness?.youtube_link}
+                      href={`https://${BusinessProfileData?.buisness?.youtube_link}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

@@ -185,7 +185,7 @@ export default function ServiceEditModal({
       if (response.status === 200) {
         render();
         setLoading(false);
-        toast.success("Product Edite Successfully");
+        toast.success("Service Edited Successfully");
         onClose();
       }
     } catch (error) {

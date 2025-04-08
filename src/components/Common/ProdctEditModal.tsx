@@ -183,7 +183,7 @@ export default function ProdctEditModal({
       if (response.status === 200) {
         render();
         setLoading(false);
-        toast.success("Product Edite Successfully");
+        toast.success("Product Edited Successfully");
         onClose();
       }
     } catch (error) {

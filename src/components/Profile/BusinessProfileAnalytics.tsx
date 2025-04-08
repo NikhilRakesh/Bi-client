@@ -147,47 +147,121 @@ export default function BusinessProfileAnalytics({
             </div>
           </div>
 
-          <div className="md:flex hidden items-center space-x-6 md:space-x-4">
-            {businessData?.score && (
-              <ProfileScore score={businessData?.score} />
-            )}
-            <div>
-              <h1 className="text-xl font-semibold font-ubuntuMedium text-gray-800">
-                Increase score for visibility
-              </h1>
-              <p className="text-gray-500">
-                Boost your visibility by increasing your profile score.
-              </p>
-            </div>
-            <div>
+          <div className="hidden md:flex items-center justify-between p-4 gap-3 rounded-2xl ">
+            {businessData?.score ? (
+              businessData.score === "100" ? (
+                <div className="flex items-center space-x-3">
+                  <div className="relative">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg">
+                      <span className="text-white font-bold text-xl">100</span>
+                    </div>
+                    <div className="absolute -top-1 -right-1 bg-white rounded-full p-1 shadow-md">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 text-emerald-500"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div>
+                    <h1 className="text-xl font-semibold text-gray-900">
+                      Perfect Score Achieved!
+                    </h1>
+                    <p className="text-gray-600">
+                      Your profile has maximum visibility
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center ">
+                  <ProfileScore score={businessData.score} />
+                  <div>
+                    <h1 className="text-xl font-semibold text-gray-800">
+                      Increase score for visibility
+                    </h1>
+                    <p className="text-gray-500">
+                      Boost your visibility by improving your profile score
+                    </p>
+                  </div>
+                </div>
+              )
+            ) : null}
+
+            {businessData?.score !== "100" && (
               <button
-                onClick={() => handleScrollToChildDiv()}
-                className="mt-2 bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-300"
+                onClick={handleScrollToChildDiv}
+                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 shadow-md"
               >
                 Increase Score
               </button>
-            </div>
+            )}
           </div>
-          <div className="md:hidden flex flex-col justify-start items-start  relative">
-            <div className="flex absolute right-0 bottom-[-45px]">
-              {businessData?.score && (
-                <MobileProfileScore score={businessData?.score} />
-              )}
-            </div>
-            <div>
-              <h1 className="md:text-xl font-semibold font-ubuntuMedium text-gray-800">
-                Increase score for visibility
+
+          <div className="md:hidden flex flex-col justify-start items-start relative p-4">
+            <div className="w-full">
+              <h1 className="text-lg font-ubuntuMedium font-semibold text-gray-800 mb-1">
+                {businessData?.score === "100"
+                  ? "Perfect Score Achieved!"
+                  : "Increase score for visibility"}
               </h1>
-              <p className="text-gray-500 text-xs">
-                Boost your visibility by increasing your profile score.
+              <p className="text-gray-500 text-sm font-ubuntu">
+                {businessData?.score === "100"
+                  ? "Your profile has maximum visibility"
+                  : "Boost your visibility by increasing your profile score"}
               </p>
             </div>
-            <div className="flex ">
-              <button  onClick={() => handleScrollToChildDiv()} className="mt-2 text-sm bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-300">
+
+            {businessData?.score && (
+              <div
+                className={`absolute ${
+                  businessData.score === "100"
+                    ? "right-0 top-0"
+                    : "right-[-30] top-[-30]"
+                }`}
+              >
+                {businessData.score === "100" ? (
+                  <div className="relative">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg">
+                      <span className="text-white font-bold text-sm">100</span>
+                    </div>
+                    <div className="absolute -top-1 -right-1 bg-white rounded-full p-0.5 shadow-md">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 text-emerald-500"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                ) : (
+                  <MobileProfileScore score={businessData.score} />
+                )}
+              </div>
+            )}
+
+            {businessData?.score !== "100" && (
+              <button
+                onClick={handleScrollToChildDiv}
+                className="mt-3 text-sm bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-300 w-full"
+              >
                 Increase Score
               </button>
-            </div>
+            )}
           </div>
+
         </div>
       </div>
       {businessData.plan.profile_visit && (

@@ -59,7 +59,7 @@ export default function HomePage({
   const cookies = parseCookies();
   const city_cookie = cookies?.city_cookie;
   const [cityName, setCityName] = useState<string>(
-    city_cookie ? city_cookie : city || "kollam"
+    city_cookie ? city_cookie : city || "Tiruppur"
   );
   const [browser, setBrowser] = useState(false);
 

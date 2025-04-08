@@ -330,7 +330,7 @@ const CategoryCard: React.FC<CardProps> = ({
             </div>
           ))
         ) : (
-          <div className="text-gray-700 h-full w-full flex justify-center items-center mt-32">
+          <div className="text-gray-700 h-full w-full min-h-screen flex justify-center mt-40 ">
             <p className="font-ubuntuMedium md:text-3xl text-xl ">
               No Result For {category} in {city}
             </p>

@@ -3,8 +3,8 @@ import BusinessListing from "@/components/BusinessListingIcon/BusinessListingIco
 import Footer from "@/components/Footer/Footer";
 import Header from "@/components/Header/Header";
 import HilightedBusiness from "@/components/HilightedBusiness/HilightedBusiness";
-// import BestDealers from "@/components/Products/BestDealers";
-// import RandomCategories from "@/components/RandomCategories/RandomCategories";
+  import BestDealers from "@/components/Products/BestDealers";
+  import RandomCategories from "@/components/RandomCategories/RandomCategories";
 import TopCities from "@/components/TopCities/TopCities";
 import { parseCookies, setcityCookie } from "@/lib/cookies";
 import Image from "next/image";
@@ -112,10 +112,10 @@ export default function HomePage({
     tittle: item.title,
   }));
 
-  // const subcatData = HomeData.sections[1]?.data.map((item) => ({
-  //   name: item.name,
-  //   tittle: item.title,
-  // }));
+  const subcatData = HomeData.sections[1]?.data.map((item) => ({
+    name: item.name,
+    tittle: item.title,
+  }));
 
   const cityData = HomeData.sections[3]?.data.map((item) => ({
     image: item.image,
@@ -123,11 +123,11 @@ export default function HomePage({
     tittle: item.title,
   }));
 
-  // const productData = HomeData.sections[2]?.data.map((item) => ({
-  //   name: item.name,
-  //   image: item.image,
-  //   tittle: item.title,
-  // }));
+  const productData = HomeData.sections[2]?.data.map((item) => ({
+    name: item.name,
+    image: item.image,
+    tittle: item.title,
+  }));
 
   
 
@@ -170,9 +170,9 @@ export default function HomePage({
         </div>
       </div>
       <HilightedBusiness images={adsData} Gencat={gencatData} city={cityName} />
-      {/* <RandomCategories SubCat={subcatData} city={cityName} /> */}
+      <RandomCategories SubCat={subcatData} city={cityName} />
       <TopCities Cities={cityData} />
-      {/* <BestDealers Products={productData} city={cityName} /> */}
+      <BestDealers Products={productData} city={cityName} />
       <Footer />
       <BusinessListing />
     </div>

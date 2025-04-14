@@ -27,7 +27,7 @@ const Card: React.FC<CardProps> = ({ data, onClick }) => {
     >
       <div className="relative">
         <img
-          src={baseurl + data?.service_images[0].image}
+          src={baseurl + data?.service_images[0]?.image}
           alt={data.name}
           className="w-full h-48 object-cover rounded-t-xl transition-transform duration-500 ease-in-out transform hover:scale-105"
         />

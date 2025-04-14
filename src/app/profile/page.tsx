@@ -8,6 +8,7 @@ import ProfileNav from "@/components/Profile/ProfileNav";
 import ProfileScore from "@/components/Profile/ProfileScore";
 import { baseurl, token_api } from "@/lib/api";
 import { parseCookies } from "@/lib/cookies";
+import { WebSocketProvider } from "@/lib/WebSocketContext";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FaPlus, FaBullhorn, FaEye } from "react-icons/fa";
@@ -123,7 +124,9 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-indigo-50 to-sky-50 md:p-8 p-4 font-ubuntu overflow-x-hidden">
-      <ProfileHeader />
+      <WebSocketProvider>
+        <ProfileHeader />
+      </WebSocketProvider>
       <button
         onClick={BackButton}
         className="text-gray-600 font-ubuntu py-2 flex items-center gap-2 cursor-pointer"
@@ -241,16 +244,16 @@ const Profile = () => {
                       </div>
 
                       <div className="flex md:hidden absolute bottom-2 right-10 justify-end w-full md:w-auto">
-                      {business?.plan?.plan_name === "Default Plan" ? (
-                        <button
-                          onClick={pricingPage}
-                          className="bg-yellow-500 text-white h-fit px-6 py-1 text-sm rounded-lg flex items-center hover:bg-yellow-600 transition-colors shadow-lg"
-                        >
-                          <FaBullhorn className="mr-2" />
-                          Promote Business
-                        </button>
-                          ) : (
-                            <div className=" text-black h-fit px-6 py-1 rounded-md flex gap-2 items-center ">
+                        {business?.plan?.plan_name === "Default Plan" ? (
+                          <button
+                            onClick={pricingPage}
+                            className="bg-yellow-500 text-white h-fit px-6 py-1 text-sm rounded-lg flex items-center hover:bg-yellow-600 transition-colors shadow-lg"
+                          >
+                            <FaBullhorn className="mr-2" />
+                            Promote Business
+                          </button>
+                        ) : (
+                          <div className=" text-black h-fit px-6 py-1 rounded-md flex gap-2 items-center ">
                             <img
                               src="/verified-user.png"
                               className="w-5 h-5"

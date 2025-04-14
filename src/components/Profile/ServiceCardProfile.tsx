@@ -175,7 +175,7 @@ export default function ServiceCardProfile({
                 <p className="text-sm text-white">{service.cat}</p>
               </div>
               <img
-                src={baseurl + service.service_images[0].image}
+                src={baseurl + service?.service_images[0]?.image}
                 alt={service.name}
                 className="w-full h-48 object-cover rounded-t-xl transition-transform duration-500 ease-in-out transform hover:scale-105"
               />

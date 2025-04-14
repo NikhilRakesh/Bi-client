@@ -16,8 +16,8 @@ const access_token = cookies?.access_token;
 interface WebSocketContextProps {
   socket: WebSocket | null;
   notificationCount: number;
-  notifications: string;
-  chatMessages: Array<any>;
+  // notifications: string;
+  // chatMessages: Array<any>;
 }
 
 interface WebSocketProviderProps {
@@ -41,14 +41,15 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 }) => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [notificationCount, setNotificationCount] = useState(0);
-  const [notifications, setNotifications] = useState("");
-  const [chatMessages, setChatMessages] = useState<Array<any>>([]);
+  // const [notifications, setNotifications] = useState("");
+  // const [chatMessages, setChatMessages] = useState<Array<any>>([]);
 
-  if (!access_token) return;
-
-  const socketUrl = `${WS_URL}?token=${access_token}`;
 
   useEffect(() => {
+    if (!access_token) {
+      return;
+    }
+    const socketUrl = `${WS_URL}?token=${access_token}`;
     const newSocket = new WebSocket(socketUrl);
 
     newSocket.onopen = () => {
@@ -59,9 +60,9 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       const data = JSON.parse(event?.data);
 
       switch (data.type) {
-        case "chat":
-          setChatMessages((prevMessages) => [...prevMessages, data]);
-          break;
+        // case "chat":
+        //   setChatMessages((prevMessages) => [...prevMessages, data]);
+        //   break;
         case "notification_count":
           setNotificationCount(data.count);
           console.log(`${data.count} Notifications`);
@@ -89,9 +90,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   }, [access_token]);
 
   return (
-    <WebSocketContext.Provider
-      value={{ socket, notifications, chatMessages, notificationCount }}
-    >
+    <WebSocketContext.Provider value={{ socket, notificationCount }}>
       {children}
     </WebSocketContext.Provider>
   );

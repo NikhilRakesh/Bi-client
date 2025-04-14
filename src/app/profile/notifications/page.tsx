@@ -13,17 +13,17 @@ import BackButton from "@/components/Common/BackButton";
 import { token_api } from "@/lib/api";
 import { parseCookies } from "@/lib/cookies";
 
-interface Notification {
-  buisness: string | null;
-  id: number;
-  is_read: boolean;
-  message: string;
-  timestamp: string;
-  user: number;
-}
+// interface Notification {
+//   buisness: string | null;
+//   id: number;
+//   is_read: boolean;
+//   message: string;
+//   timestamp: string;
+//   user: number;
+// }
 
 export default function PremiumNotifications() {
-  const [notifications, setNotifications] = useState([
+  const [notifications] = useState([
     {
       id: 1,
       title: "Profile Completion Bonus",
@@ -93,7 +93,6 @@ export default function PremiumNotifications() {
       const response = await token_api(access_token).get(
         "communications/notifications/"
       );
-      const data = await response.data;
       console.log(response.data);
     } catch (error) {
       console.error("Error fetching enquiries:", error);

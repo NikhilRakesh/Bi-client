@@ -5,6 +5,7 @@ import ProfileNav from "@/components/Profile/ProfileNav";
 import BookMarkSkelton from "@/components/Skeltons/BookMarkSkelton";
 import { baseurl, token_api } from "@/lib/api";
 import { parseCookies } from "@/lib/cookies";
+import { WebSocketProvider } from "@/lib/WebSocketContext";
 import { useEffect, useState } from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
 
@@ -62,7 +63,9 @@ export default function BookMarkPage() {
 
   return (
     <div className=" py-8 bg-gradient-to-r from-indigo-100 to-sky-100 px-6  bg-white min-h-screen font-ubuntuMedium">
-      <ProfileHeader />
+      <WebSocketProvider>
+        <ProfileHeader />
+      </WebSocketProvider>
       <ProfileNav business={"BookMarks"} />
 
       <div className="">

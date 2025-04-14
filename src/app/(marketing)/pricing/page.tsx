@@ -1,10 +1,13 @@
+import BPlan from "@/components/Auth/AddBusiness/BPlan";
 import Footer from "@/components/Footer/Footer";
-import PricingPage from "@/components/package/PricingPage";
+import { Suspense } from "react";
 
 export default function Plan() {
   return (
     <div>
-      <PricingPage />
+      <Suspense fallback={<div>Loading...</div>}>
+        <BPlan />
+      </Suspense>
       <Footer />
     </div>
   );

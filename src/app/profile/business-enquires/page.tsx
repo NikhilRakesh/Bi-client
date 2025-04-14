@@ -5,6 +5,7 @@ import ProfileNav from "@/components/Profile/ProfileNav";
 import EnquiresListSkelton from "@/components/Skeltons/EnquiresListSkelton";
 import { token_api } from "@/lib/api";
 import { parseCookies } from "@/lib/cookies";
+import { WebSocketProvider } from "@/lib/WebSocketContext";
 import React, { useEffect, useState } from "react";
 import { FaPhoneAlt, FaCalendarAlt, FaClock } from "react-icons/fa";
 import { FiMessageSquare } from "react-icons/fi";
@@ -55,7 +56,9 @@ export default function EnquiryList() {
 
   return (
     <div className="py-8 bg-gradient-to-r md:px-10 px-2 from-indigo-100 to-sky-100  bg-white  rounded-2xl shadow-lg font-ubuntu min-h-screen">
-      <ProfileHeader />
+      <WebSocketProvider>
+        <ProfileHeader />
+      </WebSocketProvider>
       <div className="md:px-6 mb-6">
         <h1 className="text-4xl font-bold font-ubuntuMedium text-gray-800">
           Enquiries

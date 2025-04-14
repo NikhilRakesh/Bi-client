@@ -36,6 +36,7 @@ import BackButton from "../Common/BackButton";
 import { MdOutlineInfo } from "react-icons/md";
 import LocationWarningModal from "./LocationWarningModal";
 import BusinessCatAdd from "./BusinessCatAdd";
+import { WebSocketProvider } from "@/lib/WebSocketContext";
 
 interface PlanDetails {
   bi_assured: boolean;
@@ -295,7 +296,7 @@ export default function BusinessProfile() {
         );
 
         if (response.status === 200) {
-          render()
+          render();
           toast.success("Location added successfully!");
         } else {
           toast.error("Failed to add location.");
@@ -367,7 +368,9 @@ export default function BusinessProfile() {
 
   return (
     <div className="bg-gradient-to-r h-screen from-indigo-100 to-sky-100 overflow-x-hidden  bg-white shadow-2xl rounded-2xl px-4 md:px-8 py-5 font-ubuntu ">
-      <ProfileHeader />
+      <WebSocketProvider>
+        <ProfileHeader />
+      </WebSocketProvider>
       <BackButton />
 
       <div className="flex items-center space-x-6 mt-5 group ">

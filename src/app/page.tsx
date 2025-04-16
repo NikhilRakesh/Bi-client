@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Home({ city }: { city: string }) {
-  const HomeData = await api.get(`users/home/`).then((res) => res.data);
+  const HomeData = await api.get(`users/home/`).then((res) => res?.data);
 
 
   return (

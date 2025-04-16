@@ -44,7 +44,6 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   // const [notifications, setNotifications] = useState("");
   // const [chatMessages, setChatMessages] = useState<Array<any>>([]);
 
-
   useEffect(() => {
     if (!access_token) {
       return;
@@ -58,14 +57,14 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
     newSocket.onmessage = (event) => {
       const data = JSON.parse(event?.data);
+      console.log("data", data?.event);
 
-      switch (data.type) {
+      switch (data?.event?.ntype) {
         // case "chat":
         //   setChatMessages((prevMessages) => [...prevMessages, data]);
         //   break;
         case "notification_count":
-          setNotificationCount(data.count);
-          console.log(`${data.count} Notifications`);
+          setNotificationCount(data?.event?.count);
           break;
         default:
           console.log("Unknown message type:", data);

@@ -3,9 +3,10 @@ import { parseCookies, setAccessTokenCookie } from "./cookies";
 const refreshToken = parseCookies().refresh_token;
 
 // export const baseurl = "https://mq459llx-8000.inc1.devtunnels.ms/";
-export const baseurl = "https://api.brandsinfo.in";
 // export const ws = "http://mq459llx-8000.inc1.devtunnels.ms/ws/notifications/";
-export const ws = baseurl+'ws/notifications/';
+
+export const baseurl = "https://api.brandsinfo.in";
+export const ws = baseurl+'/ws/notifications/';
 
 const api = axios.create({
   baseURL: `${baseurl}`,

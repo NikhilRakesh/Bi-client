@@ -1,6 +1,7 @@
 "use client";
 import api, { baseurl, get_api_form } from "@/lib/api";
 import { parseCookies } from "@/lib/cookies";
+import { AxiosResponse } from "axios";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -9,6 +10,10 @@ import { FaImage } from "react-icons/fa";
 interface images {
   image: string;
   buisness: number;
+}
+
+interface ApiResponse {
+  status: number;
 }
 
 export default function ImageGalleryWithModal({
@@ -25,7 +30,8 @@ export default function ImageGalleryWithModal({
   const [images, setImages] = useState<images[]>([]);
   const [refresh, setRefresh] = useState(false);
   const [submit, setSubmit] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [selectedMedia, setSelectedMedia] = useState<File | null>(null);
+  const [mediaType, setMediaType] = useState<string>("");
   const totalImages = images.length;
 
   const handleOpenModal = () => {
@@ -34,32 +40,50 @@ export default function ImageGalleryWithModal({
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setSelectedImage(null);
+    setSelectedMedia(null);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.size > 1024 * 1024) {
-      toast.error("File size exceeds 1MB. Please upload a smaller file");
-      return;
-    }
+    console.log(file);
+
     if (file) {
-      setSelectedImage(file);
+      if (file.type.startsWith("image/")) {
+        if (file.size > 1024 * 1024) {
+          toast.error("Image size exceeds 1MB. Please upload a smaller image.");
+          return;
+        }
+        setMediaType("image");
+        setSelectedMedia(file);
+      } else if (file.type.startsWith("video/")) {
+        setMediaType("video");
+        setSelectedMedia(file);
+      } else {
+        toast.error("Invalid file type. Please upload an image or video.");
+      }
     }
   };
 
   const uploadImage = async () => {
-    if (selectedImage) {
+    if (selectedMedia) {
       setSubmit(true);
+      let response: AxiosResponse<ApiResponse> | undefined;
       try {
-        const response = await get_api_form(access_token).post(
-          `users/buisness_pics/`,
-          { ["images"]: [selectedImage], ["buisness"]: bid }
-        );
+        if (mediaType === "image") {
+          response = await get_api_form(access_token).post(
+            `users/buisness_pics/`,
+            { ["images"]: [selectedMedia], ["buisness"]: bid }
+          );
+        } else if (mediaType === "video") {
+          response = await get_api_form(access_token).post(
+            `users/uploadvideo/`,
+            { ["video"]: selectedMedia, ["buisness"]: bid }
+          );
+        }
 
-        if (response.status === 201) {
+        if (response?.status === 201) {
           setSubmit(false);
-          setSelectedImage(null);
+          setSelectedMedia(null);
           setRefresh(!refresh);
           handleCloseModal();
         }
@@ -83,6 +107,7 @@ export default function ImageGalleryWithModal({
       toast.error("Something went wrong, please try again.");
     }
   };
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -116,7 +141,7 @@ export default function ImageGalleryWithModal({
             onClick={handleOpenModal}
             className="bg-black text-gray-300 py-2 px-4 rounded-md flex items-center"
           >
-            <FaImage className="mr-2" /> Add Image
+            <FaImage className="mr-2" /> Add Media
           </button>
         )}
       </div>
@@ -179,13 +204,21 @@ export default function ImageGalleryWithModal({
               </button>
             </div>
 
-            {selectedImage ? (
+            {selectedMedia ? (
               <div className="mt-4 flex justify-center">
-                <img
-                  src={URL.createObjectURL(selectedImage)}
-                  alt="Selected"
-                  className="w-48 h-48 object-cover rounded-md"
-                />
+                {mediaType === "image" ? (
+                  <img
+                    src={URL.createObjectURL(selectedMedia)}
+                    alt="Selected"
+                    className="w-48 h-48 object-cover rounded-md"
+                  />
+                ) : mediaType === "video" ? (
+                  <video
+                    className="w-full h-full object-cover rounded-md"
+                    controls
+                    src={URL.createObjectURL(selectedMedia)}
+                  />
+                ) : null}
               </div>
             ) : (
               <div className="mt-4 flex cursor-pointer justify-center items-center">
@@ -193,7 +226,7 @@ export default function ImageGalleryWithModal({
                   <FaImage className="text-4xl text-gray-600" />
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/*,video/*"
                     onChange={handleImageChange}
                     className="hidden"
                   />

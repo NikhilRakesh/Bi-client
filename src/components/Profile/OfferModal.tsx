@@ -57,6 +57,7 @@ export default function OfferModal({
     ""
   );
   const [validUpto, setValidUpto] = useState("");
+  const [offerError, setOfferError] = useState("");
   const [offerValue, setOfferValue] = useState<number | string>("");
   const [selectedOffer, setSelectedOffer] = useState<Offerwithid | null>(null);
   const cookies = parseCookies();
@@ -64,6 +65,9 @@ export default function OfferModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!offerError) {
+      return;
+    }
 
     const newOffer: Offer = {
       offer_type: offerType,
@@ -167,6 +171,15 @@ export default function OfferModal({
     }
   }
 
+  function inputOffer(e: React.ChangeEvent<HTMLInputElement>) {
+    if (offerType === "Percentage" && Number(e.target.value) > 100) {
+      setOfferError("Percentage value cannot exceed 100%");
+    } else {
+      setOfferError("");
+    }
+    setOfferValue(e.target.value);
+  }
+
   return (
     <div className="md:px-8 font-ubuntu">
       {offerDatas.length === 0 && (
@@ -219,10 +232,11 @@ export default function OfferModal({
                     type="number"
                     id="offer"
                     value={offerValue}
-                    onChange={(e) => setOfferValue(e.target.value)}
+                    onChange={inputOffer}
                     className="mt-1 p-2 border outline-orange-600 no-arrows border-gray-300 rounded w-full"
                     required
                   />
+                  <p className="text-red-500 text-xs">{offerError}</p>
                 </div>
               )}
 

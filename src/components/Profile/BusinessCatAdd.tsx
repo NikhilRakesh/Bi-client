@@ -105,7 +105,7 @@ export default function BusinessCatAdd({ dcat, bid, render }: BusinessCatAdd) {
           </h2>
           <button
             onClick={() => setIsCatModalOpen(true)}
-            className="flex items-center text-sm gap-2 px-4 md:py-2 py-1 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors"
+            className="flex items-center text-xs md:text-sm gap-2 md:px-4 px-2 md:py-2 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors"
           >
             <FiPlus /> Add Categories
           </button>
@@ -116,9 +116,9 @@ export default function BusinessCatAdd({ dcat, bid, render }: BusinessCatAdd) {
             {dcat.map((category, index) => (
               <div
                 key={index}
-                className="flex justify-between items-center bg-gray-50 rounded-xl md:p-4 p-1 border border-gray-200"
+                className="flex justify-between items-center bg-gray-50 rounded-xl md:p-4 p-2 border border-gray-200"
               >
-                <span className="font-medium text-gray-800">
+                <span className="font-medium md:text-sm text-xs text-gray-800">
                   {category.cat_name}
                 </span>
                 <button

@@ -2,15 +2,15 @@
 import { useState } from "react";
 
 interface Offerwithid {
-    offer_type: string;
-    minimum_bill_amount: number;
-    valid_upto: string;
-    is_percent: boolean;
-    is_flat: boolean;
-    buisness: string | null;
-    offer: number;
-    id: number;
-  }
+  offer_type: string;
+  minimum_bill_amount: number;
+  valid_upto: string;
+  is_percent: boolean;
+  is_flat: boolean;
+  buisness: string | null;
+  offer: number;
+  id: number;
+}
 
 export default function EditOfferModal({
   onClose,
@@ -22,14 +22,24 @@ export default function EditOfferModal({
   onSave: (updatedOffer: Offerwithid) => void;
 }) {
   const [updatedOffer, setUpdatedOffer] = useState<Offerwithid>(offer);
+  const [offerError, setOfferError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
+    if (offer.is_percent && name === "offer") {
+      if (Number(value) > 100) {
+        setOfferError("Percentage value cannot exceed 100%");
+      } else {
+        setOfferError("");
+      }
+    }
     setUpdatedOffer((prev: Offerwithid) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (offerError) return;
     onSave(updatedOffer);
     onClose();
   };
@@ -42,7 +52,7 @@ export default function EditOfferModal({
           <div className="mb-3">
             <label className="block text-gray-700">Offer Value</label>
             <input
-              type="number"
+              type="text"
               name="offer"
               value={updatedOffer.offer}
               onChange={handleChange}
@@ -53,13 +63,14 @@ export default function EditOfferModal({
           <div className="mb-3">
             <label className="block text-gray-700">Minimum Bill Amount</label>
             <input
-              type="number"
+              type="text"
               name="minimum_bill_amount"
               value={updatedOffer.minimum_bill_amount}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded"
               required
             />
+            <p className="text-red-500 text-xs">{offerError}</p>
           </div>
           <div className="mb-3">
             <label className="block text-gray-700">Expiry Date</label>

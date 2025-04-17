@@ -373,12 +373,12 @@ export default function BusinessProfile() {
       </WebSocketProvider>
       <BackButton />
 
-      <div className="flex items-center space-x-6 mt-5 group ">
-        <div className="relative rounded-full overflow-hidden">
+      <div className="flex items-center space-x-6 mt-5  ">
+        <div className="relative rounded-full h-fit overflow-hidden ">
           <img
             src={baseurl + businessData.image}
             alt={businessData?.name}
-            className="object-cover  w-24 h-24 rounded-sm shadow-xl transform group-hover:scale-110 transition duration-300"
+            className="object-cover  w-24 h-24 rounded-full shadow-xl transform transition duration-300"
           />
           <div className="absolute bottom-0 left-0 cursor-pointer right-0 flex justify-center items-center bg-gray-800 bg-opacity-50 rounded-b-full p-1">
             <AiOutlineEdit
@@ -387,11 +387,12 @@ export default function BusinessProfile() {
             />
           </div>
         </div>
-        <div>
-          <h1 className="text-4xl font-semibold font-ubuntuMedium text-gray-800 transition duration-300">
+
+        <div >
+          <h1 className="md:text-4xl text-2xl font-semibold font-ubuntuMedium text-gray-800 transition duration-300">
             {businessData?.name}
           </h1>
-          <p className="text-lg text-gray-600 font-ubuntu">
+          <p className="md:text-lg text-sm text-gray-600 font-ubuntu">
             Business Type : {businessData?.buisness_type}
           </p>
           {businessData?.since && (
@@ -415,10 +416,10 @@ export default function BusinessProfile() {
             <div className="mb-8">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900">
+                  <h3 className="md:text-xl font-ubuntuMedium font-semibold text-gray-900">
                     Keywords That The Account Was Shown For
                   </h3>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="md:text-sm text-xs text-gray-500 mt-1">
                     Keywords that triggered your content in search results
                   </p>
                 </div>
@@ -447,11 +448,11 @@ export default function BusinessProfile() {
                         key={index}
                         className="bg-white border border-gray-200 rounded-lg p-4 hover:border-blue-300 hover:shadow-sm transition-all"
                       >
-                        <div className="flex items-start">
+                        <div className="flex items-start ">
                           <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-2">
                             {index + 1}
                           </span>
-                          <span className="font-medium text-gray-800 break-words">
+                          <span className="font-medium md:text-base text-xs text-gray-800 break-words">
                             {keyword}
                           </span>
                         </div>
@@ -485,7 +486,7 @@ export default function BusinessProfile() {
           )}
 
         <div className="mb-6">
-          <h3 className="md:text-2xl text-lg font-semibold text-gray-800 mb-4">
+          <h3 className="md:text-2xl text-lg font-ubuntuMedium font-semibold text-gray-800 mb-4">
             Social Media Platforms
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -517,11 +518,11 @@ export default function BusinessProfile() {
             ].map((social, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 md:p-4 p-1 rounded-lg shadow-lg"
+                className="flex items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 md:p-4 p-2 rounded-lg shadow-lg"
               >
                 <div className="flex items-center space-x-2">
-                  <span className="text-xl text-gray-700">{social.icon}</span>
-                  <span className="text-gray-700 font-medium">
+                  <span className="md:text-xl text-gray-700">{social.icon}</span>
+                  <span className="md:text-base text-xs text-gray-700 font-medium">
                     {social.platform}
                   </span>
                 </div>
@@ -530,7 +531,7 @@ export default function BusinessProfile() {
                     href={social.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-500 text-sm"
+                    className="text-blue-500 md:text-sm text-xs"
                   >
                     {`Link`}{" "}
                   </a>
@@ -553,7 +554,7 @@ export default function BusinessProfile() {
         </div>
 
         <div className="mb-6">
-          <h3 className="md:text-2xl text-xl font-semibold text-gray-800 mb-4">
+          <h3 className="md:text-2xl text-xl font-ubuntuMedium font-semibold text-gray-800 mb-4">
             Business Information
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-4 gap-6">

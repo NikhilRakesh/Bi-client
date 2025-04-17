@@ -42,7 +42,7 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ images }) => {
   return (
     <div className="relative w-full rounded-lg overflow-hidden">
       <img
-        className="object-cover w-full h-[200px]"
+        className="object-cover w-full  md:h-[200px]"
         src={baseurl + images[currentIndex].banner}
         alt="carousel"
       />

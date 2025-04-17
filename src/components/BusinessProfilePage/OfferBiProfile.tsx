@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { FaPercent, FaTags } from "react-icons/fa"; // Importing icons for percentage and flat
+import { FaPercent, FaTags } from "react-icons/fa"; 
 
 interface Offer {
   buisness: number;

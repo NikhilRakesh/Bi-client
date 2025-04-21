@@ -3,8 +3,8 @@ import BusinessListing from "@/components/BusinessListingIcon/BusinessListingIco
 import Footer from "@/components/Footer/Footer";
 import Header from "@/components/Header/Header";
 import HilightedBusiness from "@/components/HilightedBusiness/HilightedBusiness";
-  import BestDealers from "@/components/Products/BestDealers";
-  import RandomCategories from "@/components/RandomCategories/RandomCategories";
+import BestDealers from "@/components/Products/BestDealers";
+import RandomCategories from "@/components/RandomCategories/RandomCategories";
 import TopCities from "@/components/TopCities/TopCities";
 import { parseCookies, setcityCookie } from "@/lib/cookies";
 import Image from "next/image";
@@ -66,8 +66,6 @@ export default function HomePage({
   async function getDeviceLocation() {
     if (city_cookie) return;
     try {
-      console.log("here");
-
       const position = await new Promise<Position>((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject);
       });
@@ -99,7 +97,7 @@ export default function HomePage({
   useEffect(() => {
     getDeviceLocation();
     setBrowser(true);
-  }, [city_cookie,cityName]);
+  }, [city_cookie, cityName]);
 
   const adsData = HomeData.sections[4]?.data.map((item) => ({
     banner: item.banner,
@@ -128,8 +126,6 @@ export default function HomePage({
     image: item.image,
     tittle: item.title,
   }));
-
-  
 
   if (!browser) return null;
 

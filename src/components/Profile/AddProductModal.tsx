@@ -66,6 +66,12 @@ export default function AddProductModal({
       if (files.length + productData.images.length > 5) {
         setImageError("You can only upload up to 5 images.");
       } else {
+        for (let i = 0; i < files.length; i++) {
+          if (files[i].size > 1024 * 1024) { 
+            setImageError("One or more files exceed 1MB .");
+            return; 
+          }
+        }
         const selectedImages = Array.from(files).map((file) => file);
 
         setProductData((prevData) => ({
@@ -240,7 +246,7 @@ export default function AddProductModal({
             />
 
             {imageError && (
-              <p className="text-red-500 font-ubuntu text-sm mt-2">
+              <p className="text-red-500 font-ubuntu text-xs mt-2">
                 {imageError}
               </p>
             )}

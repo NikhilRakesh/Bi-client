@@ -81,7 +81,7 @@ export default function ImageGalleryWithModal({
           );
         }
 
-        if (response?.status === 201) {
+        if (response?.status === 201 || 200) {
           setSubmit(false);
           setSelectedMedia(null);
           setRefresh(!refresh);
@@ -107,7 +107,6 @@ export default function ImageGalleryWithModal({
       toast.error("Something went wrong, please try again.");
     }
   };
-
 
   useEffect(() => {
     const handleResize = () => {

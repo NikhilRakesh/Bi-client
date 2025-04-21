@@ -182,21 +182,6 @@ const CategoryCard: React.FC<CardProps> = ({
                     alt={card.name}
                     className=" w-36 md:w-full h-full object-cover rounded-t-lg"
                   />
-                  {/* <div className="absolute top-0 w-full right-0 p-2 bg-gray-800 bg-opacity-30 rounded-tl-lg rounded-tr-lg flex gap-2 items-center">
-                  {card.assured && (
-                    <img
-                      className="w-16 mt-2"
-                      src="/Brandsinfo-assured.png"
-                      alt="Assured"
-                    />
-                  )}
-                  {card.rating !== 0 && (
-                    <div className="flex items-center  px-2 bg-gradient-to-r from-green-600 to-green-700 rounded-tr-lg rounded-bl-md text-white text-sm">
-                      <CiStar className="text-yellow-400" />
-                      <span>{formattedNumber(card.rating)}</span>
-                    </div>
-                  )}
-                </div> */}
                   <div className="absolute inset-0 bg-black bg-opacity-10 group-hover:bg-opacity-20 transition-all duration-300 rounded-lg"></div>
                 </div>
 

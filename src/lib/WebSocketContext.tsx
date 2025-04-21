@@ -13,11 +13,21 @@ const WS_URL = ws;
 const cookies = parseCookies();
 const access_token = cookies?.access_token;
 
+interface PaymentNotification {
+  business: string;
+  business_id: number;
+  extras: string;
+  message: string;
+  ntype: string;
+  timestamp: string;
+  title: string;
+  type: string;
+}
+
 interface WebSocketContextProps {
   socket: WebSocket | null;
   notificationCount: number;
-  // notifications: string;
-  // chatMessages: Array<any>;
+  PaymentMessage: PaymentNotification | null;
 }
 
 interface WebSocketProviderProps {
@@ -42,7 +52,8 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [notificationCount, setNotificationCount] = useState(0);
   // const [notifications, setNotifications] = useState("");
-  // const [chatMessages, setChatMessages] = useState<Array<any>>([]);
+  const [PaymentMessage, setPaymentMessage] =
+    useState<PaymentNotification | null>(null);
 
   useEffect(() => {
     if (!access_token) {
@@ -65,6 +76,9 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         //   break;
         case "notification_count":
           setNotificationCount(data?.event?.count);
+          break;
+        case "payment_status_update":
+          setPaymentMessage(data?.event);
           break;
         default:
           console.log("Unknown message type:", data);
@@ -89,7 +103,9 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   }, [access_token]);
 
   return (
-    <WebSocketContext.Provider value={{ socket, notificationCount }}>
+    <WebSocketContext.Provider
+      value={{ socket, notificationCount, PaymentMessage }}
+    >
       {children}
     </WebSocketContext.Provider>
   );

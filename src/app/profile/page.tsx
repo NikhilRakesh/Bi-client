@@ -92,9 +92,9 @@ const Profile = () => {
     router.push("/business-listing/add-business?step=1");
   };
 
-  const pricingPage = (e: React.MouseEvent) => {
+  const pricingPage = (e: React.MouseEvent, bid: number) => {
     e.stopPropagation();
-    router.push("/pricing");
+    router.push(`/pricing?bid=${bid}`);
   };
 
   const BusinessProfile = (bid: number) => {
@@ -223,7 +223,7 @@ const Profile = () => {
                       <div className="md:flex hidden justify-center sm:justify-end w-full md:w-auto">
                         {business?.plan?.plan_name === "Default Plan" ? (
                           <button
-                            onClick={pricingPage}
+                            onClick={(e) => pricingPage(e, business?.id)}
                             className="bg-yellow-500 text-white h-fit px-6 py-2 rounded-lg flex items-center hover:bg-yellow-600 transition-colors shadow-lg"
                           >
                             <FaBullhorn className="mr-2" />
@@ -246,7 +246,7 @@ const Profile = () => {
                       <div className="flex md:hidden absolute bottom-2 right-10 justify-end w-full md:w-auto">
                         {business?.plan?.plan_name === "Default Plan" ? (
                           <button
-                            onClick={pricingPage}
+                            onClick={(e) => pricingPage(e, business?.id)}
                             className="bg-yellow-500 text-white h-fit px-6 py-1 text-sm rounded-lg flex items-center hover:bg-yellow-600 transition-colors shadow-lg"
                           >
                             <FaBullhorn className="mr-2" />

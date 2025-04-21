@@ -85,6 +85,7 @@ export default async function BusinessProfilePage({
           <div className="bg-white hidden md:block p-3 mb-3 shadow-xl rounded-md">
             <BusinessProfileImageGallery
               imageGallery={BusinessProfileData?.buisness.image_gallery || []}
+              videoGallery={BusinessProfileData?.buisness.video_gallery || []}
               dcats={BusinessProfileData.dcats}
             />
           </div>
@@ -126,7 +127,7 @@ export default async function BusinessProfilePage({
                     {BusinessProfileData?.buisness.verified &&
                       BusinessProfileData?.buisness.plan.bi_verification && (
                         <img
-                          className="w-16 md:block hidden mt-2"
+                          className="w-16 mt-2"
                           src="/Brandsinfo-verified.png"
                           alt=""
                         />
@@ -217,6 +218,7 @@ export default async function BusinessProfilePage({
                   imageGallery={
                     BusinessProfileData?.buisness.image_gallery || []
                   }
+                  videoGallery={BusinessProfileData?.buisness.video_gallery || []}
                   dcats={BusinessProfileData.dcats}
                 />
               </div>
@@ -233,8 +235,8 @@ export default async function BusinessProfilePage({
                 <h1 className="font-ubuntuMedium text-gray-700 md:text-xl">
                   About
                 </h1>
-                <p className="text-gray-600 font-ubuntu md:text-base text-sm">
-                  {BusinessProfileData?.buisness.description}
+                <p className="text-gray-600 font-ubuntu md:text-base text-sm whitespace-pre-line">
+                  {BusinessProfileData?.buisness?.description}
                 </p>
               </div>
 

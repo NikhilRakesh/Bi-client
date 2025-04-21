@@ -18,7 +18,7 @@ export default function BPlan() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [browser, setbrowser] = useState(false);
-  const id = searchParams.get("id");
+  const id = searchParams.get("bid");
   const [business, setbusiness] = useState<Business[] | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);

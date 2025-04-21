@@ -133,7 +133,7 @@ export default function ImageGalleryWithModal({
     <div className="bg-white mb-10 mt-10 p-5 rounded-md shadow-lg">
       <div className="flex justify-between items-center mb-4">
         <h2 className="md:text-2xl text-xl font-ubuntuMedium text-gray-700 font-semibold">
-          Image Gallery
+          Media Gallery
         </h2>
         {images.length !== 0 && (
           <button
@@ -149,17 +149,17 @@ export default function ImageGalleryWithModal({
         <div className="flex justify-center items-center flex-col mt-8">
           <div className="text-center flex flex-col justify-center items-center">
             <p className="md:text-xl font-semibold font-ubuntuMedium text-gray-600 mb-4">
-              No images available
+              No media available
             </p>
             <p className="text-gray-500 mb-6 text-xs md:text-base">
-              It looks like you haven&apos;t uploaded any images yet. Click
+              It looks like you haven&apos;t uploaded any images or videos yet. Click
               below to add some!
             </p>
             <button
               onClick={handleOpenModal}
               className="bg-orange-500 md:w-4/12 flex justify-center items-center text-white py-2 px-6 rounded-md hover:bg-orange-600 transition-all"
             >
-              <FaImage className="mr-2" /> Add Image
+              <FaImage className="mr-2" /> Add Media
             </button>
           </div>
         </div>

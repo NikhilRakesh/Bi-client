@@ -388,7 +388,7 @@ export default function BusinessProfile() {
           </div>
         </div>
 
-        <div >
+        <div>
           <h1 className="md:text-4xl text-2xl font-semibold font-ubuntuMedium text-gray-800 transition duration-300">
             {businessData?.name}
           </h1>
@@ -521,7 +521,9 @@ export default function BusinessProfile() {
                 className="flex items-center justify-between bg-gradient-to-r from-indigo-50 to-sky-50 md:p-4 p-2 rounded-lg shadow-lg"
               >
                 <div className="flex items-center space-x-2">
-                  <span className="md:text-xl text-gray-700">{social.icon}</span>
+                  <span className="md:text-xl text-gray-700">
+                    {social.icon}
+                  </span>
                   <span className="md:text-base text-xs text-gray-700 font-medium">
                     {social.platform}
                   </span>
@@ -853,7 +855,9 @@ export default function BusinessProfile() {
         render={render}
       />
 
-      <ImageGallery openModal={() => setGalleyModal(true)} />
+      {businessData.plan.image_gallery && (
+        <ImageGallery openModal={() => setGalleyModal(true)} />
+      )}
 
       {isOpenTimeModalOpen && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 w-full flex items-center justify-center">

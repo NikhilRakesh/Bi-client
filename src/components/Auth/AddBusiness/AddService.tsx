@@ -4,7 +4,7 @@ import api, { get_api_form } from "@/lib/api";
 import { parseCookies } from "@/lib/cookies";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { AiOutlineUpload } from "react-icons/ai";
 import { IoIosAdd, IoIosAddCircle } from "react-icons/io";
 
@@ -81,9 +81,9 @@ export default function AddService() {
     const files = e.target.files;
     if (files && files.length > 0) {
       for (let i = 0; i < files.length; i++) {
-        if (files[i].size > 1024 * 1024) { 
+        if (files[i].size > 1024 * 1024) {
           toast.error("One or more files exceed the 1MB size limit.");
-          return; 
+          return;
         }
       }
       const imageFiles = Array.from(files).map((file) => file);
@@ -445,16 +445,19 @@ export default function AddService() {
         )}
       </div>
 
-      <div className="mb-7">
-        <button
-          onClick={saveAndContinue}
-          type="button"
-          className="w-full py-2 bg-[#f28b21] text-white rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-[#f28b21]"
-        >
-          Continue
-        </button>
-      </div>
+      {addedServices.length > 0 && (
+        <div className="mb-7">
+          <button
+            onClick={saveAndContinue}
+            type="button"
+            className="w-full py-2 bg-[#f28b21] text-white rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-[#f28b21]"
+          >
+            Continue
+          </button>
+        </div>
+      )}
       {loading && <LoadingSpinner />}
+      <Toaster />
     </div>
   );
 }

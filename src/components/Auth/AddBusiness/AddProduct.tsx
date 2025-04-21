@@ -20,7 +20,7 @@ interface ProductData {
 interface Category {
   id: string;
   name: string;
-} 
+}
 
 export default function AddProduct() {
   const searchParams = useSearchParams();
@@ -67,9 +67,9 @@ export default function AddProduct() {
         setImageError("You can only upload up to 5 images.");
       } else {
         for (let i = 0; i < files.length; i++) {
-          if (files[i].size > 1024 * 1024) { 
+          if (files[i].size > 1024 * 1024) {
             setImageError("One or more files exceed the 1MB size limit.");
-            return; 
+            return;
           }
         }
         const selectedImages = Array.from(files).map((file) => file);
@@ -185,7 +185,12 @@ export default function AddProduct() {
     if (addedProducts.length === 0) {
       setErrorMessage("please add a product to continue");
       return;
-    }else if (productData.name||productData.price||productData.sub_cat||productData.description){
+    } else if (
+      productData.name ||
+      productData.price ||
+      productData.sub_cat ||
+      productData.description
+    ) {
       setErrorMessage("please that product to continue");
       return;
     }
@@ -343,119 +348,121 @@ export default function AddProduct() {
 
         <div className="">
           {errorMessage && (
-            <p className="text-red-500 font-ubuntu text-sm mt-2">
+            <p className="text-red-500 font-ubuntu text-sm mt-2 py-2">
               {errorMessage}
             </p>
           )}
         </div>
       </form>
 
-      <div className="mt-7">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xl font-ubuntuMedium text-gray-600 mb-1">
-            Added Products
-          </h3>
-          <p className="text-gray-600 font-ubuntu text-sm">
-            total products: <span>{addedProducts.length}</span>
-          </p>
-        </div>
+      {addedProducts.length > 0 && (
+        <div className="mt-7">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-ubuntuMedium text-gray-600 mb-1">
+              Added Products
+            </h3>
+            <p className="text-gray-600 font-ubuntu text-sm">
+              total products: <span>{addedProducts.length}</span>
+            </p>
+          </div>
 
-        {addedProducts.length > 0 ? (
-          <div className="relative w-full  ">
-            <button
-              onClick={() => scrollProducts("prev")}
-              className="absolute left-[-10px] md:left-[-40px] top-1/2 transform -translate-y-1/2 text-white bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-600 focus:outline-none z-10"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="w-6 h-6"
+          {addedProducts.length > 0 ? (
+            <div className="relative w-full  ">
+              <button
+                onClick={() => scrollProducts("prev")}
+                className="absolute left-[-10px] md:left-[-40px] top-1/2 transform -translate-y-1/2 text-white bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-600 focus:outline-none z-10"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
 
-            <div className="flex gap-5 py-4 px-2 w-full overflow-x-auto scrollbar-hidden scroll-smooth">
-              {addedProducts
-                .slice()
-                .reverse()
-                .map((product, index) => (
-                  <div
-                    key={index}
-                    className="flex-shrink-0 w-96 border border-gray-300 bg-white p-3 rounded-lg flex items-center gap-3 shadow-lg transition-shadow duration-300 ease-in-out"
-                  >
-                    {product.images.length > 0 && (
-                      <div className=" w-6/12 h-32 rounded-lg overflow-hidden">
-                        <img
-                          src={
-                            typeof product.images[0] === "string"
-                              ? product.images[0]
-                              : URL.createObjectURL(product.images[0])
-                          }
-                          alt={product.name}
-                          className="w-full h-full object-cover rounded-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
-                        />
-                      </div>
-                    )}
+              <div className="flex gap-5 py-4 px-2 w-full overflow-x-auto scrollbar-hidden scroll-smooth">
+                {addedProducts
+                  .slice()
+                  .reverse()
+                  .map((product, index) => (
+                    <div
+                      key={index}
+                      className="flex-shrink-0 w-96 border border-gray-300 bg-white p-3 rounded-lg flex items-center gap-3 shadow-lg transition-shadow duration-300 ease-in-out"
+                    >
+                      {product.images.length > 0 && (
+                        <div className=" w-6/12 h-32 rounded-lg overflow-hidden">
+                          <img
+                            src={
+                              typeof product.images[0] === "string"
+                                ? product.images[0]
+                                : URL.createObjectURL(product.images[0])
+                            }
+                            alt={product.name}
+                            className="w-full h-full object-cover rounded-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
+                          />
+                        </div>
+                      )}
 
-                    <div className=" w-6/12 h-full flex flex-col justify-center text-left relative">
-                      <h4 className="font-ubuntuMedium text-md text-gray-800 truncate">
-                        {product.name}
-                      </h4>
-                      <p className="text-sm text-gray-600 truncate">
-                        {product.description}
-                      </p>
-                      <p className="text-md font-semibold text-gray-700 mt-2">
-                        ₹{product.price}
-                      </p>
-                      {/* <p className="text-xs text-gray-500">
+                      <div className=" w-6/12 h-full flex flex-col justify-center text-left relative">
+                        <h4 className="font-ubuntuMedium text-md text-gray-800 truncate">
+                          {product.name}
+                        </h4>
+                        <p className="text-sm text-gray-600 truncate">
+                          {product.description}
+                        </p>
+                        <p className="text-md font-semibold text-gray-700 mt-2">
+                          ₹{product.price}
+                        </p>
+                        {/* <p className="text-xs text-gray-500">
                         Category: {product.sub_cat}
                       </p> */}
-                      <div className="border-2 border-[#f28b21] p-1 rounded-full absolute top-[-6px] right-0">
-                        <div className="w-4 h-4 text-black flex items-center justify-center rounded-full">
-                          <p className="text-xs">
-                            {addedProducts.length - index}
-                          </p>
+                        <div className="border-2 border-[#f28b21] p-1 rounded-full absolute top-[-6px] right-0">
+                          <div className="w-4 h-4 text-black flex items-center justify-center rounded-full">
+                            <p className="text-xs">
+                              {addedProducts.length - index}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-            </div>
+                  ))}
+              </div>
 
-            <button
-              onClick={() => scrollProducts("next")}
-              className="absolute md:right-[-40px] right-[-10px] top-1/2 transform -translate-y-1/2 text-white bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-600 focus:outline-none z-10"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="w-6 h-6"
+              <button
+                onClick={() => scrollProducts("next")}
+                className="absolute md:right-[-40px] right-[-10px] top-1/2 transform -translate-y-1/2 text-white bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-600 focus:outline-none z-10"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </button>
-          </div>
-        ) : (
-          <p className="text-center text-gray-500 font-ubuntu text-lg">
-            No products added yet.
-          </p>
-        )}
-      </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+            </div>
+          ) : (
+            <p className="text-center text-gray-500 font-ubuntu text-lg">
+              No products added yet.
+            </p>
+          )}
+        </div>
+      )}
 
       <div>
         <button
@@ -549,7 +556,7 @@ export default function AddProduct() {
         </div>
       )}
       {loading && <LoadingSpinner />}
-      <Toaster/>
+      <Toaster />
     </div>
   );
 }

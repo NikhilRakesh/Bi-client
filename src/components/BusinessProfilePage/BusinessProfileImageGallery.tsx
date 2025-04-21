@@ -28,22 +28,34 @@ interface GalleryImage {
   buisness: number;
 }
 
+interface VideoItem {
+  id: number;
+  video_file: string;
+  hls_path: string;
+}
+
 type MergedImage = GalleryImage | PexelImage;
+type GalleryItem = MergedImage | VideoItem;
 
 export default function BusinessProfileImageGallery({
   imageGallery,
   dcats,
+  videoGallery,
 }: {
   imageGallery: GalleryImage[];
   dcats: string[];
+  videoGallery: VideoItem[];
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [Browser, setBrowser] = useState(true);
   const [pexelPics, setPexelPics] = useState<PexelImage[]>([]);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentItemIndex, setCurrentItemIndex] = useState(0);
   const apiKey = process.env.NEXT_PUBLIC_Pexels_api;
 
   useEffect(() => {
+    setBrowser(true);
+
     const interval = setInterval(() => {
       if (scrollRef.current) {
         const container = scrollRef.current;
@@ -57,7 +69,7 @@ export default function BusinessProfileImageGallery({
           container.scrollBy({ left: containerWidth, behavior: "smooth" });
         }
       }
-    }, 6000);
+    }, 10000);
 
     fetchPexelPhotos(dcats[0]);
 
@@ -88,7 +100,7 @@ export default function BusinessProfileImageGallery({
   }
 
   const openModal = (index: number) => {
-    setCurrentImageIndex(index);
+    setCurrentItemIndex(index);
     setIsModalOpen(true);
   };
 
@@ -96,19 +108,26 @@ export default function BusinessProfileImageGallery({
     setIsModalOpen(false);
   };
 
+  const mergedImages: MergedImage[] = [...imageGallery, ...pexelPics];
+
+  const combinedItems: GalleryItem[] = [];
+  if (videoGallery.length > 0) {
+    combinedItems.push(videoGallery[0]);
+  }
+  combinedItems.push(...mergedImages);
+  combinedItems.push(...videoGallery.slice(1));
+
   const nextImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === mergedImages.length - 1 ? 0 : prevIndex + 1
+    setCurrentItemIndex((prevIndex) =>
+      prevIndex === combinedItems.length - 1 ? 0 : prevIndex + 1
     );
   };
 
   const prevImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === 0 ? mergedImages.length - 1 : prevIndex - 1
+    setCurrentItemIndex((prevIndex) =>
+      prevIndex === 0 ? combinedItems.length - 1 : prevIndex - 1
     );
   };
-
-  const mergedImages: MergedImage[] = [...imageGallery, ...pexelPics];
 
   const scrollLeft = () => {
     if (scrollRef.current) {
@@ -129,25 +148,60 @@ export default function BusinessProfileImageGallery({
           ref={scrollRef}
           className="flex gap-4 overflow-x-auto scroll-smooth scrollbar-hidden"
         >
-          {mergedImages.map((image, index) => (
-            <div
-              key={index}
-              className="relative md:w-64 md:h-48 w-48 h-56 flex-shrink-0"
-              onClick={() => openModal(index)}
-            >
-              <img
-                src={
-                  "image" in image ? baseurl + image.image : image.src.medium
+          {!Browser
+            ? Array.from({ length: 6 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="w-48 h-56 md:w-72 md:h-48 bg-gray-300 animate-pulse rounded-lg"
+                ></div>
+              ))
+            : combinedItems.map((item, index) => {
+                if ("video_file" in item) {
+                  return (
+                    <div
+                      key={`video-${item.id}`}
+                      className="bg-white rounded-lg shadow overflow-hidden flex-shrink-0 md:w-fit w-full h-48"
+                      onClick={() => openModal(index)}
+                    >
+                      <video
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="auto"
+                        className="w-full h-full object-cover pointer-events-none"
+                      >
+                        <source
+                          src={"https://api.brandsinfo.in" + item.video_file}
+                          type="video/mp4"
+                        />
+                      </video>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div
+                      key={`image-${index}`}
+                      className="relative md:w-64 md:h-48 w-full h-56 flex-shrink-0"
+                      onClick={() => openModal(index)}
+                    >
+                      <img
+                        src={
+                          "image" in item
+                            ? baseurl + item.image
+                            : item.src.medium
+                        }
+                        alt={
+                          "buisness" in item
+                            ? `Image ${item.buisness}`
+                            : item.photographer
+                        }
+                        className="w-full h-full object-cover cursor-pointer rounded-lg shadow-lg transition-transform transform hover:scale-105"
+                      />
+                    </div>
+                  );
                 }
-                alt={
-                  "buisness" in image
-                    ? `Image ${image.buisness}`
-                    : image.photographer
-                }
-                className="w-full h-full object-cover cursor-pointer rounded-lg shadow-lg transition-transform transform hover:scale-105"
-              />
-            </div>
-          ))}
+              })}
         </div>
       </div>
 
@@ -182,20 +236,35 @@ export default function BusinessProfileImageGallery({
           >
             &#10094;
           </button>
-          <div className="flex items-center justify-center relative">
-            <img
-              src={
-                "image" in mergedImages[currentImageIndex]
-                  ? baseurl + mergedImages[currentImageIndex].image
-                  : mergedImages[currentImageIndex].src.original
-              }
-              alt={`Image ${
-                "buisness" in mergedImages[currentImageIndex]
-                  ? mergedImages[currentImageIndex].buisness
-                  : mergedImages[currentImageIndex].photographer
-              }`}
-              className="w-full h-full object-contain"
-            />
+          <div className="flex items-center justify-center relative max-h-full max-w-full w-full h-full">
+            {"video_file" in combinedItems[currentItemIndex] ? (
+              <video
+                src={
+                  "https://api.brandsinfo.in" +
+                  (combinedItems[currentItemIndex] as VideoItem).video_file
+                }
+                controls
+                loop
+                className="max-w-full max-h-full object-contain rounded"
+              />
+            ) : (
+              <img
+                src={
+                  "image" in combinedItems[currentItemIndex]
+                    ? baseurl +
+                      (combinedItems[currentItemIndex] as GalleryImage).image
+                    : (combinedItems[currentItemIndex] as PexelImage).src
+                        .original
+                }
+                alt={`Image ${
+                  "buisness" in combinedItems[currentItemIndex]
+                    ? (combinedItems[currentItemIndex] as GalleryImage).buisness
+                    : (combinedItems[currentItemIndex] as PexelImage)
+                        .photographer
+                }`}
+                className="max-w-full max-h-full object-contain rounded"
+              />
+            )}
           </div>
           <button
             onClick={nextImage}

@@ -269,7 +269,7 @@ const BusinessInformation = ({
       }
     }
   };
-
+  console.log(JSON.stringify(safeBusinessData.description));
   return (
     <div className={` md:w-4/12 w-full px-7 py-5 bg-white rounded-lg`}>
       <h2 className="font-ubuntuMedium text-center text-3xl text-gray-600 mb-4">

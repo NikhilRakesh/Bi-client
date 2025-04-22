@@ -16,7 +16,7 @@ const access_token = cookies?.access_token;
 interface PaymentNotification {
   business: string;
   business_id: number;
-  extras: string;
+  extras: { invoice: string; status: string };
   message: string;
   ntype: string;
   timestamp: string;
@@ -71,13 +71,10 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       console.log("data", data?.event);
 
       switch (data?.event?.ntype) {
-        // case "chat":
-        //   setChatMessages((prevMessages) => [...prevMessages, data]);
-        //   break;
         case "notification_count":
           setNotificationCount(data?.event?.count);
           break;
-        case "payment_status_update":
+        case "PAYMENT_STATUS":
           setPaymentMessage(data?.event);
           break;
         default:
@@ -110,3 +107,6 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     </WebSocketContext.Provider>
   );
 };
+
+
+ 

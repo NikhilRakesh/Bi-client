@@ -38,7 +38,6 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ images }) => {
       prevIndex === images.length - 1 ? 0 : prevIndex + 1
     );
   };
-
   return (
     <div className="relative w-full rounded-lg overflow-hidden">
       <img
@@ -59,18 +58,22 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ images }) => {
         ))}
       </div>
 
-      <button
-        onClick={handlePrev}
-        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full"
-      >
-        &lt;
-      </button>
-      <button
-        onClick={handleNext}
-        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full"
-      >
-        &gt;
-      </button>
+      {images.length > 1 && (
+        <>
+          <button
+            onClick={handlePrev}
+            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full"
+          >
+            &lt;
+          </button>
+          <button
+            onClick={handleNext}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full"
+          >
+            &gt;
+          </button>
+        </>
+      )}
     </div>
   );
 };

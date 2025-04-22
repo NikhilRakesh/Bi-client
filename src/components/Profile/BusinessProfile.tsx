@@ -38,6 +38,12 @@ import LocationWarningModal from "./LocationWarningModal";
 import BusinessCatAdd from "./BusinessCatAdd";
 import { WebSocketProvider } from "@/lib/WebSocketContext";
 
+interface video_gallery {
+  id: number;
+  hls_path: string;
+  video_file: string;
+}
+
 interface PlanDetails {
   bi_assured: boolean;
   bi_certification: boolean;
@@ -86,6 +92,7 @@ interface Business {
   avg_time_spend_in_profile: string;
   image: string;
   plan: PlanDetails;
+  video_gallery: video_gallery[];
 }
 
 interface UserProfile {
@@ -202,6 +209,7 @@ export default function BusinessProfile() {
       const response = await token_api(access_token).get(
         `users/buisnesses/?bid=${bid}`
       );
+
       if (response.status === 200) {
         setProfileData(response.data.user);
         setBusinessData(response.data.buisness);
@@ -856,7 +864,7 @@ export default function BusinessProfile() {
       />
 
       {businessData.plan.image_gallery && (
-        <ImageGallery openModal={() => setGalleyModal(true)} />
+        <ImageGallery  render={render} openModal={() => setGalleyModal(true)} />
       )}
 
       {isOpenTimeModalOpen && (
@@ -911,7 +919,7 @@ export default function BusinessProfile() {
       )}
 
       {galleryModal && (
-        <ImageGalleryModal onClose={() => setGalleyModal(false)} />
+        <ImageGalleryModal  render={render} videos={businessData.video_gallery} onClose={() => setGalleyModal(false)} />
       )}
       {isWarningModalOpen && (
         <LocationWarningModal

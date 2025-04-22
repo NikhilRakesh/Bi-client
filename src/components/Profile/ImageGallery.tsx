@@ -18,8 +18,10 @@ interface ApiResponse {
 
 export default function ImageGalleryWithModal({
   openModal,
+  render,
 }: {
   openModal: () => void;
+  render: () => void;
 }) {
   const searchParams = useSearchParams();
   const bid = searchParams.get("bid");
@@ -64,7 +66,7 @@ export default function ImageGalleryWithModal({
     }
   };
 
-  const uploadImage = async () => {
+  const uploadImage = async () => { 
     if (selectedMedia) {
       setSubmit(true);
       let response: AxiosResponse<ApiResponse> | undefined;
@@ -82,6 +84,8 @@ export default function ImageGalleryWithModal({
         }
 
         if (response?.status === 201 || 200) {
+          toast.success("Media Uploaded");
+          render();
           setSubmit(false);
           setSelectedMedia(null);
           setRefresh(!refresh);
@@ -152,8 +156,8 @@ export default function ImageGalleryWithModal({
               No media available
             </p>
             <p className="text-gray-500 mb-6 text-xs md:text-base">
-              It looks like you haven&apos;t uploaded any images or videos yet. Click
-              below to add some!
+              It looks like you haven&apos;t uploaded any images or videos yet.
+              Click below to add some!
             </p>
             <button
               onClick={handleOpenModal}

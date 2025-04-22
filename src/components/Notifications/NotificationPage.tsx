@@ -2,17 +2,23 @@
 
 import {
   FiBell,
-  FiCheck,
-  FiStar,
   FiAlertTriangle,
   FiShoppingBag,
   FiMail,
+  FiAward,
+  FiClock,
+  FiTrendingUp,
+  FiUsers,
+  FiCreditCard,
+  FiFileText,
+  FiCalendar,
 } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import BackButton from "@/components/Common/BackButton";
 import { token_api } from "@/lib/api";
 import { parseCookies } from "@/lib/cookies";
 import { useWebSocket } from "@/lib/WebSocketContext";
+import { LucideIndianRupee } from "lucide-react";
 
 interface Notification {
   buisness: number;
@@ -54,21 +60,27 @@ export default function NotificationPage() {
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case "reward":
-        return <FiStar className="text-amber-500" />;
+        return <FiAward className="text-amber-500" size={18} />;
       case "purchase":
-        return <FiShoppingBag className="text-indigo-500" />;
+        return <FiShoppingBag className="text-indigo-500" size={18} />;
       case "BUISNESS_UPDATES":
-        return <FiAlertTriangle className="text-red-500" />;
+        return <FiAlertTriangle className="text-red-500" size={18} />;
       case "PLAN_EXPIRED":
-        return <FiAlertTriangle className="text-red-500" />;
+        return <FiClock className="text-red-500" size={18} />;
       case "VISIT_REPORT":
-        return <FiStar className="text-green-500" />;
+        return <FiTrendingUp className="text-green-500" size={18} />;
       case "ENQUIRY_REPORT":
-        return <FiStar className="text-green-500" />;
+        return <FiUsers className="text-green-500" size={18} />;
       case "plan_purchase":
-        return <FiCheck className="text-blue-500" />;
+        return <FiCreditCard className="text-blue-500" size={18} />;
+      case "payment":
+        return <LucideIndianRupee className="text-purple-500" size={18} />;
+      case "report":
+        return <FiFileText className="text-teal-500" size={18} />;
+      case "announcement":
+        return <FiCalendar className="text-orange-500" size={18} />;
       default:
-        return <FiMail className="text-gray-500" />;
+        return <FiMail className="text-gray-500" size={18} />;
     }
   };
 

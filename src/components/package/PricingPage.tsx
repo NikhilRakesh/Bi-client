@@ -3,7 +3,7 @@ import api from "@/lib/api";
 import React, { useEffect, useState } from "react";
 import { FaCheckCircle, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiArrowRight, FiInfo } from "react-icons/fi";
+import { FiArrowRight, FiInfo, FiX } from "react-icons/fi";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 
@@ -124,6 +124,7 @@ const PricingPage = ({
   const [selectedVariants, setSelectedVariants] = useState<Record<number, number>>({});
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
   const [selectedFeature, setSelectedFeature] = useState<{label: string; description: string} | null>(null);
+  const [showComparison, setShowComparison] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -405,7 +406,10 @@ const PricingPage = ({
           <p className="text-gray-600 mb-4">
             Not sure which plan is right for you?
           </p>
-          <button className="text-blue-600 font-medium hover:text-blue-700 transition-colors">
+          <button 
+            onClick={() => setShowComparison(true)}
+            className="text-blue-600 font-medium hover:text-blue-700 transition-colors"
+          >
             Compare all plans <FiArrowRight className="inline ml-1" />
           </button>
         </div>
@@ -457,6 +461,107 @@ const PricingPage = ({
                       onClick={() => setSelectedFeature(null)}
                     >
                       Got it, thanks!
+                    </button>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+
+      {/* Comparison Modal */}
+      <Transition appear show={showComparison} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={() => setShowComparison(false)}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-50" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-6xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <div className="flex justify-between items-center mb-4">
+                    <Dialog.Title
+                      as="h3"
+                      className="text-2xl font-bold leading-6 text-gray-900"
+                    >
+                      Plan Comparison
+                    </Dialog.Title>
+                    <button
+                      onClick={() => setShowComparison(false)}
+                      className="text-gray-400 hover:text-gray-500"
+                    >
+                      <FiX className="h-6 w-6" />
+                    </button>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Feature
+                          </th>
+                          {plans.map(plan => (
+                            <th key={plan.id} scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              {plan.plan_name}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {FEATURES_MAP.map((feature) => (
+                          <tr key={feature.key}>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                              {feature.label}
+                              {feature.description && (
+                                <button
+                                  onClick={() => setSelectedFeature({label: feature.label, description: feature.description || ''})}
+                                  className="ml-2 text-blue-500 hover:text-blue-700"
+                                >
+                                  <FiInfo className="inline" />
+                                </button>
+                              )}
+                            </td>
+                            {plans.map(plan => (
+                              <td key={`${plan.id}-${feature.key}`} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {plan[feature.key] ? (
+                                  <FaCheckCircle className="text-green-500 h-5 w-5" />
+                                ) : (
+                                  <span className="text-gray-300">—</span>
+                                )}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div className="mt-6 flex justify-end">
+                    <button
+                      type="button"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      onClick={() => setShowComparison(false)}
+                    >
+                      Close Comparison
                     </button>
                   </div>
                 </Dialog.Panel>

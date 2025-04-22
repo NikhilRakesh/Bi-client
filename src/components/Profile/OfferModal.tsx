@@ -313,51 +313,55 @@ export default function OfferModal({
             </button>
           </div>
 
-          {offerDatas.map((offer, index) => {
-            let offerText = "";
-            const offerValue = offer.offer;
+          {offerDatas
+            ?.filter(
+              (offer_data) => new Date(offer_data.valid_upto) > new Date()
+            )
+            .map((offer, index) => {
+              let offerText = "";
+              const offerValue = offer.offer;
 
-            if (offer.is_percent) {
-              offerText = `${offerValue}% off on purchases over ₹${offer.minimum_bill_amount} (Valid until ${offer.valid_upto})`;
-            } else if (offer.is_flat) {
-              offerText = `₹${offerValue} flat off on purchases over ₹${offer.minimum_bill_amount} (Valid until ${offer.valid_upto})`;
-            }
+              if (offer.is_percent) {
+                offerText = `${offerValue}% off on purchases over ₹${offer.minimum_bill_amount} (Valid until ${offer.valid_upto})`;
+              } else if (offer.is_flat) {
+                offerText = `₹${offerValue} flat off on purchases over ₹${offer.minimum_bill_amount} (Valid until ${offer.valid_upto})`;
+              }
 
-            return (
-              <div
-                key={index}
-                className="bg-gradient-to-r relative from-indigo-100 to-sky-100 bg-white rounded-lg shadow-md px-2 py-1 md:py-2 mb-6"
-              >
-                <div className="flex items-center space-x-4">
-                  <div className="md:w-8 md:h-8 w-6 h-6 flex items-center justify-center rounded-full bg-gradient-to-r from-indigo-500 to-indigo-700 shadow-md">
-                    {offer.is_percent ? (
-                      <span className="font-semibold text-white">%</span>
-                    ) : (
-                      <span className="font-semibold text-white">₹</span>
-                    )}
+              return (
+                <div
+                  key={index}
+                  className="bg-gradient-to-r relative from-indigo-100 to-sky-100 bg-white rounded-lg shadow-md px-2 py-1 md:py-2 mb-6"
+                >
+                  <div className="flex items-center space-x-4">
+                    <div className="md:w-8 md:h-8 w-6 h-6 flex items-center justify-center rounded-full bg-gradient-to-r from-indigo-500 to-indigo-700 shadow-md">
+                      {offer.is_percent ? (
+                        <span className="font-semibold text-white">%</span>
+                      ) : (
+                        <span className="font-semibold text-white">₹</span>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <p className="md:text-xl text-sm text-gray-600 leading-relaxed">
+                        {offerText}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <p className="md:text-xl text-sm text-gray-600 leading-relaxed">
-                      {offerText}
-                    </p>
+                  <div className="mt-4 ">
+                    <span className="md:text-sm text-xs text-gray-500">
+                      Expiry Date: <strong>{offer.valid_upto}</strong>
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-5 absolute top-7 md:top-5 right-6">
+                    <button onClick={() => handleEditClick(offer)}>
+                      <FaRegEdit className="text-gray-600" />
+                    </button>
+                    <button onClick={() => deleteOffer(offer.id)}>
+                      <MdDelete className="text-red-500" />
+                    </button>
                   </div>
                 </div>
-                <div className="mt-4 ">
-                  <span className="md:text-sm text-xs text-gray-500">
-                    Expiry Date: <strong>{offer.valid_upto}</strong>
-                  </span>
-                </div>
-                <div className="flex flex-col gap-5 absolute top-7 md:top-5 right-6">
-                  <button onClick={() => handleEditClick(offer)}>
-                    <FaRegEdit className="text-gray-600" />
-                  </button>
-                  <button onClick={() => deleteOffer(offer.id)}>
-                    <MdDelete className="text-red-500" />
-                  </button>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       )}
 

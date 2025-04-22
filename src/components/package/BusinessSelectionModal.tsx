@@ -1,5 +1,6 @@
 "use client";
 import { Dialog, Transition } from "@headlessui/react";
+import { useRouter } from "next/navigation";
 import { Fragment } from "react";
 import { FiChevronRight, FiX } from "react-icons/fi";
 
@@ -21,6 +22,11 @@ export function BusinessSelectionModal({
   onClose,
   onSelect,
 }: BusinessModalProps) {
+  const router = useRouter();
+
+  if (businesses.length === 0) {
+    router.push("/business-listing/add-business?step=1");
+  }
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>

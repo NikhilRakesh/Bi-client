@@ -264,7 +264,7 @@ export default async function BusinessProfilePage({
                   <div className="flex items-center space-x-2">
                     <FaGlobe className="text-gray-600" size={20} />
                     <a
-                      href={`https://${BusinessProfileData?.buisness?.web_link}`}
+                      href={`${BusinessProfileData?.buisness?.web_link}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="md:text-lg text-blue-600 hover:text-blue-700"
@@ -276,7 +276,7 @@ export default async function BusinessProfilePage({
                 <div className="flex items-center space-x-4">
                   {BusinessProfileData?.buisness?.facebook_link && (
                     <a
-                      href={`https://${BusinessProfileData?.buisness?.facebook_link}`}
+                      href={`${BusinessProfileData?.buisness?.facebook_link}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -288,7 +288,7 @@ export default async function BusinessProfilePage({
                   )}
                   {BusinessProfileData?.buisness?.instagram_link && (
                     <a
-                      href={`https://${BusinessProfileData?.buisness?.instagram_link}`}
+                      href={`${BusinessProfileData?.buisness?.instagram_link}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -300,7 +300,7 @@ export default async function BusinessProfilePage({
                   )}
                   {BusinessProfileData?.buisness?.x_link && (
                     <a
-                      href={`https://${BusinessProfileData?.buisness?.x_link}`}
+                      href={`${BusinessProfileData?.buisness?.x_link}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -309,7 +309,7 @@ export default async function BusinessProfilePage({
                   )}
                   {BusinessProfileData?.buisness?.youtube_link && (
                     <a
-                      href={`https://${BusinessProfileData?.buisness?.youtube_link}`}
+                      href={`${BusinessProfileData?.buisness?.youtube_link}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

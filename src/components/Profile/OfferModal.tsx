@@ -1,3 +1,4 @@
+"use client";
 import { token_api } from "@/lib/api";
 import { parseCookies } from "@/lib/cookies";
 import React, { useState } from "react";
@@ -63,9 +64,13 @@ export default function OfferModal({
   const cookies = parseCookies();
   const access_token = cookies?.access_token;
 
+  const validOffers = offerDatas?.filter(
+    (offer_data) => new Date(offer_data.valid_upto) > new Date()
+  );
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!offerError) {
+    if (offerError) {
       return;
     }
 
@@ -182,7 +187,7 @@ export default function OfferModal({
 
   return (
     <div className="md:px-8 font-ubuntu">
-      {offerDatas.length === 0 && (
+      {validOffers.length === 0 && (
         <button
           onClick={() => setIsModalOpen(true)}
           className="bg-orange-500 text-white py-2 w-3/12 rounded font-ubuntuMedium"
@@ -299,7 +304,7 @@ export default function OfferModal({
         </div>
       )}
 
-      {offerDatas.length !== 0 && (
+      {validOffers.length !== 0 && (
         <div className="mt-6 p-6 bg-gradient-to-r from-indigo-50 to-sky-50 bg-white rounded-lg font-ubuntuMedium shadow-lg">
           <div className="flex justify-between">
             <h3 className="md:text-3xl text-lg font-semibold mb-6 text-gray-800">

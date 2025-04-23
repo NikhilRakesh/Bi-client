@@ -45,6 +45,14 @@ export default function OfferBiProfile({ Offers }: { Offers: Offer[] }) {
     return null; // or "" if you prefer
   }
 
+  const validOffers = Offers?.filter(
+    (offer_data) => new Date(offer_data.valid_upto) > new Date()
+  );
+
+  if (validOffers.length === 0) {
+    return;
+  }
+
   return (
     <div className="space-y-6 font-ubuntu">
       <div className="mb-4">
@@ -54,7 +62,7 @@ export default function OfferBiProfile({ Offers }: { Offers: Offer[] }) {
         <p className="text-gray-500 mt-1">Exclusive deals just for you</p>
       </div>
 
-      {Offers?.length === 0 ? (
+      {validOffers?.length === 0 ? (
         <div className="text-center py-8 bg-white rounded-xl border border-dashed border-gray-300">
           <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
             <FaTags className="text-gray-400 text-xl" />
@@ -67,9 +75,7 @@ export default function OfferBiProfile({ Offers }: { Offers: Offer[] }) {
           </p>
         </div>
       ) : (
-        Offers?.filter(
-          (offer_data) => new Date(offer_data.valid_upto) > new Date()
-        ).map((offer_data) => (
+        validOffers?.map((offer_data) => (
           <motion.div
             key={offer_data.id}
             initial={{ opacity: 0, y: 10 }}

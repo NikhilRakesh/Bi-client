@@ -6,6 +6,7 @@ import api, { baseurl, token_api } from "@/lib/api";
 import GallerySkelton from "../Common/GallerySkelton";
 import { MdDelete, MdClose, MdVideoLibrary, MdImage } from "react-icons/md";
 import { parseCookies } from "@/lib/cookies";
+import HLSVideoPlayer from "../Common/HLSVideoPlayer";
 
 interface Image {
   id: number;
@@ -88,7 +89,7 @@ export default function MediaGalleryModal({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-6xl max-h-[90vh] flex flex-col">
-        {/* Header */}
+      
         <div className="flex justify-between items-center p-6 border-b border-gray-100">
           <div className="flex items-center space-x-4">
             <h2 className="text-2xl font-semibold text-gray-800">
@@ -127,7 +128,6 @@ export default function MediaGalleryModal({
           </button>
         </div>
 
-        {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
           {activeTab === "images" ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -162,13 +162,10 @@ export default function MediaGalleryModal({
                   key={video.id}
                   className="relative group rounded-lg overflow-hidden aspect-square bg-black"
                 >
-                  <video
-                    controls
-                    className="w-full h-full object-cover"
-                    src={"https://api.brandsinfo.in" + video.video_file}
-                  >
-                    Your browser does not support the video tag.
-                  </video>
+                
+                  <HLSVideoPlayer
+                    src={"https://api.brandsinfo.in/media/" + video.hls_path}
+                  />
 
                   <button
                     onClick={() => deleteMedia(video.id, "video")}

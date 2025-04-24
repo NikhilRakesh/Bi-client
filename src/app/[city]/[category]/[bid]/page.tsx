@@ -23,6 +23,9 @@ import { Metadata } from "next";
 import LocationButton from "@/components/BusinessProfilePage/LocationButton";
 import WhatsappButon from "@/components/Common/WhatsappButon";
 
+export const revalidate = 3600;
+export const dynamicParams = true;
+
 export async function generateMetadata({
   params,
 }: {
@@ -162,7 +165,8 @@ export default async function BusinessProfilePage({
                 </div>
               </div>
               {BusinessProfileData?.buisness.opens_at &&
-                BusinessProfileData?.buisness.closes_at && (
+                BusinessProfileData?.buisness.closes_at &&
+                BusinessProfileData?.buisness?.plan?.business_hours && (
                   <OpenStatus
                     opensAt={BusinessProfileData?.buisness.opens_at}
                     closesAt={BusinessProfileData?.buisness.closes_at}
@@ -218,7 +222,9 @@ export default async function BusinessProfilePage({
                   imageGallery={
                     BusinessProfileData?.buisness.image_gallery || []
                   }
-                  videoGallery={BusinessProfileData?.buisness.video_gallery || []}
+                  videoGallery={
+                    BusinessProfileData?.buisness.video_gallery || []
+                  }
                   dcats={BusinessProfileData.dcats}
                 />
               </div>
@@ -252,61 +258,66 @@ export default async function BusinessProfilePage({
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {BusinessProfileData?.buisness?.email && (
-                  <div className="flex items-center space-x-2">
-                    <FaEnvelope className="text-gray-600" size={20} />
-                    <p className="md:text-lg text-gray-700">
-                      {BusinessProfileData?.buisness?.email}
-                    </p>
-                  </div>
-                )}
-                {BusinessProfileData?.buisness?.web_link && (
-                  <div className="flex items-center space-x-2">
-                    <FaGlobe className="text-gray-600" size={20} />
-                    <a
-                      href={`${BusinessProfileData?.buisness?.web_link}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="md:text-lg text-blue-600 hover:text-blue-700"
-                    >
-                      {BusinessProfileData?.buisness?.web_link}
-                    </a>
-                  </div>
-                )}
+                {BusinessProfileData?.buisness?.email &&
+                  BusinessProfileData?.buisness?.plan?.social_meida && (
+                    <div className="flex items-center space-x-2">
+                      <FaEnvelope className="text-gray-600" size={20} />
+                      <p className="md:text-lg text-gray-700">
+                        {BusinessProfileData?.buisness?.email}
+                      </p>
+                    </div>
+                  )}
+                {BusinessProfileData?.buisness?.web_link &&
+                  BusinessProfileData?.buisness?.plan?.social_meida && (
+                    <div className="flex items-center space-x-2">
+                      <FaGlobe className="text-gray-600" size={20} />
+                      <a
+                        href={`${BusinessProfileData?.buisness?.web_link}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="md:text-lg text-blue-600 hover:text-blue-700"
+                      >
+                        {BusinessProfileData?.buisness?.web_link}
+                      </a>
+                    </div>
+                  )}
                 <div className="flex items-center space-x-4">
-                  {BusinessProfileData?.buisness?.facebook_link && (
-                    <a
-                      href={`${BusinessProfileData?.buisness?.facebook_link}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <FaFacebook
-                        className="text-blue-600 hover:text-blue-700"
-                        size={24}
-                      />
-                    </a>
-                  )}
-                  {BusinessProfileData?.buisness?.instagram_link && (
-                    <a
-                      href={`${BusinessProfileData?.buisness?.instagram_link}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <FaInstagram
-                        className="text-pink-600 hover:text-pink-700"
-                        size={24}
-                      />
-                    </a>
-                  )}
-                  {BusinessProfileData?.buisness?.x_link && (
-                    <a
-                      href={`${BusinessProfileData?.buisness?.x_link}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <FaSquareXTwitter className="text-black" size={24} />
-                    </a>
-                  )}
+                  {BusinessProfileData?.buisness?.facebook_link &&
+                    BusinessProfileData?.buisness?.plan?.social_meida && (
+                      <a
+                        href={`${BusinessProfileData?.buisness?.facebook_link}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <FaFacebook
+                          className="text-blue-600 hover:text-blue-700"
+                          size={24}
+                        />
+                      </a>
+                    )}
+                  {BusinessProfileData?.buisness?.instagram_link &&
+                    BusinessProfileData?.buisness?.plan?.social_meida && (
+                      <a
+                        href={`${BusinessProfileData?.buisness?.instagram_link}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <FaInstagram
+                          className="text-pink-600 hover:text-pink-700"
+                          size={24}
+                        />
+                      </a>
+                    )}
+                  {BusinessProfileData?.buisness?.x_link &&
+                    BusinessProfileData?.buisness?.plan?.social_meida && (
+                      <a
+                        href={`${BusinessProfileData?.buisness?.x_link}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <FaSquareXTwitter className="text-black" size={24} />
+                      </a>
+                    )}
                   {BusinessProfileData?.buisness?.youtube_link && (
                     <a
                       href={`${BusinessProfileData?.buisness?.youtube_link}`}
@@ -321,9 +332,10 @@ export default async function BusinessProfilePage({
                   )}
                 </div>
               </div>
-              {BusinessProfileData?.offers.length !== 0 && (
-                <OfferBiProfile Offers={BusinessProfileData?.offers} />
-              )}
+              {BusinessProfileData?.offers.length !== 0 &&
+                BusinessProfileData?.buisness?.plan?.offers && (
+                  <OfferBiProfile Offers={BusinessProfileData?.offers} />
+                )}
             </div>
             {(BusinessProfileData?.products.length !== 0 ||
               BusinessProfileData?.services.length !== 0) && (
@@ -339,16 +351,19 @@ export default async function BusinessProfilePage({
                 )}
               </div>
             )}
+
             <div className=" w-full md:hidden block mt-5 ">
               <ReviewList bid={BusinessProfileData?.buisness?.id} />
             </div>
           </div>
         </div>
       </div>
-      <EnquiryTab
-        name={BusinessProfileData?.buisness.name}
-        bid={BusinessProfileData?.buisness?.id}
-      />
+      {BusinessProfileData?.buisness?.plan?.enquiry && (
+        <EnquiryTab
+          name={BusinessProfileData?.buisness.name}
+          bid={BusinessProfileData?.buisness?.id}
+        />
+      )}
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { baseurl } from "@/lib/api";
 import { IoCloseOutline } from "react-icons/io5";
+import HLSVideoPlayer from "../Common/HLSVideoPlayer";
 
 interface PexelImage {
   id: number;
@@ -55,7 +56,10 @@ export default function BusinessProfileImageGallery({
 
   useEffect(() => {
     setBrowser(true);
+  }, []);
+ 
 
+  useEffect(() => {
     const interval = setInterval(() => {
       if (scrollRef.current) {
         const container = scrollRef.current;
@@ -75,6 +79,15 @@ export default function BusinessProfileImageGallery({
 
     return () => clearInterval(interval);
   }, [dcats]);
+
+  if (!Browser) {
+    return Array.from({ length: 6 }).map((_, index) => (
+      <div
+        key={index}
+        className="w-48 h-56 md:w-72 md:h-48 bg-gray-300 animate-pulse rounded-lg"
+      ></div>
+    ));
+  }
 
   async function fetchPexelPhotos(query: string) {
     if (!apiKey) {
@@ -148,60 +161,41 @@ export default function BusinessProfileImageGallery({
           ref={scrollRef}
           className="flex gap-4 overflow-x-auto scroll-smooth scrollbar-hidden"
         >
-          {!Browser
-            ? Array.from({ length: 6 }).map((_, index) => (
+          {combinedItems.map((item, index) => {
+            if ("video_file" in item) {
+              return (
                 <div
-                  key={index}
-                  className="w-48 h-56 md:w-72 md:h-48 bg-gray-300 animate-pulse rounded-lg"
-                ></div>
-              ))
-            : combinedItems.map((item, index) => {
-                if ("video_file" in item) {
-                  return (
-                    <div
-                      key={`video-${item.id}`}
-                      className="bg-white rounded-lg shadow overflow-hidden flex-shrink-0 md:w-fit w-full h-48"
-                      onClick={() => openModal(index)}
-                    >
-                      <video
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        preload="auto"
-                        className="w-full h-full object-cover pointer-events-none"
-                      >
-                        <source
-                          src={"https://api.brandsinfo.in" + item.video_file}
-                          type="video/mp4"
-                        />
-                      </video>
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div
-                      key={`image-${index}`}
-                      className="relative md:w-64 md:h-48 w-full h-56 flex-shrink-0"
-                      onClick={() => openModal(index)}
-                    >
-                      <img
-                        src={
-                          "image" in item
-                            ? baseurl + item.image
-                            : item.src.medium
-                        }
-                        alt={
-                          "buisness" in item
-                            ? `Image ${item.buisness}`
-                            : item.photographer
-                        }
-                        className="w-full h-full object-cover cursor-pointer rounded-lg shadow-lg transition-transform transform hover:scale-105"
-                      />
-                    </div>
-                  );
-                }
-              })}
+                  key={`video-${item.id}`}
+                  className="bg-white rounded-lg shadow overflow-hidden flex-shrink-0 md:w-fit w-full h-48"
+                  onClick={() => openModal(index)}
+                >
+                  <HLSVideoPlayer
+                    src={"https://api.brandsinfo.in/media/" + item.hls_path}
+                  />
+                </div>
+              );
+            } else {
+              return (
+                <div
+                  key={`image-${index}`}
+                  className="relative md:w-64 md:h-48 w-full h-56 flex-shrink-0"
+                  onClick={() => openModal(index)}
+                >
+                  <img
+                    src={
+                      "image" in item ? baseurl + item.image : item.src.medium
+                    }
+                    alt={
+                      "buisness" in item
+                        ? `Image ${item.buisness}`
+                        : item.photographer
+                    }
+                    className="w-full h-full object-cover cursor-pointer rounded-lg shadow-lg transition-transform transform hover:scale-105"
+                  />
+                </div>
+              );
+            }
+          })}
         </div>
       </div>
 
@@ -238,14 +232,13 @@ export default function BusinessProfileImageGallery({
           </button>
           <div className="flex items-center justify-center relative max-h-full max-w-full w-full h-full">
             {"video_file" in combinedItems[currentItemIndex] ? (
-              <video
+              <HLSVideoPlayer
+                muted={false}
+                controls={true}
                 src={
-                  "https://api.brandsinfo.in" +
-                  (combinedItems[currentItemIndex] as VideoItem).video_file
+                  "https://api.brandsinfo.in/media/" +
+                  (combinedItems[currentItemIndex] as VideoItem).hls_path
                 }
-                controls
-                loop
-                className="max-w-full max-h-full object-contain rounded"
               />
             ) : (
               <img

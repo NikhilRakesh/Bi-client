@@ -6,6 +6,7 @@ import HilightedBusiness from "@/components/HilightedBusiness/HilightedBusiness"
 import BestDealers from "@/components/Products/BestDealers";
 import RandomCategories from "@/components/RandomCategories/RandomCategories";
 import TopCities from "@/components/TopCities/TopCities";
+import { baseurl } from "@/lib/api";
 import { parseCookies, setcityCookie } from "@/lib/cookies";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -95,9 +96,25 @@ export default function HomePage({
   }
 
   useEffect(() => {
+    trackIP()
     getDeviceLocation();
     setBrowser(true);
   }, [city_cookie, cityName]);
+
+  async function trackIP() {
+    fetch(`${baseurl}/analytics/track_visit/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        path: window.location.pathname,
+        extra: window.location.search,
+      }),
+    }).catch((error) => {
+      console.error("Tracking error:", error);
+    });
+  }
 
   const adsData = HomeData.sections[4]?.data.map((item) => ({
     banner: item.banner,

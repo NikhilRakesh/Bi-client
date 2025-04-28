@@ -4,7 +4,7 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import { RiDoubleQuotesL } from "react-icons/ri";
 import BLOtpModal from "./BLOtpModal";
 import { useRouter } from "next/navigation";
-import api, { token_api } from "@/lib/api";
+import api, { baseurl, token_api } from "@/lib/api";
 import { AxiosError } from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import {
@@ -43,6 +43,7 @@ const BusinessListingOtp: React.FC = () => {
   const cookies = parseCookies();
   const access_token = cookies?.access_token;
   useEffect(() => {
+    trackIP();
     if (access_token) fetchProfileData();
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(
@@ -68,6 +69,21 @@ const BusinessListingOtp: React.FC = () => {
       phoneInputRef.current.focus();
     }
   }, [auth]);
+
+  async function trackIP() {
+    fetch(`${baseurl}/analytics/track_visit/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        path: window.location.pathname,
+        extra: window.location.search,
+      }),
+    }).catch((error) => {
+      console.error("Tracking error:", error);
+    });
+  }
 
   async function fetchProfileData() {
     if (!access_token) return;

@@ -3,7 +3,7 @@ import BackButton from "@/components/Common/BackButton";
 import LoadingSpinner from "@/components/Common/LoadingSpinner";
 import { BusinessSelectionModal } from "@/components/package/BusinessSelectionModal";
 import PricingPage from "@/components/package/PricingPage";
-import { token_api } from "@/lib/api";
+import { baseurl, token_api } from "@/lib/api";
 import { parseCookies } from "@/lib/cookies";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -27,8 +27,24 @@ export default function BPlan() {
   const access_token = cookies?.access_token;
 
   useEffect(() => {
+    trackIP()
     setbrowser(true);
   }, []);
+  
+  async function trackIP() {
+    fetch(`${baseurl}/analytics/track_visit/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        path: window.location.pathname,
+        extra: window.location.search,
+      }),
+    }).catch((error) => {
+      console.error("Tracking error:", error);
+    });
+  }
 
   async function onClick(pvid: number, bid: number | null) {
     if (!pvid) return;

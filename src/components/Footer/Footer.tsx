@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { FaInstagram, FaFacebook, FaLinkedin, FaYoutube } from "react-icons/fa";
-import { FaSquareXTwitter } from "react-icons/fa6";
+import { FaInstagram, FaFacebook, FaLinkedin } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -159,7 +158,9 @@ export default function Footer() {
               </li> */}
               <li>brandsinfoguide@gmail.com</li>
               <li>+91 90957 30182</li>
-              <li>MG Pudhur,  kRC Complex 1st Floor, Tirupur, TamilNadu, 641606</li>
+              <li>
+                MG Pudhur, kRC Complex 1st Floor, Tirupur, TamilNadu, 641606
+              </li>
             </ul>
           </div>
 

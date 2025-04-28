@@ -213,14 +213,14 @@ export default function Footer() {
         </div>
 
         <div className="flex justify-center space-x-8 mb-8">
-          <a
+          {/* <a
             href="https://twitter.com"
             target="_blank"
             className="text-2xl hover:text-gray-400"
             rel="noopener noreferrer"
           >
             <FaSquareXTwitter />
-          </a>
+          </a> */}
           <a
             href="https://www.instagram.com/brandsinfo_in/"
             target="_blank"
@@ -230,7 +230,7 @@ export default function Footer() {
             <FaInstagram />
           </a>
           <a
-            href="https://facebook.com"
+            href="https://www.facebook.com/brandsinfo/"
             target="_blank"
             className="text-2xl hover:text-gray-400"
             rel="noopener noreferrer"
@@ -245,14 +245,14 @@ export default function Footer() {
           >
             <FaLinkedin />
           </a>
-          <a
+          {/* <a
             href="https://youtube.com"
             target="_blank"
             className="text-2xl hover:text-gray-400"
             rel="noopener noreferrer"
           >
             <FaYoutube />
-          </a>
+          </a> */}
         </div>
 
         <div className="text-center mb-8">

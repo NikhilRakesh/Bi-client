@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { FaInstagram, FaFacebook, FaLinkedin } from "react-icons/fa";
+import { FaInstagram, FaFacebook, FaLinkedin, FaYoutube } from "react-icons/fa";
+import { FaSquareXTwitter } from "react-icons/fa6";
 
 export default function Footer() {
   return (
@@ -214,14 +215,14 @@ export default function Footer() {
         </div>
 
         <div className="flex justify-center space-x-8 mb-8">
-          {/* <a
-            href="https://twitter.com"
+          <a
+            href="https://x.com/Brandsinfoguide"
             target="_blank"
             className="text-2xl hover:text-gray-400"
             rel="noopener noreferrer"
           >
             <FaSquareXTwitter />
-          </a> */}
+          </a>
           <a
             href="https://www.instagram.com/brandsinfo_in/"
             target="_blank"
@@ -246,14 +247,14 @@ export default function Footer() {
           >
             <FaLinkedin />
           </a>
-          {/* <a
-            href="https://youtube.com"
+          <a
+            href="https://www.youtube.com/@Brandsinfobi"
             target="_blank"
             className="text-2xl hover:text-gray-400"
             rel="noopener noreferrer"
           >
             <FaYoutube />
-          </a> */}
+          </a>
         </div>
 
         <div className="text-center mb-8">

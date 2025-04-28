@@ -241,11 +241,11 @@ const BusinessListingOtp: React.FC = () => {
   return (
     <div className="md:p-6 p-2 md:flex mb-10">
       <div className="md:w-6/12 md:flex  flex-col justify-center items-center mt-5 hidden ">
-        <div className="w-full md:w-5/12 rounded-3xl flex justify-center items-center shadow-2xl rotate-6  bg-white">
+        <div className="w-full md:w-4/12 rounded-3xl flex justify-center items-center shadow-2xl bg-white animate-float">
           <img
             src="/brandsinfo home page mb.png "
             alt="phone"
-            className="w-full object-cover border-2 p-2 h-auto rounded-lg"
+            className="w-full object-cover border-2 p-2 h-auto rounded-lg "
           />
         </div>
       </div>

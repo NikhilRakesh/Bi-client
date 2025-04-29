@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import api, { token_api } from "@/lib/api";
+import api, { baseurl, token_api } from "@/lib/api";
 import { parseCookies } from "@/lib/cookies";
 
 interface BusinessData {
@@ -87,6 +87,7 @@ const BusinessInformation = ({
 
   useEffect(() => {
     setBrowser(true);
+    trackIP()
   }, []);
 
   if (!browser) return;
@@ -243,8 +244,7 @@ const BusinessInformation = ({
 
               setErrors((prevErrors) => ({
                 ...prevErrors,
-                pincodeError:
-                  "Failed to fetch locality . Please try again.",
+                pincodeError: "Failed to fetch locality . Please try again.",
               }));
             }
           } catch (error) {
@@ -269,7 +269,21 @@ const BusinessInformation = ({
       }
     }
   };
-  console.log(JSON.stringify(safeBusinessData.description));
+
+  async function trackIP() {
+    fetch(`${baseurl}/analytics/track_visit/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        path: window.location.pathname,
+        extra: window.location.search,
+      }),
+    }).catch((error) => {
+      console.error("Tracking error:", error);
+    });
+  }
   return (
     <div className={` md:w-4/12 w-full px-7 py-5 bg-white rounded-lg`}>
       <h2 className="font-ubuntuMedium text-center text-3xl text-gray-600 mb-4">

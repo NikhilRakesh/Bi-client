@@ -63,6 +63,8 @@ export default function HomePage({
     city_cookie ? city_cookie : city || "Tiruppur"
   );
   const [browser, setBrowser] = useState(false);
+  console.log(HomeData);
+
 
   async function getDeviceLocation() {
     if (city_cookie) return;

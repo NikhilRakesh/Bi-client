@@ -14,14 +14,16 @@ interface BannerCarouselProps {
 const BannerCarousel: React.FC<BannerCarouselProps> = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
+  
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) =>
-        prevIndex === images.length - 1 ? 0 : prevIndex + 1
+        prevIndex === images?.length - 1 ? 0 : prevIndex + 1
       );
     }, 2000);
     return () => clearInterval(interval);
-  }, [images.length]);
+  }, [images?.length]);
 
   const handleDotClick = (index: number) => {
     setCurrentIndex(index);
@@ -42,7 +44,7 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ images }) => {
     <div className="relative w-full rounded-md overflow-hidden">
       <img
         className="object-cover w-full  h-full"
-        src={baseurl + images[currentIndex].banner}
+        src={baseurl + images[currentIndex]?.banner}
         alt="carousel"
       />
 
@@ -58,7 +60,7 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ images }) => {
         ))}
       </div>
 
-      {images.length > 1 && (
+      {images?.length > 1 && (
         <>
           <button
             onClick={handlePrev}

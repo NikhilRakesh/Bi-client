@@ -59,6 +59,7 @@ interface PlanDetails {
   sa_rate: boolean;
   keywords: boolean;
   average_time_spend: boolean;
+  offers: boolean;
 }
 
 interface Business {
@@ -416,7 +417,9 @@ export default function BusinessProfile() {
         analyticsData={analyticsData}
         handleScrollToChildDiv={handleScrollToChildDiv}
       />
-      {dcat && <BusinessCatAdd render={render} dcat={dcat} bid={bid} />}
+      {businessData?.plan?.plan_name !== "Default Plan" && dcat && (
+        <BusinessCatAdd render={render} dcat={dcat} bid={bid} />
+      )}
 
       <div ref={scrollToDivRef} className="md:p-8 p-4 mt-8 font-ubuntu">
         {businessData?.plan?.keywords &&
@@ -829,7 +832,9 @@ export default function BusinessProfile() {
         </div>
       </div>
 
-      <OfferModal render={render} bid={bid} offerDatas={offerData} />
+      {businessData.plan.offers && (
+        <OfferModal render={render} bid={bid} offerDatas={offerData} />
+      )}
 
       <ProductCardProfile
         productData={productData}
@@ -864,7 +869,7 @@ export default function BusinessProfile() {
       />
 
       {businessData.plan.image_gallery && (
-        <ImageGallery  render={render} openModal={() => setGalleyModal(true)} />
+        <ImageGallery render={render} openModal={() => setGalleyModal(true)} />
       )}
 
       {isOpenTimeModalOpen && (
@@ -919,7 +924,11 @@ export default function BusinessProfile() {
       )}
 
       {galleryModal && (
-        <ImageGalleryModal  render={render} videos={businessData.video_gallery} onClose={() => setGalleyModal(false)} />
+        <ImageGalleryModal
+          render={render}
+          videos={businessData.video_gallery}
+          onClose={() => setGalleyModal(false)}
+        />
       )}
       {isWarningModalOpen && (
         <LocationWarningModal

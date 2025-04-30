@@ -173,7 +173,7 @@ export default async function BusinessProfilePage({
                   />
                 )}
 
-              {BusinessProfileData?.buisness?.site_data?.share_link && (
+              {BusinessProfileData?.buisness?.site_data?.share_link && BusinessProfileData?.buisness?.plan?.review_ratings && (
                 <RatingShareSection
                   share_link={
                     BusinessProfileData?.buisness?.site_data?.share_link
@@ -275,7 +275,7 @@ export default async function BusinessProfilePage({
                         href={`${BusinessProfileData?.buisness?.web_link}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="md:text-lg text-blue-600 hover:text-blue-700"
+                        className="md:text-lg text-blue-600 hover:text-blue-700 truncate"
                       >
                         {BusinessProfileData?.buisness?.web_link}
                       </a>
@@ -318,18 +318,19 @@ export default async function BusinessProfilePage({
                         <FaSquareXTwitter className="text-black" size={24} />
                       </a>
                     )}
-                  {BusinessProfileData?.buisness?.youtube_link && (
-                    <a
-                      href={`${BusinessProfileData?.buisness?.youtube_link}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <FaYoutube
-                        className="text-red-600 hover:text-red-700"
-                        size={24}
-                      />
-                    </a>
-                  )}
+                  {BusinessProfileData?.buisness?.youtube_link &&
+                    BusinessProfileData?.buisness?.plan?.social_meida && (
+                      <a
+                        href={`${BusinessProfileData?.buisness?.youtube_link}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <FaYoutube
+                          className="text-red-600 hover:text-red-700"
+                          size={24}
+                        />
+                      </a>
+                    )}
                 </div>
               </div>
               {BusinessProfileData?.offers.length !== 0 &&

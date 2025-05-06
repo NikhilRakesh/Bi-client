@@ -24,11 +24,10 @@ const HilightedBusiness: NextPage<HilightedBusinessProps> = ({
   Gencat,
   city,
 }) => {
-
   return (
     <div className="flex flex-col md:flex-row w-full justify-between py-5 gap-3">
       <div className="w-full md:w-7/12 rounded-lg overflow-hidden">
-     {images?.length>0&&   <BannerCarousel images={images} />}
+        {images?.length > 0 && <BannerCarousel images={images} />}
       </div>
       <div className="w-full">
         <PriorityBusiness Gencat={Gencat} city={city} />

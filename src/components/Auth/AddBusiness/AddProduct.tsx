@@ -22,7 +22,13 @@ interface Category {
   name: string;
 }
 
-export default function AddProduct() {
+export default function AddProduct({
+  businesstype,
+  setBType,
+}: {
+  businesstype: string;
+  setBType: (type: string) => void;
+}) {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const [productData, setProductData] = useState<ProductData>({
@@ -36,7 +42,7 @@ export default function AddProduct() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [imageError, setImageError] = useState<string | null>(null);
   const [selectedcat, setSelectedcat] = useState<string>("");
-  const [businesstype, setBusinesstype] = useState<string>("");
+  // const [businesstype, setBusinesstype] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [addedProducts, setAddedProducts] = useState<ProductData[]>([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
@@ -103,7 +109,7 @@ export default function AddProduct() {
         productData
       );
       if (response.status === 201) {
-        setBusinesstype(response.data.buisness_type);
+        setBType(response.data.buisness_type);
         setAddedProducts([...addedProducts, productData]);
         setProductData({
           name: "",
@@ -215,6 +221,26 @@ export default function AddProduct() {
     setImageError("");
     setErrorMessage("");
     setLoading(false);
+  };
+
+  const skip = () => {
+    const urlWithId = `/business-listing/add-business?step=${
+      businesstype === "Products & Services"
+        ? 3
+        : businesstype === "Product"
+        ? 4
+        : 1
+    }&id=${id}`;
+    switch (businesstype) {
+      case "Products & Services":
+      case "Product":
+      case "Service":
+        router.push(urlWithId);
+        break;
+      default:
+        console.log("Unknown business type", businesstype);
+        break;
+    }
   };
 
   return (
@@ -464,7 +490,16 @@ export default function AddProduct() {
         </div>
       )}
 
-      <div>
+      <div className="flex gap-2">
+        {addedProducts.length === 0 && (
+          <button
+            type="button"
+            onClick={skip}
+            className="w-full py-2  cursor-pointer text-[#f28b21] bg-orange-100 border border-[#f28b21]  rounded-md focus:outline-none focus:ring-2 focus:ring-[#f28b21]"
+          >
+            Skip
+          </button>
+        )}
         <button
           type="button"
           onClick={saveAndContinue}

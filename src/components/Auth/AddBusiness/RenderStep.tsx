@@ -5,6 +5,7 @@ import AddService from "./AddService";
 import BusinessInformation from "./BusinessInformation";
 import Categories from "./Categories";
 import BPlan from "./BPlan";
+import { useState } from "react";
 interface BusinessData {
   name: string;
   description: string;
@@ -37,22 +38,28 @@ export function RenderStep({
 }) {
   const searchParams = useSearchParams();
   const step = searchParams?.get("step");
+  const [businesstype, setBusinesstype] = useState<string>("");
+
+  async function setBType(type: string) {
+    setBusinesstype(type);
+  }
   switch (step) {
     case "1":
       return (
         <BusinessInformation
           businessData={businessData}
           updateBusinessData={updateBusinessData}
+          setBType={setBType}
         />
       );
     case "2":
-      return <AddProduct />;
+      return <AddProduct businesstype={businesstype} setBType={setBType} />;
     case "3":
-      return <AddService />;
+      return <AddService  />;
     case "4":
       return <Categories />;
     case "5":
-      return <BPlan  />;
+      return <BPlan />;
     default:
       return (
         <div className="w-full text-center">

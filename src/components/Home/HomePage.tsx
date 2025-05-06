@@ -63,8 +63,6 @@ export default function HomePage({
     city_cookie ? city_cookie : city || "Tiruppur"
   );
   const [browser, setBrowser] = useState(false);
-  console.log(HomeData);
-
 
   async function getDeviceLocation() {
     if (city_cookie) return;
@@ -98,7 +96,7 @@ export default function HomePage({
   }
 
   useEffect(() => {
-    trackIP()
+    trackIP();
     getDeviceLocation();
     setBrowser(true);
   }, [city_cookie, cityName]);
@@ -184,6 +182,7 @@ export default function HomePage({
           />
         </div>
       </div>
+
       <HilightedBusiness images={adsData} Gencat={gencatData} city={cityName} />
       <RandomCategories SubCat={subcatData} city={cityName} />
       <TopCities Cities={cityData} />

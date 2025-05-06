@@ -45,7 +45,7 @@ export default function Categories() {
       const response = await api.get(
         `users/search_gencats/?q=${e.target.value}`
       );
-      setsuggestedCategories(response.data);
+      setsuggestedCategories(response.data.suggestions);
     } catch (error) {
       console.error("Unknown error:", error);
       throw error;

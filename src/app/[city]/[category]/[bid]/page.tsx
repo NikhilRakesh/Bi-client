@@ -173,14 +173,15 @@ export default async function BusinessProfilePage({
                   />
                 )}
 
-              {BusinessProfileData?.buisness?.site_data?.share_link && BusinessProfileData?.buisness?.plan?.review_ratings && (
-                <RatingShareSection
-                  share_link={
-                    BusinessProfileData?.buisness?.site_data?.share_link
-                  }
-                  rating={BusinessProfileData?.buisness?.rating}
-                />
-              )}
+              {BusinessProfileData?.buisness?.site_data?.share_link &&
+                BusinessProfileData?.buisness?.plan?.review_ratings && (
+                  <RatingShareSection
+                    share_link={
+                      BusinessProfileData?.buisness?.site_data?.share_link
+                    }
+                    rating={BusinessProfileData?.buisness?.rating}
+                  />
+                )}
 
               <div className="mt-6 flex justify-between  items-center gap-2 ">
                 <button
@@ -341,15 +342,17 @@ export default async function BusinessProfilePage({
             {(BusinessProfileData?.products.length !== 0 ||
               BusinessProfileData?.services.length !== 0) && (
               <div className="bg-white px-5 py-2 rounded-xl shadow-lg w-full mt-5">
-                {BusinessProfileData?.products.length !== 0 && (
-                  <ProductServiceCard
-                    productData={BusinessProfileData?.products}
-                  />
-                )}
+                {BusinessProfileData?.buisness?.plan?.name !== "Default Plan" &&
+                  BusinessProfileData?.products.length !== 0 && (
+                    <ProductServiceCard
+                      productData={BusinessProfileData?.products}
+                    />
+                  )}
 
-                {BusinessProfileData?.services.length !== 0 && (
-                  <ServiceCard serviceData={BusinessProfileData?.services} />
-                )}
+                {BusinessProfileData?.buisness?.plan?.name !== "Default Plan" &&
+                  BusinessProfileData?.services.length !== 0 && (
+                    <ServiceCard serviceData={BusinessProfileData?.services} />
+                  )}
               </div>
             )}
 

@@ -213,10 +213,10 @@ export default function AddService() {
   };
 
   const saveAndContinue = () => {
-    if (addedServices.length === 0) {
-      setServiceErrorMessage("Please add a service");
-      return;
-    }
+    // if (addedServices.length === 0) {
+    //   setServiceErrorMessage("Please add a service");
+    //   return;
+    // }
     router.push(`/business-listing/add-business?step=4&id=${id}`);
   };
 
@@ -336,15 +336,23 @@ export default function AddService() {
             />
           </div>
         </div>
-
-        <button
-          type="button"
-          onClick={handleServiceAdd}
-          className="w-full bg-[#f28b21] flex justify-center items-center gap-1 py-1 text-white text-sm rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-[#f28b21] mt-4"
-        >
-          <IoIosAddCircle className="text-white w-7 h-7" />
-          <span className="text-xs font-medium">Add Service</span>
-        </button>
+        <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={saveAndContinue}
+              className="w-full text-[#f28b21] bg-orange-100 border border-[#f28b21]  flex justify-center items-center gap-1 py-1 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-[#f28b21] mt-4"
+              >
+              <span className="text-xs font-medium">{addedServices.length === 0?'Skip':'Continue'}</span>
+            </button>
+          <button
+            type="button"
+            onClick={handleServiceAdd}
+            className="w-full bg-[#f28b21] flex justify-center items-center gap-1 py-1 text-white text-sm rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-[#f28b21] mt-4"
+          >
+            <IoIosAddCircle className="text-white w-7 h-7" />
+            <span className="text-xs font-medium">Add Service</span>
+          </button>
+        </div>
       </form>
 
       {serviceErrorMessage && (
@@ -445,7 +453,7 @@ export default function AddService() {
         )}
       </div>
 
-      {addedServices.length > 0 && (
+      {/* {addedServices.length > 0 && (
         <div className="mb-7">
           <button
             onClick={saveAndContinue}
@@ -455,7 +463,7 @@ export default function AddService() {
             Continue
           </button>
         </div>
-      )}
+      )} */}
       {loading && <LoadingSpinner />}
       <Toaster />
     </div>

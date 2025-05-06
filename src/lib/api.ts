@@ -7,7 +7,6 @@ const refreshToken = parseCookies().refresh_token;
 
 export const baseurl = "https://api.brandsinfo.in";
 export const ws = baseurl+'/ws/notifications/';
-
 const api = axios.create({
   baseURL: `${baseurl}`,
   headers: {
@@ -99,13 +98,13 @@ export const get_api_form = (token: string | null | undefined) => {
   return instance;
 };
 
-const refreshAccessToken = async () => {
+ const refreshAccessToken = async () => {
   try {
     if (!refreshToken) {
       throw new Error("No refresh token found");
     }
 
-    const response = await fetch(`${baseurl}api/token/refresh/`, {
+    const response = await fetch(`${baseurl}/api/token/refresh/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

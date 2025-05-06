@@ -27,6 +27,7 @@ interface BusinessData {
   incharge_number: string;
   buisness_type: string;
 }
+
 interface Locality {
   id: number;
   locality_name: string;
@@ -35,11 +36,13 @@ interface Locality {
 interface BusinessInformationProps {
   businessData: BusinessData | undefined;
   updateBusinessData: (newData: Partial<BusinessData>) => void;
+  setBType: (type: string) => void;
 }
 
 const BusinessInformation = ({
   businessData,
   updateBusinessData,
+  setBType,
 }: BusinessInformationProps) => {
   const safeBusinessData = businessData || {
     name: "",
@@ -87,7 +90,7 @@ const BusinessInformation = ({
 
   useEffect(() => {
     setBrowser(true);
-    trackIP()
+    trackIP();
   }, []);
 
   if (!browser) return;
@@ -163,6 +166,7 @@ const BusinessInformation = ({
 
       if (response.status === 201) {
         const { buisness_type, id } = response.data;
+        setBType(buisness_type);
         const urlWithId = `/business-listing/add-business?step=${
           buisness_type === "Service" ? 3 : 2
         }&id=${id}`;
@@ -237,6 +241,7 @@ const BusinessInformation = ({
               if (response.status === 200) {
                 setLocalities(response.data.data);
                 const city = response.data.city;
+
                 updateBusinessData({ city });
               }
             } catch (error) {
@@ -284,6 +289,7 @@ const BusinessInformation = ({
       console.error("Tracking error:", error);
     });
   }
+
   return (
     <div className={` md:w-4/12 w-full px-7 py-5 bg-white rounded-lg`}>
       <h2 className="font-ubuntuMedium text-center text-3xl text-gray-600 mb-4">

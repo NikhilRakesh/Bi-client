@@ -1,6 +1,4 @@
 "use client";
-import { parseCookies } from "@/lib/cookies";
-import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { TbLocationShare } from "react-icons/tb";
 
@@ -18,15 +16,7 @@ const LocationButton: React.FC<LocationButtonProps> = ({
     setBrowser(true);
   }, []);
 
-  const cookies = parseCookies();
-  const access_token = cookies?.access_token;
-  const router = useRouter();
-
   const handleLocationClick = () => {
-    if (!access_token) {
-      router.push("/login");
-      return;
-    }
     const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
     window.open(googleMapsUrl, "_blank");
   };

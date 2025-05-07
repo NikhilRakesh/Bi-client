@@ -135,7 +135,6 @@ export default async function CategoryList({
     .get(`users/esearch/?q=${category}&location=${city}`)
     .then((res) => res.data);
 
-  console.log(BusinessList);
 
   return (
     <div className="bg-gradient-to-r from-indigo-50 to-sky-50 ">

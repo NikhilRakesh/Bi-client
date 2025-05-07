@@ -97,12 +97,28 @@ const CategoryCard: React.FC<CardProps> = ({
 }) => {
   const [browser, setBrowser] = useState(false);
   const [BusinessList, setBusinessList] = useState<BusinessCard>(BusinessLists);
+  const [screen, setScreen] = useState<"sm" | "md" | "lg" | null>(null);
   const cookies = parseCookies();
   const access_token = cookies?.access_token;
 
   useEffect(() => {
     setBrowser(true);
-  }, []);
+    if (browser) {
+      const getScreenSize = () => {
+        const width = window.innerWidth;
+        if (width <= 640) return "sm";
+        if (width <= 768) return "md";
+        return "lg";
+      };
+
+      const handleResize = () => setScreen(getScreenSize());
+
+      handleResize();
+      window.addEventListener("resize", handleResize);
+
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, [browser]);
 
   function filteredData(data: BusinessCard) {
     setBusinessList(data);
@@ -141,15 +157,16 @@ const CategoryCard: React.FC<CardProps> = ({
 
   const keywordHandle = (meta_keywords: string) => {
     const keywords = meta_keywords
-      ?.split(",")
-      ?.map((keyword) => keyword.trim());
-    const maxKeywords = keywords
-      .slice(0, 2)
-      .every((keyword) => keyword.length > 5)
-      ? 2
-      : 3;
-    const displayedKeywords = keywords.slice(0, maxKeywords);
-    return displayedKeywords;
+      ?.split(',')
+      .map((keyword) => keyword.trim());
+
+    let maxKeywords = 3;
+    console.log(screen);
+    
+    if (screen === 'sm') maxKeywords = 1;
+    else if (screen === 'md') maxKeywords = 2;
+
+    return keywords.slice(0, maxKeywords);
   };
 
   function formattedNumber(number: number) {
@@ -216,7 +233,7 @@ const CategoryCard: React.FC<CardProps> = ({
                     <div className="flex items-center gap-2">
                       <MdLocationOn className="text-gray-600" size={18} />
                       <p className="text-gray-600 text-xs md:text-sm break-words">{`${card.locality}, ${card.city}, ${card.state}`}</p>
-                      </div>
+                    </div>
                   </div>
 
                   {card.offers.length > 0 ? (

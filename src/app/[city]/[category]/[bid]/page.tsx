@@ -184,7 +184,8 @@ export default async function BusinessProfilePage({
                 )}
 
               <div className="mt-6 flex justify-between  items-center gap-2 ">
-                <button
+                <a
+                  href={`tel:${BusinessProfileData?.buisness?.whatsapp_number}`}
                   className={`flex ${
                     BusinessProfileData?.buisness?.plan?.whatsapp_chat &&
                     BusinessProfileData?.buisness?.plan?.google_map &&
@@ -200,7 +201,7 @@ export default async function BusinessProfilePage({
                   ) : (
                     <span className="text-xs">Phone Number</span>
                   )}
-                </button>
+                </a>
 
                 {BusinessProfileData?.buisness?.plan?.whatsapp_chat && (
                   <WhatsappButon

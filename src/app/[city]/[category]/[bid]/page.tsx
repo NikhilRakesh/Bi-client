@@ -247,16 +247,20 @@ export default async function BusinessProfilePage({
                   {BusinessProfileData?.buisness?.description}
                 </p>
               </div>
-
-              <div className="flex items-center space-x-2">
-                <FaMapMarkerAlt className="text-gray-600" size={20} />
-                <p className="md:text-lg text-gray-700">
-                  {BusinessProfileData?.buisness.building_name},{" "}
-                  {BusinessProfileData?.buisness.locality},{" "}
-                  {BusinessProfileData?.buisness.city},{" "}
-                  {BusinessProfileData?.buisness.state} -{" "}
-                  {BusinessProfileData?.buisness.pincode}
-                </p>
+              <div>
+                <h1 className="font-ubuntuMedium text-gray-700 md:text-xl">
+                  Address
+                </h1>
+                <div className="flex items-center space-x-2">
+                  <FaMapMarkerAlt className="text-gray-600" size={20} />
+                  <p className="md:text-lg text-gray-700">
+                    {BusinessProfileData?.buisness.building_name},{" "}
+                    {BusinessProfileData?.buisness.locality},{" "}
+                    {BusinessProfileData?.buisness.city},{" "}
+                    {BusinessProfileData?.buisness.state} -{" "}
+                    {BusinessProfileData?.buisness.pincode}
+                  </p>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -345,21 +345,21 @@ export default async function BusinessProfilePage({
                 )}
             </div>
             {(BusinessProfileData?.products.length !== 0 ||
-              BusinessProfileData?.services.length !== 0) && (
-              <div className="bg-white px-5 py-2 rounded-xl shadow-lg w-full mt-5">
-                {BusinessProfileData?.buisness?.plan?.name !== "Default Plan" &&
-                  BusinessProfileData?.products.length !== 0 && (
+              BusinessProfileData?.services.length !== 0) &&
+              BusinessProfileData?.buisness?.plan
+                ?.products_and_service_visibility && (
+                <div className="bg-white px-5 py-2 rounded-xl shadow-lg w-full mt-5">
+                  {BusinessProfileData?.products.length !== 0 && (
                     <ProductServiceCard
                       productData={BusinessProfileData?.products}
                     />
                   )}
 
-                {BusinessProfileData?.buisness?.plan?.name !== "Default Plan" &&
-                  BusinessProfileData?.services.length !== 0 && (
+                  {BusinessProfileData?.services.length !== 0 && (
                     <ServiceCard serviceData={BusinessProfileData?.services} />
                   )}
-              </div>
-            )}
+                </div>
+              )}
 
             <div className=" w-full md:hidden block mt-5 ">
               <ReviewList bid={BusinessProfileData?.buisness?.id} />

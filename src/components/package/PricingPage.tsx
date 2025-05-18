@@ -18,6 +18,7 @@ interface PlanVariant {
 interface Plan {
   id: number;
   plan_name: string;
+  verbouse_name: string;
   average_time_spend: boolean;
   bi_assured: boolean;
   bi_certification: boolean;
@@ -284,7 +285,7 @@ const PricingPage = ({
                         isPopular ? "text-blue-600" : "text-gray-800"
                       }`}
                     >
-                      {plan.plan_name}
+                      {plan.verbouse_name}
                     </h2>
 
                     <div className="mb-6">

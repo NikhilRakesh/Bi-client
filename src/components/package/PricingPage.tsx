@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiArrowRight, FiInfo, FiX } from "react-icons/fi";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
+import Link from "next/link";
 
 interface PlanVariant {
   id: number;
@@ -40,78 +41,96 @@ interface Plan {
   varients: PlanVariant[];
 }
 
-const FEATURES_MAP: { key: keyof Plan; label: string; category: string; description?: string }[] = [
-  { 
-    key: "chat", 
-    label: "Live Chat", 
+const FEATURES_MAP: {
+  key: keyof Plan;
+  label: string;
+  category: string;
+  description?: string;
+}[] = [
+  {
+    key: "chat",
+    label: "Live Chat",
     category: "Communication",
-    description: "Real-time chat with potential customers"
+    description: "Real-time chat with potential customers",
   },
-  { 
-    key: "whatsapp_chat", 
-    label: "WhatsApp Chat", 
+  {
+    key: "whatsapp_chat",
+    label: "WhatsApp Chat",
     category: "Communication",
-    description: "Direct WhatsApp integration for customer inquiries"
+    description: "Direct WhatsApp integration for customer inquiries",
   },
   {
     key: "google_map",
     label: "Google Map Integration",
     category: "Visibility",
-    description: "Show your business location on Google Maps"
+    description: "Show your business location on Google Maps",
   },
-  { 
-    key: "image_gallery", 
-    label: "Image Gallery", 
-    category: "Content",
-    description: "Showcase your products/services with high-quality images"
+  {
+    key: "image_gallery",
+    label: "Image Gallery",
+    category: "Media",
+    description: "Showcase your products/services with high-quality images",
   },
-  { 
-    key: "video_gallery", 
-    label: "Video Gallery", 
-    category: "Content",
-    description: "Display product demos or business introduction videos"
+  {
+    key: "video_gallery",
+    label: "Video Gallery",
+    category: "Media",
+    description: "Display product demos or business introduction videos",
   },
-  { 
-    key: "keywords", 
-    label: "Keyword Support", 
+  {
+    key: "keywords",
+    label: "Keyword Support",
     category: "SEO",
-    description: "Optimize your listing for better search visibility"
+    description: "Optimize your listing for better search visibility",
   },
   {
     key: "most_searhed_p_s",
     label: "Top Searched Products",
     category: "Analytics",
-    description: "See which of your products/services are trending"
+    description: "See which of your products/services are trending",
   },
   {
     key: "profile_view_count",
     label: "Profile View Count",
     category: "Analytics",
-    description: "Track how many visitors view your profile"
+    description: "Track how many visitors view your profile",
   },
   {
     key: "profile_visit",
     label: "Profile Visit Analytics",
     category: "Analytics",
-    description: "Detailed insights about your profile visitors"
-  },
-  {
-    key: "search_priority_1",
-    label: "Highest Search Priority",
-    category: "Visibility",
-    description: "Your business appears first in relevant searches"
+    description: "Detailed insights about your profile visitors",
   },
   {
     key: "search_priority_2",
-    label: "High Search Priority",
+    label: "Highest Search Priority",
     category: "Visibility",
-    description: "Your business appears prominently in search results"
+    description: "Your business appears first in relevant searches",
   },
   {
-    key: "search_priority_3",
+    key: "search_priority_1",
     label: "Standard Search Priority",
     category: "Visibility",
-    description: "Standard visibility in search results"
+    description: "Standard visibility in search results",
+  },
+  {
+    key: "bi_assured",
+    label: "Bi Assured Tag",
+    category: "Trust & Verification",
+    description:
+      "Indicates that the business is verified and assured by our platform",
+  },
+  {
+    key: "bi_certification",
+    label: "Bi Certification",
+    category: "Trust & Verification",
+    description: "Official certification for trusted businesses",
+  },
+  {
+    key: "bi_verification",
+    label: "Bi Verification Badge",
+    category: "Trust & Verification",
+    description: "Verified identity and legitimacy of the business",
   },
 ];
 
@@ -121,9 +140,16 @@ const PricingPage = ({
   onClick: (variantId: number, bid: number | null) => void;
 }) => {
   const [plans, setPlans] = useState<Plan[]>([]);
-  const [selectedVariants, setSelectedVariants] = useState<Record<number, number>>({});
-  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
-  const [selectedFeature, setSelectedFeature] = useState<{label: string; description: string} | null>(null);
+  const [selectedVariants, setSelectedVariants] = useState<
+    Record<number, number>
+  >({});
+  const [expandedCategories, setExpandedCategories] = useState<
+    Record<string, boolean>
+  >({});
+  const [selectedFeature, setSelectedFeature] = useState<{
+    label: string;
+    description: string;
+  } | null>(null);
   const [showComparison, setShowComparison] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -142,12 +168,13 @@ const PricingPage = ({
               acc[plan.id] = plan.varients[0].id;
             }
             return acc;
-          }, {}
+          },
+          {}
         );
         setSelectedVariants(defaultSelections);
-        
+
         // Initialize expanded categories
-        const categories = FEATURES_MAP.reduce((acc, {category}) => {
+        const categories = FEATURES_MAP.reduce((acc, { category }) => {
           acc[category] = false;
           return acc;
         }, {} as Record<string, boolean>);
@@ -165,9 +192,9 @@ const PricingPage = ({
   };
 
   const toggleCategory = (category: string) => {
-    setExpandedCategories(prev => ({
+    setExpandedCategories((prev) => ({
       ...prev,
-      [category]: !prev[category]
+      [category]: !prev[category],
     }));
   };
 
@@ -184,7 +211,7 @@ const PricingPage = ({
       featuresByCategory[category].push({
         label,
         included: plan[key] as boolean,
-        description
+        description,
       });
     });
 
@@ -219,7 +246,8 @@ const PricingPage = ({
             Grow Your Business With Us
           </motion.h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Choose the perfect plan to boost your online presence and reach more customers
+            Choose the perfect plan to boost your online presence and reach more
+            customers
           </p>
         </div>
 
@@ -227,7 +255,9 @@ const PricingPage = ({
           {plans.map((plan, index) => {
             const featuresByCategory = getFeaturesByCategory(plan);
             const isPopular = index === 1;
-            const selectedVariant = plan.varients.find(v => v.id === selectedVariants[plan.id]);
+            const selectedVariant = plan.varients.find(
+              (v) => v.id === selectedVariants[plan.id]
+            );
 
             return (
               <motion.div
@@ -263,7 +293,10 @@ const PricingPage = ({
                           ₹{selectedVariant?.price}
                         </span>
                         <span className="text-gray-500 ml-1 mb-1">
-                          /{selectedVariant?.duration} days
+                          /{" "}
+                          {index === 0
+                            ? "Lifetime"
+                            : `${selectedVariant?.duration} days`}
                         </span>
                       </div>
                       <div className="space-y-3">
@@ -281,14 +314,18 @@ const PricingPage = ({
                                 type="radio"
                                 name={`variant-${plan.id}`}
                                 value={variant.id}
-                                checked={selectedVariants[plan.id] === variant.id}
+                                checked={
+                                  selectedVariants[plan.id] === variant.id
+                                }
                                 onChange={() =>
                                   handleVariantChange(plan.id, variant.id)
                                 }
                                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                               />
                               <span className="ml-3 text-gray-700 font-medium">
-                                {variant.duration} days
+                                {index === 0
+                                  ? "Lifetime"
+                                  : `${variant.duration} days`}
                               </span>
                             </div>
                             <span className="text-gray-900 font-bold">
@@ -322,7 +359,7 @@ const PricingPage = ({
                                 <FaChevronDown className="text-gray-400" />
                               )}
                             </button>
-                            
+
                             <AnimatePresence>
                               {expandedCategories[category] && (
                                 <motion.ul
@@ -331,44 +368,51 @@ const PricingPage = ({
                                   exit={{ opacity: 0, height: 0 }}
                                   className="space-y-2 mt-2 overflow-hidden"
                                 >
-                                  {features.map(({ label, included, description }) => (
-                                    <motion.li
-                                      key={label}
-                                      initial={{ opacity: 0 }}
-                                      animate={{ opacity: 1 }}
-                                      transition={{ duration: 0.2 }}
-                                      className="flex items-start"
-                                    >
-                                      <span
-                                        className={`flex-shrink-0 ${
-                                          included
-                                            ? "text-green-500"
-                                            : "text-gray-300"
-                                        }`}
+                                  {features.map(
+                                    ({ label, included, description }) => (
+                                      <motion.li
+                                        key={label}
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="flex items-start"
                                       >
-                                        <FaCheckCircle className="h-5 w-5" />
-                                      </span>
-                                      <div className="ml-2">
                                         <span
-                                          className={`${
+                                          className={`flex-shrink-0 ${
                                             included
-                                              ? "text-gray-700"
-                                              : "text-gray-400 line-through"
+                                              ? "text-green-500"
+                                              : "text-gray-300"
                                           }`}
                                         >
-                                          {label}
+                                          <FaCheckCircle className="h-5 w-5" />
                                         </span>
-                                        {description && included && (
-                                          <button
-                                            onClick={() => setSelectedFeature({label, description})}
-                                            className="ml-2 text-blue-500 hover:text-blue-700"
+                                        <div className="ml-2">
+                                          <span
+                                            className={`${
+                                              included
+                                                ? "text-gray-700"
+                                                : "text-gray-400 line-through"
+                                            }`}
                                           >
-                                            <FiInfo className="inline" />
-                                          </button>
-                                        )}
-                                      </div>
-                                    </motion.li>
-                                  ))}
+                                            {label}
+                                          </span>
+                                          {description && included && (
+                                            <button
+                                              onClick={() =>
+                                                setSelectedFeature({
+                                                  label,
+                                                  description,
+                                                })
+                                              }
+                                              className="ml-2 text-blue-500 hover:text-blue-700"
+                                            >
+                                              <FiInfo className="inline" />
+                                            </button>
+                                          )}
+                                        </div>
+                                      </motion.li>
+                                    )
+                                  )}
                                 </motion.ul>
                               )}
                             </AnimatePresence>
@@ -380,22 +424,39 @@ const PricingPage = ({
                 </div>
 
                 <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => {
-                      const selectedId = selectedVariants[plan.id];
-                      if (selectedId) onClick(selectedId, null);
-                    }}
-                    className={`w-full flex items-center justify-center py-3 px-4 rounded-lg font-medium transition-all ${
-                      isPopular
-                        ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md hover:from-blue-700 hover:to-blue-600"
-                        : "bg-white border border-blue-500 text-blue-600 hover:bg-blue-50"
-                    }`}
-                  >
-                    Get Started
-                    <FiArrowRight className="ml-2" />
-                  </motion.button>
+                  {index !== 0 ? (
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        const selectedId = selectedVariants[plan.id];
+                        if (selectedId) onClick(selectedId, null);
+                      }}
+                      className={`w-full flex items-center justify-center py-3 px-4 rounded-lg font-medium transition-all ${
+                        isPopular
+                          ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md hover:from-blue-700 hover:to-blue-600"
+                          : "bg-white border border-blue-500 text-blue-600 hover:bg-blue-50"
+                      }`}
+                    >
+                      Get Started
+                      <FiArrowRight className="ml-2" />
+                    </motion.button>
+                  ) : (
+                    <Link href={"/profile"}>
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className={`w-full flex items-center justify-center py-3 px-4 rounded-lg font-medium transition-all ${
+                          isPopular
+                            ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md hover:from-blue-700 hover:to-blue-600"
+                            : "bg-white border border-blue-500 text-blue-600 hover:bg-blue-50"
+                        }`}
+                      >
+                        Get Started
+                        <FiArrowRight className="ml-2" />
+                      </motion.button>
+                    </Link>
+                  )}
                 </div>
               </motion.div>
             );
@@ -406,7 +467,7 @@ const PricingPage = ({
           <p className="text-gray-600 mb-4">
             Not sure which plan is right for you?
           </p>
-          <button 
+          <button
             onClick={() => setShowComparison(true)}
             className="text-blue-600 font-medium hover:text-blue-700 transition-colors"
           >
@@ -415,9 +476,12 @@ const PricingPage = ({
         </div>
       </div>
 
-      {/* Feature Detail Modal */}
       <Transition appear show={!!selectedFeature} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={() => setSelectedFeature(null)}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={() => setSelectedFeature(null)}
+        >
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -470,9 +534,12 @@ const PricingPage = ({
         </Dialog>
       </Transition>
 
-      {/* Comparison Modal */}
       <Transition appear show={showComparison} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={() => setShowComparison(false)}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={() => setShowComparison(false)}
+        >
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -516,11 +583,18 @@ const PricingPage = ({
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead className="bg-gray-50">
                         <tr>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
                             Feature
                           </th>
-                          {plans.map(plan => (
-                            <th key={plan.id} scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          {plans.map((plan) => (
+                            <th
+                              key={plan.id}
+                              scope="col"
+                              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            >
                               {plan.plan_name}
                             </th>
                           ))}
@@ -533,15 +607,23 @@ const PricingPage = ({
                               {feature.label}
                               {feature.description && (
                                 <button
-                                  onClick={() => setSelectedFeature({label: feature.label, description: feature.description || ''})}
+                                  onClick={() =>
+                                    setSelectedFeature({
+                                      label: feature.label,
+                                      description: feature.description || "",
+                                    })
+                                  }
                                   className="ml-2 text-blue-500 hover:text-blue-700"
                                 >
                                   <FiInfo className="inline" />
                                 </button>
                               )}
                             </td>
-                            {plans.map(plan => (
-                              <td key={`${plan.id}-${feature.key}`} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {plans.map((plan) => (
+                              <td
+                                key={`${plan.id}-${feature.key}`}
+                                className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                              >
                                 {plan[feature.key] ? (
                                   <FaCheckCircle className="text-green-500 h-5 w-5" />
                                 ) : (

@@ -5,7 +5,7 @@ import { BusinessSelectionModal } from "@/components/package/BusinessSelectionMo
 import PricingPage from "@/components/package/PricingPage";
 import { baseurl, token_api } from "@/lib/api";
 import { parseCookies } from "@/lib/cookies";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -15,7 +15,6 @@ interface Business {
 }
 
 export default function BPlan() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [browser, setbrowser] = useState(false);
   const id = searchParams.get("bid");
@@ -27,10 +26,10 @@ export default function BPlan() {
   const access_token = cookies?.access_token;
 
   useEffect(() => {
-    trackIP()
+    trackIP();
     setbrowser(true);
   }, []);
-  
+
   async function trackIP() {
     fetch(`${baseurl}/analytics/track_visit/`, {
       method: "POST",
@@ -102,33 +101,15 @@ export default function BPlan() {
   }
 
   if (!browser) return null;
+
   return (
     <div className="absolute w-full h-screen">
-      {access_token && (
-        <div className="absolute md:block hidden top-6 right-10">
-          <button
-            onClick={() =>
-              router.push(`${access_token ? "/profile" : "/login"}`)
-            }
-            className="backdrop-blur-md  bg-white text-black font-semibold text-lg px-6 py-3 rounded-lg shadow-md hover:bg-gray-200 active:bg-gray-300 focus:outline-none focus:ring-4 focus:ring-orange-500 transition duration-300 ease-in-out"
-          >
-            Skip
-          </button>
-        </div>
-      )}
       {!access_token && (
         <div className="absolute md:top-12 top-3 left-5">
           <BackButton />
         </div>
       )}
-      <div className="absolute md:hidden block top-3 right-2">
-        <button
-          onClick={() => router.push(`${access_token ? "/profile" : "/login"}`)}
-          className="backdrop-blur-md  bg-white text-black font-semibold text-sm px-5 py-2 rounded-lg shadow-md hover:bg-gray-200 active:bg-gray-300 focus:outline-none focus:ring-4 focus:ring-orange-500 transition duration-300 ease-in-out"
-        >
-          Skip
-        </button>
-      </div>
+
       <PricingPage onClick={onClick} />
       <Toaster />
       {business && (

@@ -83,15 +83,14 @@ const DeleteAccount: React.FC = () => {
             </div>
             <h2 className="mt-3 text-lg font-medium text-gray-900">Request Submitted</h2>
             <div className="mt-4 text-sm text-gray-600 space-y-3">
-              <p>We've received your request to delete the account associated with <strong>+91 {phoneNumber}</strong>.</p>
-              <p>You'll receive an SMS confirmation within <strong>48 hours</strong>.</p>
+              <p>We&apos;ve received your request to delete the account associated with <strong>+91 {phoneNumber}</strong>.</p>
+              <p>You&apos;ll receive an SMS confirmation within <strong>48 hours</strong>.</p>
               <p>Account deletion will be completed within <strong>90 days</strong> as per our policy.</p>
             </div>
           </div>
         </div>
       )}
 
-      {/* Confirmation Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-lg max-w-sm w-full overflow-hidden">
@@ -105,7 +104,7 @@ const DeleteAccount: React.FC = () => {
                 <h3 className="text-lg font-medium text-gray-900">Confirm Deletion</h3>
                 <div className="mt-2">
                   <p className="text-sm text-gray-500">
-                    This will permanently delete your account and all data. You won't be able to recover any information.
+                    This will permanently delete your account and all data. You won&apos;t be able to recover any information.
                   </p>
                 </div>
               </div>

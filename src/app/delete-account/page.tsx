@@ -50,7 +50,7 @@ const DeleteAccount: React.FC = () => {
                 value={phoneNumber}
                 onChange={handleInputChange}
                 maxLength={10}
-                className="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full pl-12 pr-4 text-gray-800 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="9876543210"
                 pattern="[0-9]{10}"
                 required

@@ -203,7 +203,7 @@ const CategoryCard: React.FC<CardProps> = ({
                 </div>
 
                 <div className="p-4 flex flex-col gap-2">
-                  <h2 className="text-lg font-medium font-ubuntuMedium text-gray-800 truncate">
+                  <h2 className="text-lg font-medium font-ubuntuMedium text-gray-800 truncate max-w-[200px]">
                     {card.name}
                   </h2>
 

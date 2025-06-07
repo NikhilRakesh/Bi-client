@@ -15,8 +15,8 @@ export default function Header({
       <div className="flex  items-center sm:relative md:static justify-between py-4 font-ubuntu  w-full  ">
         <div className="cursor-pointer">
           <img
-            className="md:w-8 w-7 h-7 "
-            src="/Brandsinfo-logo.png"
+            className="w-32 "
+            src="/bi_name_logo.png"
             alt="brandsinfo-logo"
           />
         </div>

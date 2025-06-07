@@ -8,9 +8,13 @@ export default function Footer() {
       <hr className=" border-gray-300 pb-10" />
       <div className="max-w-screen-xl mx-auto px-6">
         <div className="text-center mb-12">
-          <h3 className="text-3xl font-ubuntuMedium font-semibold mb-4">
-            Brands Info
-          </h3>
+          <div className="flex justify-center items-center mb-5">
+            <img
+              className="w-32 "
+              src="/bi_name_logo.png"
+              alt="brandsinfo-logo"
+            />
+          </div>
           <p className="md:text-md sm:text-sm text-gray-500">
             Premium Dealers & Suppliers, Providing Quality Products and Services
             Worldwide.
@@ -64,27 +68,11 @@ export default function Footer() {
             <h4 className="text-xl font-ubuntuMedium font-semibold mb-4">
               Our Services
             </h4>
-            <ul className="space-y-1 text-gray-600 text-sm">
-              <li>
-                <Link href="/services" className="hover:text-gray-400">
-                  B2B Dealer Network
-                </Link>
-              </li>
-              <li>
-                <Link href="/services" className="hover:text-gray-400">
-                  Premium Dealer Listings
-                </Link>
-              </li>
-              <li>
-                <Link href="/services" className="hover:text-gray-400">
-                  Custom Business Solutions
-                </Link>
-              </li>
-              <li>
-                <Link href="/services" className="hover:text-gray-400">
-                  Marketplace Integration
-                </Link>
-              </li>
+            <ul className="space-y-1 text-gray-600 text-sm ">
+              <li className="hover:text-gray-400">B2B Dealer Network</li>
+              <li className="hover:text-gray-400">Premium Dealer Listings</li>
+              <li className="hover:text-gray-400">Custom Business Solutions</li>
+              <li className="hover:text-gray-400">Marketplace Integration</li>
             </ul>
           </div>
 

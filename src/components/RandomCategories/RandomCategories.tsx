@@ -25,7 +25,9 @@ const RandomCategories: React.FC<RandomCategoriesProbs> = ({
         {SubCat?.slice(0, 12).map((category, index) => (
           <Link
             key={index}
-            href={`/${city}/${category.name.replace(/\s+/g, "-")}`}
+            href={`/${city}/${category.name
+              .replace(/[\u200B-\u200D\uFEFF]/g, "")
+              .replace(/\s+/g, "-")}`}
           >
             <div className="group relative p-1 border rounded-lg shadow-md bg-gray-100 hover:bg-[#f28b21] hover:shadow-lg transition duration-300 cursor-pointer">
               <span className="md:text-sm text-xs font-ubuntu text-gray-700 group-hover:text-white">
@@ -44,7 +46,9 @@ const RandomCategories: React.FC<RandomCategoriesProbs> = ({
         {SubCat?.map((category, index) => (
           <Link
             key={index}
-            href={`/${city}/${category.name.replace(/\s+/g, "-")}`}
+            href={`/${city}/${category.name
+              .replace(/[\u200B-\u200D\uFEFF]/g, "")
+              .replace(/\s+/g, "-")}`}
           >
             <div className="group relative p-1 border rounded-lg shadow-md bg-gray-100 hover:bg-[#f28b21] hover:shadow-lg transition duration-300 cursor-pointer">
               <span className="md:text-sm text-xs font-ubuntu text-gray-700 group-hover:text-white">
